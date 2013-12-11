@@ -1,0 +1,15 @@
+<package>
+  <description brief="lane_detector">
+
+     lane_detector
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/lane_detector</url>
+  <depend package="interpreter"/>
+
+</package>
+
+

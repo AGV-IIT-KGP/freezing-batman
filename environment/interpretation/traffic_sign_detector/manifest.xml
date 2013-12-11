@@ -1,0 +1,15 @@
+<package>
+  <description brief="traffic_sign_detector">
+
+     traffic_sign_detector
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/traffic_sign_detector</url>
+  <depend package="interpreter"/>
+
+</package>
+
+

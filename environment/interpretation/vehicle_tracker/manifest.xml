@@ -1,0 +1,15 @@
+<package>
+  <description brief="vehicle_tracker">
+
+     vehicle_tracker
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/vehicle_tracker</url>
+  <depend package="interpreter"/>
+
+</package>
+
+

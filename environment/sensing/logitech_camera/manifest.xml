@@ -1,0 +1,18 @@
+<package>
+  <description brief="logitech_camera">
+
+     logitech_camera
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/logitech_camera</url>
+  
+  <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="sensor"/>
+
+</package>
+
+
