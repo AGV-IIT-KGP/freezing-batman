@@ -1,0 +1,17 @@
+<package>
+  <description brief="sensor">
+
+     sensor
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://www.agvkgp.com/wiki/sensor</url>
+  
+  <depend package="roscpp"/>
+  <depend package="rospy"/>
+
+</package>
+
+

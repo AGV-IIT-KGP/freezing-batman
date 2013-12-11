@@ -1,0 +1,15 @@
+<package>
+  <description brief="road_detector">
+
+     road_detector
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/road_detector</url>
+  <depend package="interpreter"/>
+
+</package>
+
+

@@ -1,0 +1,18 @@
+<package>
+  <description brief="bumblebee_stereo">
+
+     bumblebee_stereo
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/bumblebee_stereo</url>
+  
+  <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="sensor"/>
+
+</package>
+
+
