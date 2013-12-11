@@ -1,0 +1,15 @@
+<package>
+  <description brief="local_planner">
+
+     local_planner
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/local_planner</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

@@ -1,0 +1,15 @@
+<package>
+  <description brief="master_planner">
+
+     master_planner
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/master_planner</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

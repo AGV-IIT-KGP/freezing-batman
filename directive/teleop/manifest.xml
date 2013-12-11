@@ -1,0 +1,15 @@
+<package>
+  <description brief="teleop">
+
+     teleop
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/teleop</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

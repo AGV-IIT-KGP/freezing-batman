@@ -1,0 +1,15 @@
+<package>
+  <description brief="situational_planner">
+
+     situational_planner
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/situational_planner</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

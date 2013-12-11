@@ -1,0 +1,15 @@
+<package>
+  <description brief="auro666_pilot">
+
+     auro666_pilot
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/auro666_pilot</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

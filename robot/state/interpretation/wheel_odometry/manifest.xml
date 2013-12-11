@@ -1,0 +1,15 @@
+<package>
+  <description brief="wheel_odometry">
+
+     wheel_odometry
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/wheel_odometry</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

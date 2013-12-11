@@ -1,0 +1,15 @@
+<package>
+  <description brief="pose_ekf">
+
+     pose_ekf
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pose_ekf</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

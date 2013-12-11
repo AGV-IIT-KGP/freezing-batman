@@ -1,0 +1,15 @@
+<package>
+  <description brief="global_planner">
+
+     global_planner
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/global_planner</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

@@ -1,0 +1,15 @@
+<package>
+  <description brief="eklavya3_pilot">
+
+     eklavya3_pilot
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/eklavya3_pilot</url>
+  <depend package="roscpp"/>
+
+</package>
+
+
