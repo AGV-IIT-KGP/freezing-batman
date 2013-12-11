@@ -1,0 +1,16 @@
+<package>
+  <description brief="robotech_encoder">
+
+     robotech_encoder
+
+  </description>
+  <author>Satya Prakash</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/robotech_encoder</url>
+  <depend package="roscpp"/>
+  <depend package="sensor"/>
+
+</package>
+
+
