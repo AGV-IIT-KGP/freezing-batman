@@ -8,7 +8,9 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/health_monitor</url>
+  
   <depend package="roscpp"/>
+  <depend package="lifecycle_management"/>
 
 </package>
 

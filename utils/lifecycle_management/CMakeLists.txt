@@ -29,5 +29,4 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 
-rosbuild_add_executable(health_monitor src/health_monitor/healthmonitor.cpp)
-target_link_libraries(health_monitor lifecycle_management)
+rosbuild_add_library(${PROJECT_NAME} src/lifecycle_management/lifecyclemanager.cpp)
