@@ -1,0 +1,17 @@
+<package>
+  <description brief="agv_framework">
+
+     agv_framework
+
+  </description>
+  <author>Satya Prakash</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/agv_framework</url>
+  <depend package="roscpp"/>
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib"/>
+  </export>
+</package>
+
+
