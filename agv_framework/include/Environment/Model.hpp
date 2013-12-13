@@ -1,8 +1,8 @@
 /* 
  * File:   Model.hpp
- * Author: Satya Prakash
+ * Author: samuel
  *
- * Created on December 12, 2013, 11:08 PM
+ * Created on 14 December, 2013, 1:21 AM
  */
 
 #ifndef MODEL_HPP
@@ -12,6 +12,10 @@ namespace environment {
 
     class Model {
     public:
+        Model();
+        Model(const Model& orig);
+        virtual ~Model();
+    private:
 
     };
 }
