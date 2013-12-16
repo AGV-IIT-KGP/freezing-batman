@@ -23,7 +23,23 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-rosbuild_add_library(${PROJECT_NAME} src/Environment/Sensor.cpp src/Environment/Interpreter.cpp src/Environment/Model.cpp)
+rosbuild_add_library(${PROJECT_NAME} 
+  src/HealthMonitor.cpp
+  src/LifeCycle.cpp
+  src/environment/Environment.cpp
+  src/environment/Interpreter.cpp 
+  src/environment/Model.cpp
+  src/environment/Sensor.cpp
+  src/planning/MasterPlanner.cpp
+  src/planning/MotionPlanner.cpp
+  src/planning/motion_planner/GlobalPlanner.cpp
+  src/planning/motion_planner/LocalPlanner.cpp
+  src/planning/motion_planner/SituationalPlanner.cpp
+  src/robot/Description.cpp 
+  src/robot/Interpreter.cpp
+  src/robot/Robot.cpp
+  src/robot/Sensor.cpp
+  )
 #rosbuild_add_library(agv src/Sensor.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()

@@ -9,7 +9,10 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/local_planner</url>
   <depend package="roscpp"/>
-
+  <depend package="opencv2"/>
+  <depend package="message_filters"/>
+  <depend package="geometry_msgs"/>
+  <depend package="agv_framework"/>
 </package>
 
 
