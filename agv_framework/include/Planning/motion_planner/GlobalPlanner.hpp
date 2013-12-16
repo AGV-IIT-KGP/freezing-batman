@@ -13,7 +13,7 @@ namespace planning {
     
     class GlobalPlanner {
     public:
-        virtual void getNextWaypoint();
+        virtual void getNextWaypoint() = 0;
     };
 }
 

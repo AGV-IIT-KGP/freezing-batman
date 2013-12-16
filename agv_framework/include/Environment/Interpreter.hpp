@@ -14,7 +14,7 @@ namespace environment {
 
     class Interpreter {
     public:
-        virtual void interpret();
+        virtual void interpret() = 0;
     };
 }
 

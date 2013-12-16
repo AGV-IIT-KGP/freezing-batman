@@ -17,18 +17,18 @@
 namespace environment {
 
     class Environment {
-        Environment* instance=NULL;
+        Environment* instance = NULL;
         std::vector<Model*> models;
         // --> data structure for map
-        
+
         Environment();
     public:
+
         Environment* getInstance() {
-            if(!instance)
-                instance=new Environment();
+            if (!instance)
+                instance = new Environment();
             return instance;
         }
-        
     };
 }
 

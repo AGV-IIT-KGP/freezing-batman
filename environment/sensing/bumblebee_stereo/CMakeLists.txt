@@ -16,7 +16,6 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 set(AGV_FRAMEWORK libagv_framework.so)
-set(ENVIRONMENT libenvironment.so)
 
 #uncomment if you have defined messages
 #rosbuild_genmsg()
@@ -25,10 +24,25 @@ set(ENVIRONMENT libenvironment.so)
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
+
+set (DC libdc1394-2)
+set (TRICLOPS triclops3.2)
+
+find_package(PkgConfig)
+
+pkg_check_modules(DC libdc1394-2)
+link_directories(${DC_LIBRARY_DIRS})
+include_directories(${DC_INCLUDE_DIRS})
+
+pkg_check_modules(TRICLOPS triclops3.2)
+link_directories(${TRICLOPS_LIBRARY_DIRS})
+include_directories(${TRICLOPS_INCLUDE_DIRS})
+
+LINK_DIRECTORIES("/usr/local/lib/")
+
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
-rosbuild_add_executable(${PROJECT_NAME} src/RoadDetector.cpp)
+rosbuild_add_executable(${PROJECT_NAME} src/BumblebeeStereo.cpp)
+target_link_libraries(${PROJECT_NAME} ${AGV_FRAMEWORK} ${DC_LIBRARIES} ${TRICLOPS_LIBRARIES})
 #target_link_libraries(example ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} ${AGV_FRAMEWORK} ${ENVIRONMENT})

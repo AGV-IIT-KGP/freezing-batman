@@ -12,10 +12,10 @@ namespace environment {
 
     class Sensor {
     public:
-        virtual bool connect();
-        virtual bool fetch();
-        virtual bool disconnect();
-        virtual void publish(int frame_id);
+        virtual bool connect() = 0;
+        virtual bool fetch() = 0;
+        virtual bool disconnect() = 0;
+        virtual void publish(int frame_id) = 0;
     };
 }
 #endif	/* SENSOR_HPP */
