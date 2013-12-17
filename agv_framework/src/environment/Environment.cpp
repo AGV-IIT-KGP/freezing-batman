@@ -9,6 +9,8 @@
 
 namespace environment {
 
+    Environment* Environment::instance = NULL;
+
     Environment::Environment() {
     }
 

@@ -28,13 +28,41 @@ namespace navigation {
     }
 
     void bestPath(const nav_msgs::Path::ConstPtr& path_msg) {
-                cv::Mat img=cv::Mat(cvSize(800, 800), CV_8UC3, cvScalarAll(0));
+        cv::Mat img = cv::Mat(cv::Size(800, 800), CV_8UC3, cv::Scalar::all(0));
 
-        cv::circle(img, cvPoint(path_msg->poses[0].pose.position.x, HEIGHT - path_msg->poses[0].pose.position.y), 5, cvScalarAll(255));
-        cv::circle(img, cvPoint(path_msg->poses[path_msg->poses.size() - 1].pose.position.x, HEIGHT - path_msg->poses[path_msg->poses.size() - 1].pose.position.y), 5, cvScalarAll(255));
-        cv::line(img, cvPoint(path_msg->poses[0].pose.position.x, HEIGHT - path_msg->poses[0].pose.position.y), cvPoint(path_msg->poses[path_msg->poses.size() - 1].pose.position.x, HEIGHT - path_msg->poses[path_msg->poses.size() - 1].pose.position.y), cvScalar(255));
+        cv::circle(
+                img, 
+                cv::Point(
+                        path_msg->poses.at(0).pose.position.x, 
+                        HEIGHT - path_msg->poses.at(0).pose.position.y), 
+                5, 
+                cv::Scalar::all(255));
+        cv::circle(
+                img, 
+                cvPoint(
+                        path_msg->poses.at(path_msg->poses.size() - 1).pose.position.x, 
+                        HEIGHT - path_msg->poses.at(path_msg->poses.size() - 1).pose.position.y), 
+                5, 
+                cv::Scalar::all(255));
+        cv::line(
+                img, 
+                cvPoint(
+                        path_msg->poses.at(0).pose.position.x, 
+                        HEIGHT - path_msg->poses.at(0).pose.position.y), 
+                cvPoint(
+                        path_msg->poses.at(path_msg->poses.size() - 1).pose.position.x, 
+                        HEIGHT - path_msg->poses.at(path_msg->poses.size() - 1).pose.position.y), 
+                cv::Scalar::all(255));
         for (int i = 0; i < path_msg->poses.size() - 1; i++) {
-            cv::line(img, cvPoint(path_msg->poses[i].pose.position.x, HEIGHT - path_msg->poses[i].pose.position.y), cvPoint(path_msg->poses[i + 1].pose.position.x, HEIGHT - path_msg->poses[i + 1].pose.position.y), cvScalar(255, 255, 255));
+            cv::line(
+                img, 
+                cvPoint(
+                        path_msg->poses.at(i).pose.position.x, 
+                        HEIGHT - path_msg->poses.at(i).pose.position.y), 
+                cvPoint(
+                        path_msg->poses.at(i + 1).pose.position.x, 
+                        HEIGHT - path_msg->poses.at(i + 1).pose.position.y), 
+                cv::Scalar::all(255));
         }
 
         cv::imshow("Path Planned B)", img);

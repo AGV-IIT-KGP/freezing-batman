@@ -64,6 +64,10 @@ namespace navigation {
         Clothoid t;
 
         for (int i = 0; i < targets.size(); i++) {
+            ROS_INFO("[local_planner/road_navigation/RoadNavigation/getPaths/loop] targets[i] = (%lf, %lf, %lf)",
+                    targets[i].position.x,
+                    targets[i].position.y,
+                    targets[i].position.z);
             paths.push_back(t.drawPath(current_pose, targets[i]));
         }
 

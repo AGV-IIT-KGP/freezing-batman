@@ -17,7 +17,7 @@
 namespace environment {
 
     class Environment {
-        Environment* instance = NULL;
+        static Environment* instance;
         std::vector<Model*> models;
         // --> data structure for map
 

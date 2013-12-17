@@ -8,9 +8,6 @@
 #ifndef CLOTHOID_HPP
 #define	CLOTHOID_HPP
 
-
-static const double PI = 3.14159;
-static const int HEIGHT = 800, WIDTH = 800;
 using namespace std;
 
 #include <Header.hpp>
@@ -19,6 +16,9 @@ using namespace std;
 #include <Trajectory.hpp>
 
 namespace navigation {
+
+    static const double PI = 3.14159;
+    static const int HEIGHT = 800, WIDTH = 800;
 
     class Poses {
     public:
@@ -34,14 +34,14 @@ namespace navigation {
     public:
         double sigma;
 
-        ClothoidPath(std::vector<State>& sites_, double sigma_, double larc_) {
+        ClothoidPath(std::vector<State> sites_, double sigma_, double larc_) {
             sites = sites_;
             sigma = sigma_;
             larc = larc_;
         }
     };
 
-    class Clothoid : public Trajectory  {
+    class Clothoid : public Trajectory {
     public:
         State start, end;
         double x0, y0;
@@ -58,9 +58,9 @@ namespace navigation {
         std::vector<PathSegment*> drawPath(geometry_msgs::Pose current_pose, geometry_msgs::Pose target_pose);
         void plotClothoid(State a, State b);
         void getControls(State a, State b);
-        void getTrajectory();
+        vector<State> getTrajectory();
         std::vector<PathSegment*> getPath(State a, State b);
-        vector<State> plotPath();
+        void plotPath();
         Clothoid(const Clothoid& orig);
         virtual ~Clothoid();
     private:

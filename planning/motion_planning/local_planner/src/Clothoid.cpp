@@ -9,7 +9,6 @@
 
 namespace navigation {
 
-
     Clothoid::Clothoid(const Clothoid& orig) {
     }
 
@@ -30,23 +29,16 @@ namespace navigation {
         }
 
         return theta;
-
     }
-
 
     Clothoid::Clothoid() {
         kMax = 1000;
-        img = cv::Mat(cvSize(HEIGHT, WIDTH), CV_8UC3, cvScalarAll(0));
+        img = cv::Mat(cvSize(navigation::HEIGHT, navigation::WIDTH), CV_8UC3, cvScalarAll(0));
         cv::namedWindow("[road_navigation] : clothoid", 0);
     }
 
     int Clothoid::signum(double a) {
-        if (a < 0)
-            return -1;
-        else if (a > 0)
-            return 1;
-        else
-            return 0;
+        return a > 0 ? 1 : -1;
     }
 
     double Clothoid::calc_d(double alpha) {
@@ -86,16 +78,23 @@ namespace navigation {
         cvWaitKey(0);
     }*/
     void Clothoid::getControls(State a, State b) {
+        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] a = (%lf, %lf, %lf)", a.x, a.y, a.theta);
+        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] b = (%lf, %lf, %lf)", b.x, b.y, b.theta);
+
         a.theta = inRange(a.theta);
         b.theta = inRange(b.theta);
 
-        start = a;
-        end = b;
+//        start = a;
+//        end = b;
         double alpha = inRange((-start.theta + end.theta)) / 2;
+        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] start = (%lf, %lf, %lf)", start.x, start.y, start.theta);
+        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] end = (%lf, %lf, %lf)", end.x, end.y, end.theta);
 
         double D = calc_d(fabs(alpha));
         sigma = 4 * PI * signum(alpha) * D * D / start.distance(end);
         larc = 2 * sqrt(fabs(2 * alpha / sigma));
+
+        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] (sigma, larc) = (%lf, %lf)", sigma, larc);
     }
 
     std::vector<PathSegment*> Clothoid::getPath(State a, State b) {
@@ -153,7 +152,7 @@ namespace navigation {
 
     }
 
-    void Clothoid::getTrajectory() {
+    std::vector<State> Clothoid::getTrajectory() {
 
         double s = 0, tempS;
         double x, y;
@@ -163,14 +162,17 @@ namespace navigation {
         double k1 = sigma * larc / 2 + k0;
         double theta1 = sigma / 2 * larc * larc / 4 + k0 * larc / 2 + theta0;
 
+        //        std::cout << "larc " << larc << " sigme " << sigma << std::endl;
+
         for (s = 0; s < larc; s += larc / 1000) {
             tempS = s;
+            //            std::cout << "hello World";
+
             if (s <= larc / 2) {
                 if (sigma * s < kMax) {
                     double a = sigma / 2, b = k0, c = theta0;
                     getXY(s, a, b, c, x, y);
-                }
-                else {
+                } else {
                     x = sin(kMax * s + theta0) / kMax - sin(theta0) / kMax;
                     y = cos(theta0) / kMax - cos(kMax * s + theta0) / kMax;
                 }
@@ -195,68 +197,61 @@ namespace navigation {
                 path.push_back(State(start.x + x, start.y + y, 0));
             }
         }
+        return path;
+
     }
 
     std::vector<PathSegment*> Clothoid::drawPath(geometry_msgs::Pose current_pose, geometry_msgs::Pose target_pose) {
         State a(current_pose.position.x, current_pose.position.y, current_pose.position.z);
         State b(target_pose.position.x, target_pose.position.y, target_pose.position.z);
-        std::vector<State> path;
-        Clothoid curve;
-        nav_msgs::Path paths;
         double beta = atan((b.y - a.y) / (b.x - a.x));
         std::vector<PathSegment*> output;
 
         //printing the parameters.
-        ROS_DEBUG("start point : (%lf, %lf, %lf)", a.x, a.y, a.theta);
-        //std::cout << "end point : (" << b.x << "," << b.y << "," << b.theta << ")" << std::endl << std::endl;
-        //std::cout << "Angle between the start and end points : " << beta << std::endl << std::endl;
-
-        //if the symmetry condition is specified we get an elementary Euler curve--- Ref: A star Spatial
+        ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/L219] fabs(a.theta - b.theta) = %lf", fabs(a.theta - b.theta));
         if (fabs(beta - b.theta - a.theta + beta) < 0.001) {
-            curve.getControls(a, b);
-            curve.getTrajectory();
-            path = curve.plotPath();
+            //if the symmetry condition is specified we get an elementary Euler curve--- Ref: A star Spatial
 
-            PathSegment* pSegment1 = new ClothoidPath(path, sigma, larc);
+            getControls(a, b);
+            output.push_back(new ClothoidPath(getTrajectory(), sigma, larc));
+            plotPath();
+        } else if (fabs(a.theta - b.theta) < 0.001) {
+            //when the start and end points have the same direction vector.
 
-            output.push_back(pSegment1);
-            //std::cout << std::endl << std::endl << std::endl;
-        } else if (a.theta == b.theta) { //when the start and end points have the same direction vector.
             //2 euler curves via point p.
             State p((a.x + b.x) / 2, (a.y + b.y) / 2, 0);
             double beta = atan((p.y - a.y) / (p.x - a.x));
             p.theta = 2 * beta - a.theta;
-            //cout << p.theta << endl;
 
             //Plotting Euler curves between a&p && p&b.
-            curve.getControls(a, p);
-            curve.getTrajectory();
-            path = curve.plotPath();
-            PathSegment* pSegment1 = new ClothoidPath(path, sigma, larc);
+            getControls(a, p);
+            output.push_back(new ClothoidPath(getTrajectory(), sigma, larc));
+            plotPath();
 
-            curve.getControls(p, b);
-            curve.getTrajectory();
+            getControls(p, b);
+            output.push_back(new ClothoidPath(getTrajectory(), sigma, larc));
+            plotPath();
+        } else {
+            //between any 2 arbitrary points and direction.
 
-            std::vector<State> another_path = curve.plotPath();
-            PathSegment* pSegment2 = new ClothoidPath(another_path, sigma, larc);
-
-            output.push_back(pSegment1);
-            output.push_back(pSegment2);
-        } else { //between any 2 arbitrary points and direction.
             double alpha = ((-a.theta + b.theta)) / 2;
-            double cot_alpha;
-            cot_alpha = cos(alpha) / sin(alpha);
-            State center(0, 0, 0); //center of the circle--which is the locus of the point q between which 2 eulers are drawn.
+            ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] alpha = %lf", alpha);
 
-            //cout << "alpha is " << alpha << endl;
+            double cot_alpha = cos(alpha) / sin(alpha);
+
+            State center(0, 0, 0); //center of the circle--which is the locus of the point q between which 2 eulers are drawn.
             center.x = (a.x + b.x + cot_alpha * (a.y - b.y)) / 2;
             center.y = (a.y + b.y + cot_alpha * (b.x - a.x)) / 2;
-            double r = sqrt(center.distance(a)); //radius of the circle.
-            //cout << "centre " << center.x << " " << center.y << endl;
-            double deflection1 = actualAtan(atan((center.y - a.y) / (center.x - a.x)), center, a);
-            double deflection2 = actualAtan(atan((center.y - b.y) / (center.x - b.x)), center, b);
+            ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] center = (%lf, %lf)", center.x, center.y);
 
-            //cout << "deflection between a and center" << deflection1 << "deflection between b and center" << deflection2 << endl;
+            double r = sqrt(center.distance(a)); //radius of the circle.
+
+            double deflection1 = 0, deflection2 = 0;
+            // deflection1 = actualAtan(atan((center.y - a.y) / (center.x - a.x)), center, a);
+            // deflection2 = actualAtan(atan((center.y - b.y) / (center.x - b.x)), center, b);
+            deflection1 = atan2(center.y - a.y, center.x - a.x);
+            deflection2 = atan2(center.y - b.y, center.x - b.x);
+            ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] deflections = (%lf, %lf)", deflection1, deflection2);
             if (deflection2 < deflection1) {
                 //swap
                 double temp = deflection2;
@@ -268,47 +263,56 @@ namespace navigation {
             State q(0, 0, 0);
             q.x = center.x + r * cos(def);
             q.y = center.y + r * sin(def);
+            q.theta = 2 * atan((q.y - a.y) / (q.x - a.x)) - a.theta;
 
-            //cout << endl << endl << "q has diff in distance : " << (center.distance(a) - center.distance(q)) << endl;
-            double theta1 = atan((q.y - a.y) / (q.x - a.x));
-            double theta2 = atan((q.y - b.y) / (q.x - b.x));
-            double beta1 = 2 * theta1 - a.theta;
-            double beta2 = 2 * theta2 - b.theta;
-            //cout << "path should be smooth enough " << beta1 - beta2 << endl;
-            q.theta = beta1;
-            //cout << "q is " << q.x << "," << q.y << ", " << q.theta << endl;
-            curve.getControls(a, q);
+            ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] a = (%lf, %lf, %lf)", a.x, a.y, a.theta);
+            ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] q = (%lf, %lf, %lf)", q.x, q.y, q.theta);
+            a.theta = inRange(a.theta);
+            q.theta = inRange(q.theta);
+            b.theta = inRange(b.theta);
+            
+            start = a;
+            end = q;
+            getControls(a, q);
+            output.push_back(new ClothoidPath(getTrajectory(), sigma, larc));
+            plotPath();
 
-            curve.getTrajectory();
-            path = curve.plotPath();
-
-            curve.getControls(q, b);
-
-            curve.getTrajectory();
-            PathSegment* pSegment1 = new ClothoidPath(path, sigma, larc);
-            std::vector<State> another_path = curve.plotPath();
-            PathSegment* pSegment2 = new ClothoidPath(another_path, sigma, larc);
-
-            output.push_back(pSegment1);
-            output.push_back(pSegment2);
+            start = q;
+            end = b;
+            getControls(q, b);
+            output.push_back(new ClothoidPath(getTrajectory(), sigma, larc));
+            plotPath();
         }
-
 
         return output;
     }
 
-    std::vector<State> Clothoid::plotPath() {
+    void Clothoid::plotPath() {
 
-        cv::circle(img, cvPoint(start.x, HEIGHT - start.y), 5, cvScalarAll(255));
-        cv::circle(img, cvPoint(end.x, HEIGHT - end.y), 5, cvScalarAll(255));
-        cv::line(img, cvPoint(start.x, HEIGHT - start.y), cvPoint(end.x, HEIGHT - end.y), cvScalar(255));
-        for (int i = 0; i < path.size() - 1; i++) {
-            cv::line(img, cvPoint(path[i].x, HEIGHT - path[i].y), cvPoint(path[i + 1].x, HEIGHT - path[i + 1].y), cvScalar(255, 255, 255));
+        cv::circle(img, cv::Point(start.x, navigation::HEIGHT - start.y), 5, cv::Scalar::all(255));
+        cv::circle(img, cv::Point(end.x, navigation::HEIGHT - end.y), 5, cv::Scalar::all(255));
+        cv::line(
+                img,
+                cv::Point(start.x, navigation::HEIGHT - start.y),
+                cv::Point(end.x, navigation::HEIGHT - end.y),
+                cv::Scalar::all(255));
+
+        //        std::cout << "Path Size : " << path.size() << std::endl;
+        for (unsigned int i = 0; i + 1 < (path.size()); i++) {
+            //            std::cout << "i : " << i << std::endl;
+            cv::line(
+                    img,
+                    cv::Point(
+                    path.at(i).x,
+                    navigation::HEIGHT - path.at(i).y),
+                    cv::Point(
+                    path.at(i + 1).x,
+                    navigation::HEIGHT - path.at(i + 1).y),
+                    cv::Scalar::all(255));
         }
 
         cv::imshow("[road_navigation] : clothoid", img);
         cvWaitKey(0);
-        return path;
 
     }
 
@@ -446,5 +450,4 @@ namespace navigation {
         sinterm = sinterm * signum(xxa);
         return 0;
     }
-
 }
