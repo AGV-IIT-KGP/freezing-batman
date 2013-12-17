@@ -78,27 +78,28 @@ namespace navigation {
         cvWaitKey(0);
     }*/
     void Clothoid::getControls(State a, State b) {
-        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] a = (%lf, %lf, %lf)", a.x, a.y, a.theta);
-        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] b = (%lf, %lf, %lf)", b.x, b.y, b.theta);
+        ROS_DEBUG("[local_planner/road_navigation/Clothoid/getControls] a = (%lf, %lf, %lf)", a.x, a.y, a.theta);
+        ROS_DEBUG("[local_planner/road_navigation/Clothoid/getControls] b = (%lf, %lf, %lf)", b.x, b.y, b.theta);
 
         a.theta = inRange(a.theta);
         b.theta = inRange(b.theta);
 
-//        start = a;
-//        end = b;
+        //        start = a;
+        //        end = b;
         double alpha = inRange((-start.theta + end.theta)) / 2;
-        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] start = (%lf, %lf, %lf)", start.x, start.y, start.theta);
-        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] end = (%lf, %lf, %lf)", end.x, end.y, end.theta);
+        ROS_DEBUG("[local_planner/road_navigation/Clothoid/getControls] start = (%lf, %lf, %lf)", start.x, start.y, start.theta);
+        ROS_DEBUG("[local_planner/road_navigation/Clothoid/getControls] end = (%lf, %lf, %lf)", end.x, end.y, end.theta);
 
         double D = calc_d(fabs(alpha));
         sigma = 4 * PI * signum(alpha) * D * D / start.distance(end);
         larc = 2 * sqrt(fabs(2 * alpha / sigma));
 
-        ROS_INFO("[local_planner/road_navigation/Clothoid/getControls] (sigma, larc) = (%lf, %lf)", sigma, larc);
+        ROS_DEBUG("[local_planner/road_navigation/Clothoid/getControls] (sigma, larc) = (%lf, %lf)", sigma, larc);
     }
 
-    std::vector<PathSegment*> Clothoid::getPath(State a, State b) {
+    // Unused? Remove it?
 
+    std::vector<PathSegment*> Clothoid::getPath(State a, State b) {
         getControls(a, b);
         getTrajectory();
         PathSegment* clothoidPath = new ClothoidPath(path, sigma, larc);
@@ -125,14 +126,10 @@ namespace navigation {
 
             x -= x1;
             y -= y1;
-            // std::cout<<"Limit "<<limit_<<std::endl;
-
         } else {
             a = -a;
             double limit_ = (2 * a * s - b) / (sqrt(2 * fabs(a) * PI));
             fresnel(limit_, storeX, storeY);
-            // std::cout<<"Limit "<<limit_<<std::endl;
-
 
             x = sqrt(PI / 2 / fabs(a))*((cos(b * b / 4 / a + c))*(storeX)+(sin(b * b / 4 / a + c))*(storeY));
             y = sqrt(PI / 2 / fabs(a))*(-(cos(b * b / 4 / a + c))*(storeY)+(sin(b * b / 4 / a + c))*(storeX));
@@ -148,25 +145,16 @@ namespace navigation {
             x -= x1;
             y -= y1;
         }
-
-
     }
 
     std::vector<State> Clothoid::getTrajectory() {
-
-        double s = 0, tempS;
-        double x, y;
-        k0 = 0, theta0 = start.theta;
+        k0 = 0;
+        theta0 = start.theta;
         path.clear();
         getXY(larc / 2, sigma / 2, k0, theta0, x0, y0);
-        double k1 = sigma * larc / 2 + k0;
-        double theta1 = sigma / 2 * larc * larc / 4 + k0 * larc / 2 + theta0;
 
-        //        std::cout << "larc " << larc << " sigme " << sigma << std::endl;
-
-        for (s = 0; s < larc; s += larc / 1000) {
-            tempS = s;
-            //            std::cout << "hello World";
+        for (double s = 0; s < larc; s += larc / 1000) {
+            double x, y;
 
             if (s <= larc / 2) {
                 if (sigma * s < kMax) {
@@ -176,29 +164,26 @@ namespace navigation {
                     x = sin(kMax * s + theta0) / kMax - sin(theta0) / kMax;
                     y = cos(theta0) / kMax - cos(kMax * s + theta0) / kMax;
                 }
-                path.push_back(State(start.x + x, start.y + y, 0));
             } else {
-                s = tempS;
-                tempS = s - larc / 2;
                 if (sigma * s < kMax) {
-                    double a = -sigma / 2, c = theta1;
+                    double a = -sigma / 2;
                     double b = sigma * larc / 2 + k0;
-                    double X1, Y1;
-                    getXY(tempS, a, b, c, X1, Y1);
+                    double c = sigma / 2 * larc * larc / 4 + k0 * larc / 2 + theta0;
+                    double x1, y1;
+                    getXY(s - larc / 2, a, b, c, x1, y1);
                     getXY(0, a, b, c, x, y);
-                    X1 -= x;
-                    Y1 -= y;
-                    x = x0 + X1;
-                    y = y0 + Y1;
+                    x = x0 + x1 - x;
+                    y = y0 + y1 - y;
                 } else {
                     x = sin(kMax * s + theta0) / kMax - sin(theta0) / kMax;
                     y = cos(theta0) / kMax - cos(kMax * s + theta0) / kMax;
                 }
-                path.push_back(State(start.x + x, start.y + y, 0));
             }
+
+            // TODO: Package the tangent angle too
+            path.push_back(State(start.x + x, start.y + y, 0));
         }
         return path;
-
     }
 
     std::vector<PathSegment*> Clothoid::drawPath(geometry_msgs::Pose current_pose, geometry_msgs::Pose target_pose) {
@@ -208,7 +193,7 @@ namespace navigation {
         std::vector<PathSegment*> output;
 
         //printing the parameters.
-        ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/L219] fabs(a.theta - b.theta) = %lf", fabs(a.theta - b.theta));
+        ROS_DEBUG("[local_planner/road_navigation/Clothoid/drawPath/L219] fabs(a.theta - b.theta) = %lf", fabs(a.theta - b.theta));
         if (fabs(beta - b.theta - a.theta + beta) < 0.001) {
             //if the symmetry condition is specified we get an elementary Euler curve--- Ref: A star Spatial
 
@@ -235,22 +220,22 @@ namespace navigation {
             //between any 2 arbitrary points and direction.
 
             double alpha = ((-a.theta + b.theta)) / 2;
-            ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] alpha = %lf", alpha);
+            ROS_DEBUG("[local_planner/road_navigation/Clothoid/drawPath/loop3] alpha = %lf", alpha);
 
             double cot_alpha = cos(alpha) / sin(alpha);
 
             State center(0, 0, 0); //center of the circle--which is the locus of the point q between which 2 eulers are drawn.
             center.x = (a.x + b.x + cot_alpha * (a.y - b.y)) / 2;
             center.y = (a.y + b.y + cot_alpha * (b.x - a.x)) / 2;
-            ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] center = (%lf, %lf)", center.x, center.y);
+            ROS_DEBUG("[local_planner/road_navigation/Clothoid/drawPath/loop3] center = (%lf, %lf)", center.x, center.y);
 
             double r = sqrt(center.distance(a)); //radius of the circle.
 
             double deflection1 = 0, deflection2 = 0;
             // deflection1 = actualAtan(atan((center.y - a.y) / (center.x - a.x)), center, a);
             // deflection2 = actualAtan(atan((center.y - b.y) / (center.x - b.x)), center, b);
-            deflection1 = atan2(center.y - a.y, center.x - a.x);
-            deflection2 = atan2(center.y - b.y, center.x - b.x);
+            deflection1 = PI + atan2(-(center.y - a.y), -(center.x - a.x));
+            deflection2 = PI + atan2(-(center.y - b.y), -(center.x - b.x));
             ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] deflections = (%lf, %lf)", deflection1, deflection2);
             if (deflection2 < deflection1) {
                 //swap
@@ -267,10 +252,12 @@ namespace navigation {
 
             ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] a = (%lf, %lf, %lf)", a.x, a.y, a.theta);
             ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] q = (%lf, %lf, %lf)", q.x, q.y, q.theta);
+            ROS_INFO("[local_planner/road_navigation/Clothoid/drawPath/loop3] b = (%lf, %lf, %lf)", b.x, b.y, b.theta);
+            
             a.theta = inRange(a.theta);
             q.theta = inRange(q.theta);
             b.theta = inRange(b.theta);
-            
+
             start = a;
             end = q;
             getControls(a, q);
@@ -288,7 +275,6 @@ namespace navigation {
     }
 
     void Clothoid::plotPath() {
-
         cv::circle(img, cv::Point(start.x, navigation::HEIGHT - start.y), 5, cv::Scalar::all(255));
         cv::circle(img, cv::Point(end.x, navigation::HEIGHT - end.y), 5, cv::Scalar::all(255));
         cv::line(
@@ -297,23 +283,16 @@ namespace navigation {
                 cv::Point(end.x, navigation::HEIGHT - end.y),
                 cv::Scalar::all(255));
 
-        //        std::cout << "Path Size : " << path.size() << std::endl;
-        for (unsigned int i = 0; i + 1 < (path.size()); i++) {
-            //            std::cout << "i : " << i << std::endl;
+        for (int i = 0; i < ((int) path.size()) - 1; i++) {
             cv::line(
                     img,
-                    cv::Point(
-                    path.at(i).x,
-                    navigation::HEIGHT - path.at(i).y),
-                    cv::Point(
-                    path.at(i + 1).x,
-                    navigation::HEIGHT - path.at(i + 1).y),
-                    cv::Scalar::all(255));
+                    cv::Point(path.at(i).x, navigation::HEIGHT - path.at(i).y),
+                    cv::Point(path.at(i + 1).x, navigation::HEIGHT - path.at(i + 1).y),
+                    cv::Scalar(255, 0, 0));
         }
 
         cv::imshow("[road_navigation] : clothoid", img);
         cvWaitKey(0);
-
     }
 
     /* @Brief : Calculates the fresnel integral of x using trapezoidal
@@ -325,7 +304,6 @@ namespace navigation {
      * @params [out] costerm : The value of the cos term of the integration
      * @params [out] sinterm : The value of the sin term of the integration
      */
-
     int Clothoid::fresnel(double x, double &costerm, double &sinterm) {
         double xxa;
         double f;
