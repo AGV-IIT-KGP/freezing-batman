@@ -17,6 +17,7 @@
 #include <geometry_msgs/Pose.h>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
+#include <tf/tf.h>
 
 #endif	/* HEADER_HPP */
 
