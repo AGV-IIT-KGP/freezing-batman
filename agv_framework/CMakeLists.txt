@@ -39,6 +39,7 @@ rosbuild_add_library(${PROJECT_NAME}
   src/robot/Interpreter.cpp
   src/robot/Robot.cpp
   src/robot/Sensor.cpp
+  src/utils/Pose2D.cpp
   )
 #rosbuild_add_library(agv src/Sensor.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
