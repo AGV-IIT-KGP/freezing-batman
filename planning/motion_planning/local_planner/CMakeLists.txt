@@ -29,16 +29,16 @@ set(AGV_FRAMEWORK libagv_framework.so)
 rosbuild_add_boost_directories()
 #rosbuild_add_executable(example examples/example.cpp)
 rosbuild_add_executable(${PROJECT_NAME} 
-  src/Clothoid.cpp 
-  src/local_planner.cpp 
-  src/PathSegment.cpp 
-  src/RoadNavigation.cpp 
-  src/State.cpp
-  src/Trajectory.cpp 
+  src/local_planner.cpp
+  src/road_navigation/RoadNavigation.cpp
+  src/road_navigation/Clothoid.cpp 
+  src/road_navigation/Fresnel.cpp 
+  src/road_navigation/Posture.cpp
+  src/road_navigation/Trajectory.cpp 
   )
 rosbuild_add_executable(${PROJECT_NAME}_tester 
-  src/localPlannerTester.cpp 
-  src/RoadNavigationTester.cpp
+  src/local_planner_tester.cpp 
+  src/road_navigation/RoadNavigationTester.cpp
   )
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 rosbuild_link_boost(${PROJECT_NAME} 
