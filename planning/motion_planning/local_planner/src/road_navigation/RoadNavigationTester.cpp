@@ -17,6 +17,11 @@ RoadNavigationTester::RoadNavigationTester() {
     pi = 3.14;
     window_name = "RoadNavigationTester";
 
+    map.info.height = map_height;
+    map.info.width = map_width;
+    map.data.resize(map_height * map_width);
+    std::fill(map.data.begin(), map.data.end(), 0);
+
     current_pose.position.x = 200;
     current_pose.position.y = 100;
     current_pose.orientation = tf::createQuaternionMsgFromYaw(pi / 4);
@@ -42,10 +47,21 @@ RoadNavigationTester::~RoadNavigationTester() {
 int RoadNavigationTester::display() {
     //image = cv::Mat::zeros(image.rows, image.cols, CV_8UC3);
 
+    unsigned char *pixel_ptr = (unsigned char *) image.data;
+    int num_channels = image.channels();
+    for (int i = 0; i < image.cols; i++) {
+        for (int j = 0; j < image.rows; j++) {
+            unsigned char value = map.data.at((j / scale) * map_width + i / scale) > 50 ? 255 : 0;
+            pixel_ptr[j * image.cols * num_channels + i * num_channels + 0] = value;
+            pixel_ptr[j * image.cols * num_channels + i * num_channels + 1] = value;
+            pixel_ptr[j * image.cols * num_channels + i * num_channels + 2] = value;
+        }
+    }
+
     // TODO: Show orientation
     cv::circle(image,
                cv::Point(current_pose.position.x * scale, current_pose.position.y * scale),
-               5, cv::Scalar::all(255));
+               5, cv::Scalar(255, 0, 0));
 
     for (int lane_pose_id = 0; lane_pose_id + 1 < lane_trajectory.poses.size(); lane_pose_id++) {
         cv::line(image,
@@ -84,6 +100,19 @@ void RoadNavigationTester::callback(int event, int x, int y, int flags) {
             current_pose.position.y = y / scale;
             current_pose.orientation = tf::createQuaternionMsgFromYaw(pi / 4);
             break;
+        case CV_EVENT_RBUTTONDOWN:
+            addObstacle(x, y, 25);
+            break;
+    }
+}
+
+void RoadNavigationTester::addObstacle(int x, int y, int radius) {
+    for (int i = -radius; i <= radius; i++) {
+        for (int j = -radius; j <= radius; j++) {
+            if (i * i + j * j <= radius * radius) {
+                map.data.at(((y + j) / scale) * map_width + (x + i) / scale) = 100;
+            }
+        }
     }
 }
 

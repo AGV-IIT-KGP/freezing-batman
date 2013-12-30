@@ -10,6 +10,7 @@
 
 #include <ros/ros.h>
 #include <nav_msgs/Path.h>
+#include <nav_msgs/OccupancyGrid.h>
 #include <geometry_msgs/Pose.h>
 #include <tf/transform_datatypes.h>
 #include <opencv2/opencv.hpp>
@@ -31,12 +32,17 @@ public:
 
     void SetPath(const nav_msgs::Path::ConstPtr path) {
         this->path = *path;
-        this->moveAlongThePath();
+        //this->moveAlongThePath();
     }
 
     void callback(int event, int x, int y, int flags);
     int display();
     void moveAlongThePath();
+
+    nav_msgs::OccupancyGrid GetMap() const {
+        return map;
+    }
+
 
 private:
     int map_width;
@@ -45,10 +51,13 @@ private:
     double scale;
     double pi;
     char* window_name;
+    nav_msgs::OccupancyGrid map;
     geometry_msgs::Pose current_pose;
     nav_msgs::Path lane_trajectory;
     nav_msgs::Path path;
     cv::Mat image;
+    
+    void addObstacle(int x, int y, int radius);
 };
 
 void callbackWrapper(int event, int x, int y, int flags, void* params);
