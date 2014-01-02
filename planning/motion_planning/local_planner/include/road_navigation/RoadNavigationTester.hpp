@@ -32,7 +32,7 @@ public:
 
     void SetPath(const nav_msgs::Path::ConstPtr path) {
         this->path = *path;
-        //this->moveAlongThePath();
+        this->moveAlongThePath();
     }
 
     void callback(int event, int x, int y, int flags);
@@ -56,7 +56,7 @@ private:
     nav_msgs::Path lane_trajectory;
     nav_msgs::Path path;
     cv::Mat image;
-    
+
     void addObstacle(int x, int y, int radius);
 };
 
