@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node pkg="controller" type="controller" name="controller"/>
+</launch>
+  

@@ -1,0 +1,15 @@
+<package>
+  <description brief="test_suite">
+
+     test_suite
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/test_suite</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

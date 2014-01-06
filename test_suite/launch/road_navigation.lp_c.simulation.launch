@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="local_planner" type="local_planner" name="local_planner" output="screen" cwd="node"/>
+    <node pkg="auro666_pilot" type="controller" name="controller" output="screen" cwd="node"/>
+</launch>
+  
