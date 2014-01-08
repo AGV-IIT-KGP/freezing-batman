@@ -47,4 +47,5 @@ rosbuild_add_executable(controller
                         src/control/SteeringController.cpp 
                         src/control/CruiseController.cpp)
 target_link_libraries(controller ${AGV_FRAMEWORK})
-#rosbuild_add_executable(controller_tester src/control/tester.cpp)
+rosbuild_add_executable(controller_unit_tester src/control/UnitTester.cpp)
+rosbuild_add_executable(controller_debugger src/control/Debugger.cpp)
