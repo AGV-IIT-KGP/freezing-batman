@@ -19,9 +19,9 @@ CruiseController::~CruiseController() {
 
 float CruiseController::getCruiseControl() {
     pathEndCheck();
-    
+
     float cmd_rear_wheel_speed;
-    
+
     if (path.poses.size() == 0 || path_ended) {
         cmd_rear_wheel_speed = 0;
     } else {
@@ -48,17 +48,19 @@ geometry_msgs::Pose CruiseController::obtainSteerPoint(geometry_msgs::Pose pose)
 void CruiseController::pathEndCheck() {
     geometry_msgs::Pose steer_point = obtainSteerPoint(pose);
 
-    double min_distance = displacement(steer_point, path.poses.at(0).pose);
-    int closest_pose_id = 0;
-    for (unsigned int pose_id = 0; pose_id < path.poses.size(); pose_id++) {
-        double distance = displacement(steer_point, path.poses.at(pose_id).pose);
-        if (distance < min_distance) {
-            min_distance = distance;
-            closest_pose_id = pose_id;
+    if (path.poses.size() > 0) {
+        double min_distance = displacement(steer_point, path.poses.at(0).pose);
+        unsigned int closest_pose_id = 0;
+        for (unsigned int pose_id = 0; pose_id < path.poses.size(); pose_id++) {
+            double distance = displacement(steer_point, path.poses.at(pose_id).pose);
+            if (distance < min_distance) {
+                min_distance = distance;
+                closest_pose_id = pose_id;
+            }
         }
-    }
 
-    if (closest_pose_id + 1 == path.poses.size()) {
-        path_ended = true;
+        if (closest_pose_id + 1 == path.poses.size()) {
+            path_ended = true;
+        }
     }
 }

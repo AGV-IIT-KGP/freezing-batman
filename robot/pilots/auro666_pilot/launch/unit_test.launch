@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 
 <launch>
-  <node pkg="controller" type="controller" name="controller"/>
+  <node pkg="auro666_pilot" type="controller" name="controller"/>
+  <node pkg="auro666_pilot" type="controller_unit_tester" name="controller_unit_tester"/>
+  <node pkg="auro666_pilot" type="controller_debugger" name="controller_debugger"/>
 </launch>
   

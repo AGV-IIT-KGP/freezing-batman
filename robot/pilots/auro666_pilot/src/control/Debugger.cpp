@@ -11,7 +11,7 @@
 Debugger::Debugger() {
     cte_response = std::string("CTE Response");
     path_tracking = std::string("Path Tracking");
-    
+
     cte_image.create(600, 2000, CV_8UC3);
     cv::namedWindow(cte_response.c_str(), 0);
     for (int i = 0; i < 2000; i++) {
@@ -31,21 +31,22 @@ Debugger::~Debugger() {
 
 void Debugger::display() {
     cte_image = cv::Scalar(255, 255, 255);
-    for (int i = 0; i < cte_plot.size() - 1; i++) {
-        cv::line(cte_image, cte_plot[i], cte_plot[i + 1], cv::Scalar(0, 0, 255), 1);
+    for (unsigned int pose_id = 0; pose_id + 1 < cte_plot.size(); pose_id++) {
+        cv::line(cte_image, cte_plot.at(pose_id), cte_plot.at(pose_id + 1), cv::Scalar(0, 0, 255), 1);
     }
-    for (int i = 0; i < flat_line.size() - 1; i++) {
-        cv::line(cte_image, flat_line[i], flat_line[i + 1], cv::Scalar(0, 0, 0), 1);
+    for (unsigned int pose_id = 0; pose_id + 1 < flat_line.size(); pose_id++) {
+        cv::line(cte_image, flat_line.at(pose_id), flat_line.at(pose_id + 1), cv::Scalar(0, 0, 0), 1);
     }
 
     cv::imshow(cte_response.c_str(), cte_image);
     cv::waitKey(10);
 
-    for (int i = 0; i < traversed_path.size() - 1; i++) {
-        cv::line(path_image, traversed_path[i], traversed_path[i + 1], cv::Scalar(0, 255, 255), 1);
+    path_image = cv::Scalar(255, 255, 255);
+    for (unsigned int pose_id = 0; pose_id + 1 < traversed_path.size(); pose_id++) {
+        cv::line(path_image, traversed_path.at(pose_id), traversed_path.at(pose_id + 1), cv::Scalar(0, 255, 0), 1);
     }
-    for (int i = 0; i < target_path.size() - 1; i++) {
-        cv::line(path_image, target_path[i], target_path[i + 1], cv::Scalar(255, 0, 255), 1);
+    for (unsigned int pose_id = 0; pose_id + 1 < target_path.size(); pose_id++) {
+        cv::line(path_image, target_path.at(pose_id), target_path.at(pose_id + 1), cv::Scalar(0, 0, 255), 1);
     }
 
     cv::imshow(path_tracking.c_str(), path_image);
