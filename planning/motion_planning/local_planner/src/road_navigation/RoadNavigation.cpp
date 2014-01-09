@@ -17,8 +17,8 @@ namespace navigation {
         spacing = 10;
         num_targets = 20;
         target_lookahead = 400;
-        dt_input = std::string("DT In");
-        dt_output = std::string("DT Out");
+        dt_input = std::string("DT Input");
+        dt_output = std::string("DT Output");
         display = std::string("Display");
         debug = false;
 
@@ -35,18 +35,18 @@ namespace navigation {
     RoadNavigation::~RoadNavigation() {
     }
 
-    nav_msgs::Path RoadNavigation::planPath(const nav_msgs::Path::ConstPtr& lane_traj_ptr,
-                                            const geometry_msgs::PoseStamped::ConstPtr& pose_ptr,
-                                            const nav_msgs::OccupancyGrid::ConstPtr& map_ptr) {
-        nav_msgs::Path target_traj = decideTargetTrajectory(lane_traj_ptr);
+    nav_msgs::Path RoadNavigation::plan(const nav_msgs::Path::ConstPtr& maneuver_ptr,
+                                        const geometry_msgs::PoseStamped::ConstPtr& pose_ptr,
+                                        const nav_msgs::OccupancyGrid::ConstPtr& map_ptr) {
+        nav_msgs::Path target_trajectory = *maneuver_ptr;
         geometry_msgs::Pose current_pose = pose_ptr->pose;
         nav_msgs::OccupancyGrid map = *map_ptr;
 
-        std::vector<geometry_msgs::Pose> targets = getTargets(current_pose, target_traj);
+        std::vector<geometry_msgs::Pose> targets = getTargets(current_pose, target_trajectory);
         std::vector<nav_msgs::Path> paths = getPaths(current_pose, targets);
         paths = filterPaths(paths, map);
         //setupObstacleCostMap(map);
-        setupTargetCostMap(target_traj, map);
+        setupTargetCostMap(target_trajectory, map);
 
         nav_msgs::Path best_path;
         if (paths.size() != 0) {
@@ -122,10 +122,6 @@ namespace navigation {
         }
     }
 
-    nav_msgs::Path RoadNavigation::decideTargetTrajectory(nav_msgs::Path::ConstPtr lane_traj) {
-        return *lane_traj;
-    }
-
     std::vector<nav_msgs::Path> RoadNavigation::filterPaths(std::vector<nav_msgs::Path> paths,
                                                             nav_msgs::OccupancyGrid map) {
         std::vector<nav_msgs::Path> filtered_paths;
@@ -162,34 +158,34 @@ namespace navigation {
     }
 
     std::vector<geometry_msgs::Pose> RoadNavigation::getTargets(geometry_msgs::Pose current_pose,
-                                                                nav_msgs::Path target_traj) {
-        int closest_target_pose_index = 0;
-        float min_distance = getDistance(current_pose, target_traj.poses.at(0).pose);
-        for (unsigned int i = 0; i < target_traj.poses.size(); i++) {
-            float distance = getDistance(current_pose, target_traj.poses.at(i).pose);
+                                                                nav_msgs::Path target_trajectory) {
+        int closest_target_pose_id = 0;
+        float min_distance = getDistance(current_pose, target_trajectory.poses.at(0).pose);
+        for (unsigned int pose_id = 0; pose_id < target_trajectory.poses.size(); pose_id++) {
+            float distance = getDistance(current_pose, target_trajectory.poses.at(pose_id).pose);
             if (distance < min_distance) {
                 min_distance = distance;
-                closest_target_pose_index = i;
+                closest_target_pose_id = pose_id;
             }
         }
-        ROS_DEBUG("[local_planner/RoadNavigation/getTargets] closest_target_pose_index = %d", closest_target_pose_index);
+        ROS_DEBUG("[local_planner/RoadNavigation/getTargets] closest_target_pose_index = %d", closest_target_pose_id);
 
-        unsigned int center_target_index = closest_target_pose_index;
+        unsigned int center_target_pose_id = closest_target_pose_id;
         double distance_along_target_trajectory = 0;
-        while (center_target_index + 1 < target_traj.poses.size() &&
+        while (center_target_pose_id + 1 < target_trajectory.poses.size() &&
                distance_along_target_trajectory < target_lookahead) {
-            distance_along_target_trajectory += getDistance(target_traj.poses.at(center_target_index).pose,
-                                                            target_traj.poses.at(center_target_index + 1).pose);
-            center_target_index++;
+            distance_along_target_trajectory += getDistance(target_trajectory.poses.at(center_target_pose_id).pose,
+                                                            target_trajectory.poses.at(center_target_pose_id + 1).pose);
+            center_target_pose_id++;
         }
-        ROS_DEBUG("[local_planner/RoadNavigation/getTargets] center_target_index = %d", center_target_index);
+        ROS_DEBUG("[local_planner/RoadNavigation/getTargets] center_target_index = %d", center_target_pose_id);
 
         std::vector<geometry_msgs::Pose> targets;
-        double yaw = tf::getYaw(target_traj.poses[center_target_index].pose.orientation);
+        double yaw = tf::getYaw(target_trajectory.poses[center_target_pose_id].pose.orientation);
         for (int target_id = -num_targets / 2; target_id <= num_targets / 2; target_id++) {
-            geometry_msgs::Pose target = target_traj.poses[center_target_index].pose;
-            target.position.x = target_traj.poses[center_target_index].pose.position.x + target_id * spacing * sin(yaw);
-            target.position.y = target_traj.poses[center_target_index].pose.position.y - target_id * spacing * cos(yaw);
+            geometry_msgs::Pose target = target_trajectory.poses[center_target_pose_id].pose;
+            target.position.x = target_trajectory.poses[center_target_pose_id].pose.position.x + target_id * spacing * sin(yaw);
+            target.position.y = target_trajectory.poses[center_target_pose_id].pose.position.y - target_id * spacing * cos(yaw);
             targets.push_back(target);
         }
 
@@ -212,12 +208,12 @@ namespace navigation {
     bool RoadNavigation::pathIsFree(nav_msgs::Path path, nav_msgs::OccupancyGrid map) {
         bool pass = true;
 
-        for (int pose_index = 0; pose_index < path.poses.size(); pose_index++) {
-            int x = (int) path.poses.at(pose_index).pose.position.x;
-            int y = (int) path.poses.at(pose_index).pose.position.y;
-            int map_index = y * map.info.width + x;
-            if ((0 <= map_index) && (map_index < map.data.size())) {
-                if (map.data.at(map_index) > 50) {
+        for (unsigned int pose_id = 0; pose_id < path.poses.size(); pose_id++) {
+            int x = (int) path.poses.at(pose_id).pose.position.x;
+            int y = (int) path.poses.at(pose_id).pose.position.y;
+            int map_cell_id = y * map.info.width + x;
+            if ((0 <= map_cell_id) && (map_cell_id < map.data.size())) {
+                if (map.data.at(map_cell_id) > 50) {
                     pass = false;
                 }
             } else {

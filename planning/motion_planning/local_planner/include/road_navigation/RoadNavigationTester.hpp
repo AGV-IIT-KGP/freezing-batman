@@ -30,6 +30,10 @@ public:
         return lane_trajectory;
     }
 
+    nav_msgs::OccupancyGrid GetMap() const {
+        return map;
+    }
+
     void SetPath(const nav_msgs::Path::ConstPtr path) {
         this->path = *path;
         this->moveAlongThePath();
@@ -39,18 +43,13 @@ public:
     int display();
     void moveAlongThePath();
 
-    nav_msgs::OccupancyGrid GetMap() const {
-        return map;
-    }
-
-
 private:
     int map_width;
     int map_height;
     int num_samples;
     double scale;
     double pi;
-    char* window_name;
+    std::string window_name;
     nav_msgs::OccupancyGrid map;
     geometry_msgs::Pose current_pose;
     nav_msgs::Path lane_trajectory;

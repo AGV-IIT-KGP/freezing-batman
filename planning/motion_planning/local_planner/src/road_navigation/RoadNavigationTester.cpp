@@ -15,7 +15,7 @@ RoadNavigationTester::RoadNavigationTester() {
     num_samples = 1000;
     scale = .5;
     pi = 3.14;
-    window_name = "RoadNavigationTester";
+    window_name = std::string("RoadNavigationTester");
 
     map.info.height = map_height;
     map.info.width = map_width;
@@ -27,15 +27,15 @@ RoadNavigationTester::RoadNavigationTester() {
     current_pose.orientation = tf::createQuaternionMsgFromYaw(pi / 4);
 
     lane_trajectory.poses.resize(num_samples);
-    for (int i = 0; i < lane_trajectory.poses.size(); i++) {
-        lane_trajectory.poses[i].pose.position.x = i * map_width / num_samples;
-        lane_trajectory.poses[i].pose.position.y = i * map_height / num_samples;
-        lane_trajectory.poses[i].pose.orientation = tf::createQuaternionMsgFromYaw(pi / 4);
+    for (unsigned int pose_id = 0; pose_id < lane_trajectory.poses.size(); pose_id++) {
+        lane_trajectory.poses.at(pose_id).pose.position.x = pose_id * map_width / num_samples;
+        lane_trajectory.poses.at(pose_id).pose.position.y = pose_id * map_height / num_samples;
+        lane_trajectory.poses.at(pose_id).pose.orientation = tf::createQuaternionMsgFromYaw(pi / 4);
     }
 
     image = cv::Mat(cv::Size(map_height * scale, map_width * scale), CV_8UC3, cv::Scalar::all(0));
-    cv::namedWindow(window_name, 0);
-    cv::setMouseCallback(window_name, callbackWrapper, this);
+    cv::namedWindow(window_name.c_str(), 0);
+    cv::setMouseCallback(window_name.c_str(), callbackWrapper, this);
 }
 
 RoadNavigationTester::RoadNavigationTester(const RoadNavigationTester& orig) {
@@ -49,12 +49,12 @@ int RoadNavigationTester::display() {
 
     unsigned char *pixel_ptr = (unsigned char *) image.data;
     int num_channels = image.channels();
-    for (int i = 0; i < image.cols; i++) {
-        for (int j = 0; j < image.rows; j++) {
-            unsigned char value = map.data.at((j / scale) * map_width + i / scale) > 50 ? 255 : 0;
-            pixel_ptr[j * image.cols * num_channels + i * num_channels + 0] = value;
-            pixel_ptr[j * image.cols * num_channels + i * num_channels + 1] = value;
-            pixel_ptr[j * image.cols * num_channels + i * num_channels + 2] = value;
+    for (int column_id = 0; column_id < image.cols; column_id++) {
+        for (int row_id = 0; row_id < image.rows; row_id++) {
+            unsigned char value = map.data.at((row_id / scale) * map_width + column_id / scale) > 50 ? 255 : 0;
+            pixel_ptr[row_id * image.cols * num_channels + column_id * num_channels + 0] = value;
+            pixel_ptr[row_id * image.cols * num_channels + column_id * num_channels + 1] = value;
+            pixel_ptr[row_id * image.cols * num_channels + column_id * num_channels + 2] = value;
         }
     }
 
@@ -63,25 +63,25 @@ int RoadNavigationTester::display() {
                cv::Point(current_pose.position.x * scale, current_pose.position.y * scale),
                5, cv::Scalar(255, 0, 0));
 
-    for (int lane_pose_id = 0; lane_pose_id + 1 < lane_trajectory.poses.size(); lane_pose_id++) {
+    for (unsigned int pose_id = 0; pose_id + 1 < lane_trajectory.poses.size(); pose_id++) {
         cv::line(image,
-                 cv::Point(lane_trajectory.poses.at(lane_pose_id).pose.position.x * scale,
-                           lane_trajectory.poses.at(lane_pose_id).pose.position.y * scale),
-                 cv::Point(lane_trajectory.poses.at(lane_pose_id + 1).pose.position.x * scale,
-                           lane_trajectory.poses.at(lane_pose_id + 1).pose.position.y * scale),
+                 cv::Point(lane_trajectory.poses.at(pose_id).pose.position.x * scale,
+                           lane_trajectory.poses.at(pose_id).pose.position.y * scale),
+                 cv::Point(lane_trajectory.poses.at(pose_id + 1).pose.position.x * scale,
+                           lane_trajectory.poses.at(pose_id + 1).pose.position.y * scale),
                  cv::Scalar(0, 0, 255), 3, CV_AA, 0);
     }
 
-    for (int path_pose_id = 0; path_pose_id + 1 < path.poses.size(); path_pose_id++) {
+    for (unsigned int pose_id = 0; pose_id + 1 < path.poses.size(); pose_id++) {
         cv::line(image,
-                 cv::Point(path.poses.at(path_pose_id).pose.position.x * scale,
-                           path.poses.at(path_pose_id).pose.position.y * scale),
-                 cv::Point(path.poses.at(path_pose_id + 1).pose.position.x * scale,
-                           path.poses.at(path_pose_id + 1).pose.position.y * scale),
+                 cv::Point(path.poses.at(pose_id).pose.position.x * scale,
+                           path.poses.at(pose_id).pose.position.y * scale),
+                 cv::Point(path.poses.at(pose_id + 1).pose.position.x * scale,
+                           path.poses.at(pose_id + 1).pose.position.y * scale),
                  cv::Scalar(0, 255, 0), 1, CV_AA, 0);
     }
 
-    cv::imshow(window_name, image);
+    cv::imshow(window_name.c_str(), image);
     return cv::waitKey(10);
 }
 

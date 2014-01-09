@@ -26,9 +26,9 @@ namespace navigation {
         RoadNavigation(const RoadNavigation& orig);
         virtual ~RoadNavigation();
 
-        nav_msgs::Path planPath(const nav_msgs::Path::ConstPtr& lane_traj,
-                const geometry_msgs::PoseStamped::ConstPtr& pose,
-                const nav_msgs::OccupancyGrid::ConstPtr& map);
+        nav_msgs::Path plan(const nav_msgs::Path::ConstPtr& maneuver_ptr,
+                                            const geometry_msgs::PoseStamped::ConstPtr& pose_ptr,
+                                            const nav_msgs::OccupancyGrid::ConstPtr& map_ptr);
 
     private:
         bool debug;
@@ -46,11 +46,10 @@ namespace navigation {
         nav_msgs::Path convertToNavMsgsPath(Trajectory& trajectory);
         void setupObstacleCostMap(nav_msgs::OccupancyGrid map);
         void setupTargetCostMap(nav_msgs::Path target_trajectory, nav_msgs::OccupancyGrid map);
-        nav_msgs::Path decideTargetTrajectory(nav_msgs::Path::ConstPtr lane_traj);
         std::vector<nav_msgs::Path> filterPaths(std::vector<nav_msgs::Path> paths, nav_msgs::OccupancyGrid map);
         double getDistance(geometry_msgs::Pose& pose1, geometry_msgs::Pose& pose2);
         std::vector<nav_msgs::Path> getPaths(geometry_msgs::Pose current_pose, std::vector<geometry_msgs::Pose> targets);
-        std::vector<geometry_msgs::Pose> getTargets(geometry_msgs::Pose current_pose, nav_msgs::Path target_traj);
+        std::vector<geometry_msgs::Pose> getTargets(geometry_msgs::Pose current_pose, nav_msgs::Path target_trajectory);
         bool pathIsFree(nav_msgs::Path path, nav_msgs::OccupancyGrid map);
     };
 }
