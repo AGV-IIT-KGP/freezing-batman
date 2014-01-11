@@ -8,7 +8,7 @@
 #ifndef REPRESENTATION_HPP
 #define	REPRESENTATION_HPP
 
-#include <Environment/Model.hpp>
+#include <environment/Model.hpp>
 #include <vector>
 
 namespace environment {
