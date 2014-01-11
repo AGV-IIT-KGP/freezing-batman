@@ -15,9 +15,8 @@ namespace navigation {
 
     class PathSegment {
     public:
-        PathSegment();
-        PathSegment(const PathSegment& orig);
-        virtual ~PathSegment();
+        PathSegment(std::vector<State>& sites_,double larc_) : sites(sites_), larc(larc_) {}
+        virtual ~PathSegment()	{ sites.clear(); }
         double larc;
         std::vector<State> sites;
     };

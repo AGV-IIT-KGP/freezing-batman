@@ -9,13 +9,5 @@
 
 namespace navigation {
 
-    PathSegment::PathSegment() {
-    }
-
-    PathSegment::PathSegment(const PathSegment& orig) {
-    }
-
-    PathSegment::~PathSegment() {
-    }
 
 }

@@ -1,6 +1,6 @@
 /* 
  * File:   State.hpp
- * Author: satya
+ * Author: Satya Prakash
  *
  * Created on December 13, 2013, 5:56 PM
  */
@@ -12,14 +12,10 @@ namespace navigation {
 
     class State {
     public:
-        State(const State& orig);
-        virtual ~State();
         double x, y, theta, curvature;
-        State(double x_, double y_, double theta_, double curvature_);
-        State(double x_, double y_, double theta_);
-        State();
-        double distance(State b);
-    private:
+        State(double x_, double y_, double theta_, double curvature_) : x(x_), y(y_), theta(theta_), curvature(curvature_)  {}
+        State(double x_, double y_, double theta_) :  x(x_), y(y_), theta(theta_) {}
+        inline double distanceSq(const State b) const {   return (x - b.x) * (x - b.x) + (y - b.y) * (y - b.y);    }
 
     };
 }

@@ -62,9 +62,10 @@ namespace navigation {
         std::vector<std::vector<PathSegment*> > paths;
 
         Clothoid t;
-
+        std::cout<<"Trgt size: "<<targets.size()<<std::endl;
         for (int i = 0; i < targets.size(); i++) {
-            paths.push_back(t.drawPath(current_pose, targets[i]));
+        std::cout<<" X: "<<targets.at(i).position.x<<" Y: "<<targets.at(i).position.y<<"Z: "<<targets.at(i).position.z<<std::endl;
+            paths.push_back(t.drawPath(current_pose, targets.at(i)));
         }
 
         // TODO: Prune against kinematic and dynamic constraints
@@ -77,6 +78,8 @@ namespace navigation {
         geometry_msgs::Pose current_pose = pose->pose.pose;
 
         std::vector<geometry_msgs::Pose> targets = getTargets(current_pose, target_traj);
+        std::cout<<" X: "<<current_pose.position.x<<" Y: "<<current_pose.position.y<<"Z: "<<current_pose.position.z<<std::endl;
+
         std::vector<std::vector<PathSegment*> > paths = getPaths(current_pose, targets);
 
         if (paths.size() == 0) {

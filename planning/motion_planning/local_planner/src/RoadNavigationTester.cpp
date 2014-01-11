@@ -9,7 +9,6 @@
 
 
 namespace navigation {
-
     
     void selectPath(nav_msgs::Path& path_msg) {
         int n_poses = 1000;

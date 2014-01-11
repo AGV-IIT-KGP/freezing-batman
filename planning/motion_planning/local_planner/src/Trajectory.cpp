@@ -12,9 +12,6 @@ namespace navigation {
     Trajectory::Trajectory() {
     }
 
-    Trajectory::Trajectory(const Trajectory& orig) {
-    }
-
     Trajectory::~Trajectory() {
     }
 

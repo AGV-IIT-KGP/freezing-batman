@@ -10,29 +10,6 @@
 namespace navigation {
 
 
-    Clothoid::Clothoid(const Clothoid& orig) {
-    }
-
-    Clothoid::~Clothoid() {
-    }
-
-    double Clothoid::inRange(double theta) {
-        if (theta > PI) {
-            while (theta > PI) {
-                theta -= 2 * PI;
-            }
-        }
-
-        if (theta <= PI) {
-            while (theta <= -PI) {
-                theta += 2 * PI;
-            }
-        }
-
-        return theta;
-
-    }
-
 
     Clothoid::Clothoid() {
         kMax = 1000;
@@ -40,72 +17,17 @@ namespace navigation {
         cv::namedWindow("[road_navigation] : clothoid", 0);
     }
 
-    int Clothoid::signum(double a) {
-        if (a < 0)
-            return -1;
-        else if (a > 0)
-            return 1;
-        else
-            return 0;
-    }
+    PathSegment* Clothoid::getPathSegment(ClothoidState a, ClothoidState b) {
 
-    double Clothoid::calc_d(double alpha) {
-        double x, z;
+        double alpha = a.alpha(b);
+        double sigma = a.getSigma(b);
+        double larc = a.getArcLength(alpha,sigma);
+        
+        std::cout<<"alpha: "<<alpha<<"sigma "<<sigma<<" larc "<<larc<<std::endl;
 
-        fresnel(sqrt(2 * alpha / PI), x, z);
+        vector<State> sites = getTrajectory(a,b,sigma,larc);
 
-        double d = cos(alpha) * (x)+ (sin(alpha) * z);
-        return d;
-    }
-
-    double Clothoid::actualAtan(double theta, State a, State b) {
-        if ((b.x - a.x) < 0) {
-            if ((b.y - a.y) < 0) {
-                theta = PI + theta;
-            } else {
-                theta += PI;
-            }
-        } else if (theta < 0) {
-            theta += 2 * PI;
-        }
-
-        return theta;
-    }
-
-    /*void Clothoid::print_circle(State a,State b,State c,State d,int circle)
-    {
-	           
-        cv::circle(img, cvPoint(a.x, HEIGHT- a.y), 5, cvScalar(0,0,255));
-        cv::circle(img, cvPoint(b.x, HEIGHT- b.y), 5, cvScalar(0,255,255));
-        cv::circle(img, cvPoint(c.x, HEIGHT- c.y), 5, cvScalar(255,255,0));
-        cv::circle(img, cvPoint(d.x, HEIGHT- d.y), 5, cvScalar(255,255,255));
-            if(circle==1)
-        cv::circle(img, cvPoint(c.x, HEIGHT- c.y), sqrt(c.distance(a)), cvScalar(255,255,255));
-
-        cv::imshow("hello", img);
-        cvWaitKey(0);
-    }*/
-    void Clothoid::getControls(State a, State b) {
-        a.theta = inRange(a.theta);
-        b.theta = inRange(b.theta);
-
-        start = a;
-        end = b;
-        double alpha = inRange((-start.theta + end.theta)) / 2;
-
-        double D = calc_d(fabs(alpha));
-        sigma = 4 * PI * signum(alpha) * D * D / start.distance(end);
-        larc = 2 * sqrt(fabs(2 * alpha / sigma));
-    }
-
-    std::vector<PathSegment*> Clothoid::getPath(State a, State b) {
-
-        getControls(a, b);
-        getTrajectory();
-        PathSegment* clothoidPath = new ClothoidPath(path, sigma, larc);
-        std::vector<PathSegment*> pathVector;
-        pathVector.push_back(clothoidPath);
-        return pathVector;
+        return (new ClothoidPath(sites, sigma, larc));
     }
 
     void Clothoid::getXY(double s, double a, double b, double c, double& x, double& y) {
@@ -153,12 +75,12 @@ namespace navigation {
 
     }
 
-    void Clothoid::getTrajectory() {
+    std::vector<State>& Clothoid::getTrajectory(ClothoidState start,ClothoidState end,double sigma,double larc) {
 
         double s = 0, tempS;
         double x, y;
         k0 = 0, theta0 = start.theta;
-        path.clear();
+        std::vector<State> path;
         getXY(larc / 2, sigma / 2, k0, theta0, x0, y0);
         double k1 = sigma * larc / 2 + k0;
         double theta1 = sigma / 2 * larc * larc / 4 + k0 * larc / 2 + theta0;
@@ -195,122 +117,87 @@ namespace navigation {
                 path.push_back(State(start.x + x, start.y + y, 0));
             }
         }
+
+        std::cout<<"path size : "<<path.size()<<std::endl;
+        plotPath(start,end,path);
+        return path;
     }
 
     std::vector<PathSegment*> Clothoid::drawPath(geometry_msgs::Pose current_pose, geometry_msgs::Pose target_pose) {
-        State a(current_pose.position.x, current_pose.position.y, current_pose.position.z);
-        State b(target_pose.position.x, target_pose.position.y, target_pose.position.z);
-        std::vector<State> path;
-        Clothoid curve;
-        nav_msgs::Path paths;
-        double beta = atan((b.y - a.y) / (b.x - a.x));
-        std::vector<PathSegment*> output;
+        const ClothoidState current_state(current_pose.position.x, current_pose.position.y, current_pose.position.z);
+        const ClothoidState target_state(target_pose.position.x, target_pose.position.y, target_pose.position.z);
 
-        //printing the parameters.
-        ROS_DEBUG("start point : (%lf, %lf, %lf)", a.x, a.y, a.theta);
-        //std::cout << "end point : (" << b.x << "," << b.y << "," << b.theta << ")" << std::endl << std::endl;
-        //std::cout << "Angle between the start and end points : " << beta << std::endl << std::endl;
 
-        //if the symmetry condition is specified we get an elementary Euler curve--- Ref: A star Spatial
-        if (fabs(beta - b.theta - a.theta + beta) < 0.001) {
-            curve.getControls(a, b);
-            curve.getTrajectory();
-            path = curve.plotPath();
+        const Orientation bot=current_state.orientationTo(target_state);
 
-            PathSegment* pSegment1 = new ClothoidPath(path, sigma, larc);
-
-            output.push_back(pSegment1);
-            //std::cout << std::endl << std::endl << std::endl;
-        } else if (a.theta == b.theta) { //when the start and end points have the same direction vector.
-            //2 euler curves via point p.
-            State p((a.x + b.x) / 2, (a.y + b.y) / 2, 0);
-            double beta = atan((p.y - a.y) / (p.x - a.x));
-            p.theta = 2 * beta - a.theta;
-            //cout << p.theta << endl;
-
-            //Plotting Euler curves between a&p && p&b.
-            curve.getControls(a, p);
-            curve.getTrajectory();
-            path = curve.plotPath();
-            PathSegment* pSegment1 = new ClothoidPath(path, sigma, larc);
-
-            curve.getControls(p, b);
-            curve.getTrajectory();
-
-            std::vector<State> another_path = curve.plotPath();
-            PathSegment* pSegment2 = new ClothoidPath(another_path, sigma, larc);
-
-            output.push_back(pSegment1);
-            output.push_back(pSegment2);
-        } else { //between any 2 arbitrary points and direction.
-            double alpha = ((-a.theta + b.theta)) / 2;
-            double cot_alpha;
-            cot_alpha = cos(alpha) / sin(alpha);
-            State center(0, 0, 0); //center of the circle--which is the locus of the point q between which 2 eulers are drawn.
-
-            //cout << "alpha is " << alpha << endl;
-            center.x = (a.x + b.x + cot_alpha * (a.y - b.y)) / 2;
-            center.y = (a.y + b.y + cot_alpha * (b.x - a.x)) / 2;
-            double r = sqrt(center.distance(a)); //radius of the circle.
-            //cout << "centre " << center.x << " " << center.y << endl;
-            double deflection1 = actualAtan(atan((center.y - a.y) / (center.x - a.x)), center, a);
-            double deflection2 = actualAtan(atan((center.y - b.y) / (center.x - b.x)), center, b);
-
-            //cout << "deflection between a and center" << deflection1 << "deflection between b and center" << deflection2 << endl;
-            if (deflection2 < deflection1) {
-                //swap
-                double temp = deflection2;
-                deflection2 = deflection1;
-                deflection1 = temp;
+        // TODO : reduce return statement with uniform initialisation
+            if(bot==symmetric)  {
+                std::vector<PathSegment*> path;
+                path.push_back(getPathSegment(current_state,target_state));
+                return path;
             }
-            double def = ((deflection2 - deflection1) / 2) + deflection1;
+            if(bot==parallel)  {
+                std::vector<PathSegment*> path;
+                ClothoidState intermediate_state((current_state.x + target_state.x) / 2, (current_state.y + target_state.y) / 2, 0);
+                intermediate_state.theta = 2 * current_state.beta(intermediate_state) - current_state.theta;
+                path.push_back(getPathSegment(current_state,intermediate_state) );
+                path.push_back(getPathSegment(intermediate_state,target_state) );
+                return path;
+            }
+            if(bot==arbit)  {
+                std::vector<PathSegment*> path;
+                const double alpha = current_state.alpha(target_state);
+                std::cout<<"Alpha "<<alpha<<std::endl;
+                const double cot_alpha = cos(alpha) / sin(alpha);
+                std::cout<<"cot Alpha "<<cot_alpha<<std::endl;
 
-            State q(0, 0, 0);
-            q.x = center.x + r * cos(def);
-            q.y = center.y + r * sin(def);
+                const State center((current_state.x + target_state.x + cot_alpha * (current_state.y - target_state.y)) / 2
+                    ,(current_state.y + target_state.y + cot_alpha * (target_state.x - current_state.x)) / 2
+                    ,0);
+                std::cout<<"current_state "<<current_state.x<<" "<<current_state.y<<" "<<current_state.theta<<std::endl;
+                std::cout<<"center "<<center.x<<" "<<center.y<<" "<<center.theta<<std::endl;
+                std::cout<<"target_state "<<target_state.x<<" "<<target_state.y<<" "<<target_state.theta<<std::endl;
+                const double r = sqrt(center.distanceSq(current_state)); //radius of the circle.
+                double deflection1 = M_PI+atan2((center.y - current_state.y) , (center.x - current_state.x));
+                double deflection2 = M_PI+atan2((center.y - target_state.y) , (center.x - target_state.x));
+                std::cout<<"def1 "<<deflection1<<std::endl;
+                std::cout<<"def2 "<<deflection2<<std::endl;
 
-            //cout << endl << endl << "q has diff in distance : " << (center.distance(a) - center.distance(q)) << endl;
-            double theta1 = atan((q.y - a.y) / (q.x - a.x));
-            double theta2 = atan((q.y - b.y) / (q.x - b.x));
-            double beta1 = 2 * theta1 - a.theta;
-            double beta2 = 2 * theta2 - b.theta;
-            //cout << "path should be smooth enough " << beta1 - beta2 << endl;
-            q.theta = beta1;
-            //cout << "q is " << q.x << "," << q.y << ", " << q.theta << endl;
-            curve.getControls(a, q);
+                if (deflection2 < deflection1) {
+                     std::swap(deflection1,deflection2);
+                }
+                const double def = ((deflection2 - deflection1) / 2) + deflection1;
+                std::cout<<"def "<<def<<std::endl;
 
-            curve.getTrajectory();
-            path = curve.plotPath();
+                ClothoidState intermediate_state_(center.x + r * cos(def), center.y + r * sin(def), 0);
 
-            curve.getControls(q, b);
+                const double theta1 = atan((intermediate_state_.y - current_state.y) / (intermediate_state_.x - current_state.x));
+                const double theta2 = atan((intermediate_state_.y - target_state.y) / (intermediate_state_.x - target_state.x));
+                const double beta1 = 2 * theta1 - current_state.theta;
+                const double beta2 = 2 * theta2 - target_state.theta;
+                intermediate_state_.theta = beta1;
+                std::cout<<"q.theta "<<intermediate_state_.theta<<std::endl;
 
-            curve.getTrajectory();
-            PathSegment* pSegment1 = new ClothoidPath(path, sigma, larc);
-            std::vector<State> another_path = curve.plotPath();
-            PathSegment* pSegment2 = new ClothoidPath(another_path, sigma, larc);
-
-            output.push_back(pSegment1);
-            output.push_back(pSegment2);
-        }
-
-
-        return output;
+                path.push_back(getPathSegment(current_state,intermediate_state_) );
+                path.push_back(getPathSegment(intermediate_state_,target_state) );
+                return path;
+            }
+            
     }
 
-    std::vector<State> Clothoid::plotPath() {
+     void Clothoid::plotPath(ClothoidState start,ClothoidState end,std::vector<State>& path) {
 
-        cv::circle(img, cvPoint(start.x, HEIGHT - start.y), 5, cvScalarAll(255));
-        cv::circle(img, cvPoint(end.x, HEIGHT - end.y), 5, cvScalarAll(255));
-        cv::line(img, cvPoint(start.x, HEIGHT - start.y), cvPoint(end.x, HEIGHT - end.y), cvScalar(255));
-        for (int i = 0; i < path.size() - 1; i++) {
-            cv::line(img, cvPoint(path[i].x, HEIGHT - path[i].y), cvPoint(path[i + 1].x, HEIGHT - path[i + 1].y), cvScalar(255, 255, 255));
-        }
+         cv::circle(img, cvPoint(start.x, HEIGHT - start.y), 5, cvScalarAll(255));
+         cv::circle(img, cvPoint(end.x, HEIGHT - end.y), 5, cvScalarAll(255));
+         cv::line(img, cvPoint(start.x, HEIGHT - start.y), cvPoint(end.x, HEIGHT - end.y), cvScalar(255));
+         for (int i = 0; i < path.size() - 1; i++) {
+             cv::line(img, cvPoint(path.at(i).x, HEIGHT - path.at(i).y), cvPoint(path.at(i+1).x, HEIGHT - path.at(i+1).y), cvScalar(255, 255, 255));
+         }
 
-        cv::imshow("[road_navigation] : clothoid", img);
-        cvWaitKey(0);
-        return path;
+         cv::imshow("[road_navigation] : clothoid", img);
+         cvWaitKey(0);
 
-    }
+     }
 
     /* @Brief : Calculates the fresnel integral of x using trapezoidal
      * 			method of numerical integration
@@ -322,7 +209,7 @@ namespace navigation {
      * @params [out] sinterm : The value of the sin term of the integration
      */
 
-    int Clothoid::fresnel(double x, double &costerm, double &sinterm) {
+    int fresnel(double x, double &costerm, double &sinterm) {
         double xxa;
         double f;
         double g;
@@ -377,13 +264,13 @@ namespace navigation {
             cd = cd * t + 4.12142090722199792936E-2;
             cd = cd * t + 1.00000000000000000118E0;
 
-            sinterm = signum(xxa) * x * x2 * sn / sd;
-            costerm = signum(xxa) * x * cn / cd;
+            sinterm = navigation::signum(xxa) * x * x2 * sn / sd;
+            costerm = navigation::signum(xxa) * x * cn / cd;
             return 0;
         }
         if (x > 36974.0) {
-            costerm = signum(xxa)*0.5;
-            sinterm = signum(xxa)*0.5;
+            costerm = navigation::signum(xxa)*0.5;
+            sinterm = navigation::signum(xxa)*0.5;
             return 0;
         }
         x2 = x*x;
@@ -442,8 +329,8 @@ namespace navigation {
         t = mpi*x;
         costerm = 0.5 + (f * ss - g * cc) / t;
         sinterm = 0.5 - (f * cc + g * ss) / t;
-        costerm = costerm * signum(xxa);
-        sinterm = sinterm * signum(xxa);
+        costerm = costerm * navigation::signum(xxa);
+        sinterm = sinterm * navigation::signum(xxa);
         return 0;
     }
 
