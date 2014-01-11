@@ -1,24 +1,24 @@
-/* 
+/*
  * File:   LogitechCamera.cpp
  * Author: satya
- * 
+ *
  * Created on December 12, 2013, 8:49 PM
  */
 
 #include "LogitechCamera.hpp"
 #include "LifeCycle.hpp"
 
-LogitechCamera::LogitechCamera() {
-    initializeParameters();
+// LogitechCamera::LogitechCamera() {
+//     initializeParameters();
+// 
+//     int argc;
+//     char** argv;
+//     ros::init(argc, argv, node_name.c_str());
+// 
+//     setupCommunications();
+// }
 
-    int argc;
-    char** argv;
-    ros::init(argc, argv, node_name.c_str());
-
-    setupCommunications();
-}
-
-LogitechCamera::LogitechCamera(int argc, char** argv) {
+LogitechCamera::LogitechCamera(int argc, char** argv) : Sensor(argc, argv) {
     initializeParameters(argc, argv);
 
     ros::init(argc, argv, node_name.c_str());
@@ -26,8 +26,9 @@ LogitechCamera::LogitechCamera(int argc, char** argv) {
     setupCommunications();
 }
 
-LogitechCamera::LogitechCamera(const LogitechCamera& orig) {
-}
+// LogitechCamera::LogitechCamera(const LogitechCamera& orig) :Sensor( ) {
+//     ROS_INFO("q@QW%1ros::init has been called");
+// }
 
 LogitechCamera::~LogitechCamera() {
 }
@@ -91,18 +92,19 @@ int main(int argc, char** argv) {
     loop_rate = 10;
     frame_id = 0;
 
-    LogitechCamera logitech_camera = LogitechCamera(argc, argv);
-
-    logitech_camera.connect();
+    LogitechCamera *logitech_camera = new LogitechCamera(argc, argv);
+    logitech_camera->connect();
+    ROS_INFO("Camera succesfully connected. \n");
 
     ros::Rate rate_enforcer(loop_rate);
 
     while (ros::ok()) {
-        logitech_camera.fetch();
-        logitech_camera.publish(frame_id);
+        logitech_camera->fetch();
+        logitech_camera->publish(frame_id);
         ros::spinOnce();
+        ROS_INFO("New frame acquired. \n");
         rate_enforcer.sleep();
     }
 
-    logitech_camera.disconnect();
+    logitech_camera->disconnect();
 }

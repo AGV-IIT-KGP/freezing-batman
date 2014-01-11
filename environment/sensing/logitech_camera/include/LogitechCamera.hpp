@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   LogitechCamera.hpp
  * Author: satya
  *
@@ -8,7 +8,7 @@
 #ifndef LOGITECHCAMERA_HPP
 #define	LOGITECHCAMERA_HPP
 
-#include <Environment/Sensor.hpp>
+#include <environment/Sensor.hpp>
 #include <ros/ros.h>
 #include <opencv2/opencv.hpp>
 #include <image_transport/image_transport.h>
@@ -32,7 +32,7 @@ private:
     std::string node_name;
     std::string topic_name;
     int message_queue_size;
-    
+
     cv::VideoCapture capture;
     ros::NodeHandle node_handle;
     image_transport::Publisher publisher;

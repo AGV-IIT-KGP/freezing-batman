@@ -6,13 +6,12 @@
  */
 
 #include "environment/Sensor.hpp"
+#include "ros/ros.h"
 
 namespace environment {
 
-    Sensor::Sensor() {
-    }
-
-    Sensor::Sensor(const Sensor& orig) {
+    Sensor::Sensor(int argc, char **argv) {
+        ros::init(argc, argv, std::string("Blah"));
     }
 
     Sensor::~Sensor() {

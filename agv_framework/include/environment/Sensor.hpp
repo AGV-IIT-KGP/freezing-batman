@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   Sensor.hpp
  * Author: satya
  *
@@ -16,7 +16,8 @@ namespace environment {
         virtual bool fetch() = 0;
         virtual bool disconnect() = 0;
         virtual void publish(int frame_id) = 0;
-        Sensor();
+        // Sensor();
+        Sensor(int argc, char **argv);
         Sensor(const Sensor& orig);
         virtual ~Sensor();
     };
