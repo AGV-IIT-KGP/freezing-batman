@@ -70,7 +70,6 @@ namespace gazebo {
         gazebo::event::ConnectionPtr connection_ptr;
         gazebo::common::Time last_update_time;
 
-        ros::NodeHandle node_handle;
         ros::Publisher pose_publisher;
         ros::Publisher state_publisher;
         ros::Subscriber controls_subscriber;

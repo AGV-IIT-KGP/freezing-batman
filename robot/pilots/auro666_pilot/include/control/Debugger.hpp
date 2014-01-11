@@ -20,20 +20,21 @@ public:
     Debugger(const Debugger& orig);
     virtual ~Debugger();
 
-    void display();
+    void display(int debug_mode);
     void updateCurrentPath(const geometry_msgs::Pose::ConstPtr& _pose);
     void updateCTEPlotData(const std_msgs::Float64::ConstPtr& _cte);
     void updateTargetPath(const nav_msgs::Path::ConstPtr& path_ptr);
 
 private:
-    std::vector<cv::Point> cte_plot;
+    std::string cte_response;
+    std::string path_tracking;
+    
+    std::vector<int> cte_plot;
     std::vector<cv::Point> flat_line;
     std::vector<cv::Point> traversed_path;
     std::vector<cv::Point> target_path;
     cv::Mat cte_image;
     cv::Mat path_image;
-    std::string cte_response;
-    std::string path_tracking;
 };
 
 #endif	/* DEBUGGER_HPP */

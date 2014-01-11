@@ -3,6 +3,8 @@
 <launch>
   <node pkg="auro666_pilot" type="controller" name="controller"/>
   <node pkg="auro666_pilot" type="controller_unit_tester" name="controller_unit_tester"/>
-  <node pkg="auro666_pilot" type="controller_debugger" name="controller_debugger"/>
+  <node pkg="auro666_pilot" type="controller_debugger" name="controller_debugger">
+      <param name="debug_mode" type="int" value="3"/>
+  </node>
 </launch>
   

@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
         
         controls.rear_wheel_speed = cruise_controller.getCruiseControl();
         controls.steer_angle = steering_controller.getSteeringControl();
+        cte_msg.data = steering_controller.GetCte();
 
         controls_publisher.publish(controls);
         cte_publisher.publish(cte_msg);

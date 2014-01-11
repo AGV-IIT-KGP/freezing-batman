@@ -12,7 +12,7 @@ UnitTester::UnitTester() {
 
 UnitTester::UnitTester(ros::NodeHandle& node_handle) {
     path_size = 1000;
-    path_type = 2;
+    path_type = 1;
 
     // Mimics other nodes
     state_publisher = node_handle.advertise<auro666_pilot::State>("vehicle_server/state", 20);

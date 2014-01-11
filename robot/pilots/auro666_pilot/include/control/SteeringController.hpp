@@ -38,13 +38,16 @@ private:
     static const double gain = .2;
     static const double distance = 0.6;
 
+    double cte;
+    double psi;
+    
     geometry_msgs::Pose pose;
     nav_msgs::Path path;
     auro666_pilot::State state;
     bool path_ended;
 
     unsigned int calculateClosestPoseId(geometry_msgs::Pose steer_point);
-    void calculateParams(double &cte, double& psi);
+    void calculateParams();
     double displacement(geometry_msgs::Pose pose1, geometry_msgs::Pose pose2);
     geometry_msgs::Pose obtainSteerPoint(geometry_msgs::Pose pose);
 };

@@ -9,6 +9,7 @@
 
 SteeringController::SteeringController() {
     path_ended = false;
+    cte = psi = 0;
 }
 
 SteeringController::SteeringController(const SteeringController& orig) {
@@ -19,12 +20,11 @@ SteeringController::~SteeringController() {
 
 float SteeringController::getSteeringControl() {
     double cmd_steer_angle = 0;
-    double cte = 0, psi = 0;
 
     if (path.poses.size() == 0 || path_ended) {
     } else {
+        calculateParams();
         // TODO: Implement PID
-        calculateParams(cte, psi);
         cmd_steer_angle = psi + atan2(gain * cte, state.rear_wheel_speed);
     }
 
@@ -49,7 +49,7 @@ unsigned int SteeringController::calculateClosestPoseId(geometry_msgs::Pose stee
     return closest_pose_id;
 }
 
-void SteeringController::calculateParams(double &cte, double& psi) {
+void SteeringController::calculateParams() {
     geometry_msgs::Pose steer_point = obtainSteerPoint(pose);
     unsigned int closest_pose_id = calculateClosestPoseId(steer_point);
 

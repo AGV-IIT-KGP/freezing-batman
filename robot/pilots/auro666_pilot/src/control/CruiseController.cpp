@@ -25,7 +25,7 @@ float CruiseController::getCruiseControl() {
     if (path.poses.size() == 0 || path_ended) {
         cmd_rear_wheel_speed = 0;
     } else {
-        cmd_rear_wheel_speed = 1;
+        cmd_rear_wheel_speed = 4;
     }
 
     return cmd_rear_wheel_speed;
