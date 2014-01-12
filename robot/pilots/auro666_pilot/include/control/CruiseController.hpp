@@ -24,8 +24,8 @@ public:
 
     float getCruiseControl();
 
-    void SetPose(const geometry_msgs::Pose::ConstPtr pose_ptr) {
-        pose = *pose_ptr;
+    void SetPose(const geometry_msgs::Pose pose) {
+        this->pose = pose;
         path_ended = false;
     }
 

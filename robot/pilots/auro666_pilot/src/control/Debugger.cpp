@@ -65,13 +65,14 @@ void Debugger::display(int debug_mode) {
     }
 }
 
-void Debugger::updateCurrentPath(const geometry_msgs::Pose::ConstPtr& pose) {
-    traversed_path.push_back(cv::Point(10 + pose->position.x, 300 - pose->position.y));
+void Debugger::updateCurrentPath(const geometry_msgs::PoseStamped::ConstPtr& pose_ptr) {
+    traversed_path.push_back(cv::Point(10 + pose_ptr->pose.position.x, 
+                                       300 - pose_ptr->pose.position.y));
 }
 
-void Debugger::updateCTEPlotData(const std_msgs::Float64::ConstPtr& cte) {
+void Debugger::updateCTEPlotData(const std_msgs::Float64::ConstPtr& cte_ptr) {
     cte_plot.erase(cte_plot.begin());
-    cte_plot.push_back((int) 300 + cte->data * 100);
+    cte_plot.push_back((int) 300 + cte_ptr->data * 100);
 }
 
 void Debugger::updateTargetPath(const nav_msgs::Path::ConstPtr& target_path_ptr) {

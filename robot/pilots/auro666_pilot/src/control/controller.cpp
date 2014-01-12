@@ -1,5 +1,5 @@
 #include <ros/ros.h>
-#include <geometry_msgs/Pose.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Path.h>
 #include <std_msgs/Float64.h>
 #include <auro666_pilot/Controls.h>
@@ -10,9 +10,9 @@
 SteeringController steering_controller;
 CruiseController cruise_controller;
 
-void updatePose(const geometry_msgs::Pose::ConstPtr& pose_ptr) {
-    steering_controller.SetPose(pose_ptr);
-    cruise_controller.SetPose(pose_ptr);
+void updatePose(const geometry_msgs::PoseStamped::ConstPtr& pose_ptr) {
+    steering_controller.SetPose(pose_ptr->pose);
+    cruise_controller.SetPose(pose_ptr->pose);
 }
 
 void updateState(const auro666_pilot::State::ConstPtr& state_ptr) {

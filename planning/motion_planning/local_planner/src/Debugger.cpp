@@ -33,6 +33,7 @@ Debugger::~Debugger() {
 }
 
 void Debugger::display(int debug_mode) {
+    image = cv::Scalar(255, 255, 255);
     for (unsigned int pose_id = 0; pose_id + 1 < maneuver.poses.size(); pose_id++) {
         cv::line(image,
                  cv::Point(maneuver.poses.at(pose_id).pose.position.x * scale,

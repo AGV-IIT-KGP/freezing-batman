@@ -38,7 +38,7 @@ UnitTester::UnitTester(ros::NodeHandle node_handle) {
 
     maneuver_publisher = node_handle.advertise<nav_msgs::Path>("situational_planner/maneuver", 10);
     pose_publisher = node_handle.advertise<geometry_msgs::PoseStamped>("localization/pose", 100);
-    map_publisher = node_handle.advertise<nav_msgs::OccupancyGrid>("slam/map", 100);
+    map_publisher = node_handle.advertise<nav_msgs::OccupancyGrid>("environment/map", 100);
 }
 
 UnitTester::UnitTester(const UnitTester& orig) {

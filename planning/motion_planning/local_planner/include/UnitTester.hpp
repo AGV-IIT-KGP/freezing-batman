@@ -35,8 +35,6 @@ private:
     nav_msgs::Path maneuver_msg;
     nav_msgs::OccupancyGrid map_msg;
     
-    ros::Subscriber pose_subscriber;
-    ros::Subscriber path_subscriber;
     ros::Publisher maneuver_publisher;
     ros::Publisher pose_publisher;
     ros::Publisher map_publisher;

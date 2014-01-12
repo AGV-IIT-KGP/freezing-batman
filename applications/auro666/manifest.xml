@@ -8,7 +8,13 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/auro666</url>
-
+  
+  <depend package="roscpp"/>
+  <depend package="geometry_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="agv_framework"/>
+  <depend package="tf"/>
+  
 </package>
 
 
