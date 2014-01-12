@@ -25,10 +25,17 @@ float SteeringController::getSteeringControl() {
     if (path.poses.size() == 0 || path_ended) {
     } else {
         calculateParams();
-        // TODO: Implement PID
-        cmd_steer_angle = delta_steer_angle + atan2(pgain * cte + igain * cte_sum + dgain * (cte_last - cte), state.rear_wheel_speed);
+        ROS_INFO("[auro666_plugin/SteeringController/getSteeringControl] state.rear_wheel_speed = %lf", state.rear_wheel_speed);
+        ROS_INFO("[auro666_plugin/SteeringController/getSteeringControl] cte = %lf", cte);
+        ROS_INFO("[auro666_plugin/SteeringController/getSteeringControl] delta_steer_angle = %lf", delta_steer_angle);
+
+        if (state.rear_wheel_speed != 0) {
+            double pid_term = pgain * cte + igain * cte_sum + dgain * (cte_last - cte);
+            cmd_steer_angle = delta_steer_angle + atan2(pid_term, state.rear_wheel_speed);
+        }
     }
 
+    ROS_INFO("[auro666_plugin/SteeringController/getSteeringControl] cmd_steer_angle = %lf", cmd_steer_angle);
     return cmd_steer_angle;
 }
 
@@ -69,6 +76,7 @@ void SteeringController::calculateParams() {
 
     cte_last = cte;
     cte = ((X.cross(AC)).dot(Z) < 0 ? -1 : 1) * X.length();
+    cte_sum += cte;
 }
 
 double SteeringController::displacement(geometry_msgs::Pose pose1, geometry_msgs::Pose pose2) {

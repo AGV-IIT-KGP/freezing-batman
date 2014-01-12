@@ -38,11 +38,11 @@ int main(int argc, char* argv[]) {
     ros::Publisher controls_publisher = node_handle.advertise<auro666_pilot::Controls>("controller/controls", 20);
     ros::Publisher cte_publisher = node_handle.advertise<std_msgs::Float64>("controller/cross_track_error", 20);
 
+    auro666_pilot::Controls controls;
+    std_msgs::Float64 cte_msg;
+
     ros::Rate loop_rate(20);
     while (ros::ok()) {
-        auro666_pilot::Controls controls;
-        std_msgs::Float64 cte_msg;
-        
         controls.rear_wheel_speed = cruise_controller.getCruiseControl();
         controls.steer_angle = steering_controller.getSteeringControl();
         cte_msg.data = steering_controller.GetCte();
@@ -53,6 +53,10 @@ int main(int argc, char* argv[]) {
         ros::spinOnce();
         loop_rate.sleep();
     }
+
+    controls.rear_wheel_speed = 0;
+    controls.steer_angle = 0;
+    controls_publisher.publish(controls);
 
     return 0;
 }

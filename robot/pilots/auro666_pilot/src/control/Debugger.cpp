@@ -48,15 +48,15 @@ void Debugger::display(int debug_mode) {
     }
 
     path_image = cv::Scalar(255, 255, 255);
-    for (unsigned int pose_id = 0; pose_id + 1 < traversed_path.size(); pose_id++) {
-        cv::line(path_image, traversed_path.at(pose_id),
-                 traversed_path.at(pose_id + 1), cv::Scalar(0, 255, 0), 3,
-                 CV_AA, 0);
-    }
     for (unsigned int pose_id = 0; pose_id + 1 < target_path.size(); pose_id++) {
         cv::line(path_image, target_path.at(pose_id),
                  target_path.at(pose_id + 1), cv::Scalar(0, 0, 255), 3, CV_AA,
                  0);
+    }
+    for (unsigned int pose_id = 0; pose_id + 1 < traversed_path.size(); pose_id++) {
+        cv::line(path_image, traversed_path.at(pose_id),
+                 traversed_path.at(pose_id + 1), cv::Scalar(0, 255, 0), 3,
+                 CV_AA, 0);
     }
 
     if (debug_mode == 3 || debug_mode == 2) {

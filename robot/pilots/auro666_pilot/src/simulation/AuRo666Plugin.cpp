@@ -27,10 +27,11 @@ namespace gazebo {
         command_theta = 0;
         command_velocity = 1;
 
-        char **argv;
-        int argc;
+        char *argv[] = {"auro666_plugin"};
+        int argc = 1;
         ros::init(argc, argv, "auro666_plugin");
-
+        ros::NodeHandle node_handle;
+        
         controls_subscriber = node_handle.subscribe("controller/controls", 2, &AuRo666Plugin::applyControls, this);
         pose_publisher = node_handle.advertise<geometry_msgs::Pose>("simulator/pose", 100);
         state_publisher = node_handle.advertise<auro666_pilot::State>("simulator/state", 100);

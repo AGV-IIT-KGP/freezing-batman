@@ -40,7 +40,7 @@ public:
 
 private:
     static const double pgain = .2;
-    static const double igain = .1;
+    static const double igain = 0;
     static const double dgain = 0;
     static const double distance = 0.6;
 
