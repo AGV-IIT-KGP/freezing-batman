@@ -75,7 +75,7 @@ namespace navigation {
             cost_sum += cost_map.at<float>((int) path.poses.at(i).pose.position.x,
                                            (int) path.poses.at(i).pose.position.y);
         }
-        return cost_sum / path.poses.size();
+        return cost_sum / (path.poses.size() + 1);
     }
 
     nav_msgs::Path RoadNavigation::convertToNavMsgsPath(Trajectory& trajectory) {
@@ -179,13 +179,17 @@ namespace navigation {
             center_target_pose_id++;
         }
         ROS_DEBUG("[local_planner/RoadNavigation/getTargets] center_target_index = %d", center_target_pose_id);
+        ROS_DEBUG("[local_planner/RoadNavigation/getTargets] center_target = (%lf, %lf, %lf)",
+                  target_trajectory.poses.at(center_target_pose_id).pose.position.x,
+                  target_trajectory.poses.at(center_target_pose_id).pose.position.y,
+                  tf::getYaw(target_trajectory.poses.at(center_target_pose_id).pose.orientation));
 
         std::vector<geometry_msgs::Pose> targets;
-        double yaw = tf::getYaw(target_trajectory.poses[center_target_pose_id].pose.orientation);
+        double yaw = tf::getYaw(target_trajectory.poses.at(center_target_pose_id).pose.orientation);
         for (int target_id = -num_targets / 2; target_id <= num_targets / 2; target_id++) {
-            geometry_msgs::Pose target = target_trajectory.poses[center_target_pose_id].pose;
-            target.position.x = target_trajectory.poses[center_target_pose_id].pose.position.x + target_id * spacing * sin(yaw);
-            target.position.y = target_trajectory.poses[center_target_pose_id].pose.position.y - target_id * spacing * cos(yaw);
+            geometry_msgs::Pose target = target_trajectory.poses.at(center_target_pose_id).pose;
+            target.position.x = target_trajectory.poses.at(center_target_pose_id).pose.position.x + target_id * spacing * sin(yaw);
+            target.position.y = target_trajectory.poses.at(center_target_pose_id).pose.position.y - target_id * spacing * cos(yaw);
             targets.push_back(target);
         }
 

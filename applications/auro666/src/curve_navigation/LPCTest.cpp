@@ -28,7 +28,7 @@ LPCTest::LPCTest(ros::NodeHandle node_handle) {
     for (unsigned int pose_id = 0; pose_id < maneuver_msg.poses.size(); pose_id++) {
         maneuver_msg.poses.at(pose_id).pose.position.x = pose_id * map_width / num_samples;
         maneuver_msg.poses.at(pose_id).pose.position.y = map_height / 3;
-        maneuver_msg.poses.at(pose_id).pose.orientation = tf::createQuaternionMsgFromYaw(pi / 4);
+        maneuver_msg.poses.at(pose_id).pose.orientation = tf::createQuaternionMsgFromYaw(0);
     }
 
     pose_msg.header.seq = 0;
@@ -66,6 +66,13 @@ void LPCTest::sendTestData() {
     map_msg.header.stamp = ros::Time::now();
     map_publisher.publish(map_msg);
     map_msg.header.seq += 1;
+    
+    pose_msg.pose.position.x = map_width / 10;
+    pose_msg.pose.position.y = map_height / 10;
+    pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+    pose_msg.header.seq = 0;
+    pose_msg.header.stamp = ros::Time::now();
+    pose_publisher.publish(pose_msg);
 }
 
 int main(int argc, char **argv) {
