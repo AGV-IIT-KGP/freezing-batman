@@ -9,7 +9,8 @@
 
 SteeringController::SteeringController() {
     path_ended = false;
-    cte = psi = 0;
+    cte = delta_steer_angle = 0;
+    cte_sum = cte_last = 0;
 }
 
 SteeringController::SteeringController(const SteeringController& orig) {
@@ -25,7 +26,7 @@ float SteeringController::getSteeringControl() {
     } else {
         calculateParams();
         // TODO: Implement PID
-        cmd_steer_angle = psi + atan2(gain * cte, state.rear_wheel_speed);
+        cmd_steer_angle = delta_steer_angle + atan2(pgain * cte + igain * cte_sum + dgain * (cte_last - cte), state.rear_wheel_speed);
     }
 
     return cmd_steer_angle;
@@ -33,7 +34,7 @@ float SteeringController::getSteeringControl() {
 
 unsigned int SteeringController::calculateClosestPoseId(geometry_msgs::Pose steer_point) {
     double min_distance = displacement(steer_point, path.poses.at(0).pose);
-    int closest_pose_id = 0;
+    unsigned int closest_pose_id = 0;
     for (unsigned int pose_id = 0; pose_id < path.poses.size(); pose_id++) {
         double distance = displacement(steer_point, path.poses.at(pose_id).pose);
         if (distance < min_distance) {
@@ -53,7 +54,7 @@ void SteeringController::calculateParams() {
     geometry_msgs::Pose steer_point = obtainSteerPoint(pose);
     unsigned int closest_pose_id = calculateClosestPoseId(steer_point);
 
-    psi = tf::getYaw(steer_point.orientation) - tf::getYaw(path.poses.at(closest_pose_id).pose.orientation);
+    delta_steer_angle = tf::getYaw(steer_point.orientation) - tf::getYaw(path.poses.at(closest_pose_id).pose.orientation);
 
     tf::Vector3 A(path.poses.at(closest_pose_id).pose.position.x,
                   path.poses.at(closest_pose_id).pose.position.y, 0);
@@ -66,6 +67,7 @@ void SteeringController::calculateParams() {
     tf::Vector3 X = AB - AC; // Ulta
     tf::Vector3 Z(0, 0, 1);
 
+    cte_last = cte;
     cte = ((X.cross(AC)).dot(Z) < 0 ? -1 : 1) * X.length();
 }
 

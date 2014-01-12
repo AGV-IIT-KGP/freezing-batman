@@ -19,6 +19,10 @@ public:
     SteeringController(const SteeringController& orig);
     virtual ~SteeringController();
 
+    double GetCte() const {
+        return cte;
+    }
+
     void SetState(const auro666_pilot::State::ConstPtr state_ptr) {
         state = *state_ptr;
     }
@@ -35,12 +39,16 @@ public:
     float getSteeringControl();
 
 private:
-    static const double gain = .2;
+    static const double pgain = .2;
+    static const double igain = .1;
+    static const double dgain = 0;
     static const double distance = 0.6;
 
     double cte;
-    double psi;
-    
+    double cte_sum;
+    double cte_last;
+    double delta_steer_angle;
+
     geometry_msgs::Pose pose;
     nav_msgs::Path path;
     auro666_pilot::State state;
