@@ -42,9 +42,12 @@ namespace navigation {
         geometry_msgs::Pose current_pose = pose_ptr->pose;
         nav_msgs::OccupancyGrid map = *map_ptr;
 
+        current_pose.position.x *= 100;
+        current_pose.position.y *= 100;
+
         std::vector<geometry_msgs::Pose> targets = getTargets(current_pose, target_trajectory);
-        std::vector<nav_msgs::Path> paths = getPaths(current_pose, targets);
-        paths = filterPaths(paths, map);
+        constructPaths(current_pose, targets);
+        filterPaths(map);
         //setupObstacleCostMap(map);
         setupTargetCostMap(target_trajectory, map);
 
@@ -72,10 +75,12 @@ namespace navigation {
     double RoadNavigation::calculateTargetCost(nav_msgs::Path path) {
         double cost_sum = 0;
         for (unsigned int i = 0; i < path.poses.size(); i++) {
-            cost_sum += cost_map.at<float>((int) path.poses.at(i).pose.position.x,
-                                           (int) path.poses.at(i).pose.position.y);
+            cost_sum += cost_map.at<float>(cv::Point((int) path.poses.at(i).pose.position.x,
+                                                     (int) path.poses.at(i).pose.position.y));
         }
-        return cost_sum / (path.poses.size() + 1);
+        double cost = cost_sum / (path.poses.size() + 1);
+        ROS_DEBUG("[local_planner/RoadNavigation/calculateTargetCost] cost = %lf", cost);
+        return cost;
     }
 
     nav_msgs::Path RoadNavigation::convertToNavMsgsPath(Trajectory& trajectory) {
@@ -122,8 +127,7 @@ namespace navigation {
         }
     }
 
-    std::vector<nav_msgs::Path> RoadNavigation::filterPaths(std::vector<nav_msgs::Path> paths,
-                                                            nav_msgs::OccupancyGrid map) {
+    void RoadNavigation::filterPaths(nav_msgs::OccupancyGrid map) {
         std::vector<nav_msgs::Path> filtered_paths;
 
         // TODO: Prune against kinematic and dynamic constraints
@@ -134,7 +138,10 @@ namespace navigation {
             }
         }
 
-        return filtered_paths;
+        paths.clear();
+        for (unsigned int i = 0; i < filtered_paths.size(); i++) {
+            paths.push_back(filtered_paths.at(i));
+        }
     }
 
     double RoadNavigation::getDistance(geometry_msgs::Pose& pose1,
@@ -142,10 +149,8 @@ namespace navigation {
         return sqrt(pow(pose1.position.x - pose2.position.x, 2) + pow(pose1.position.y - pose2.position.y, 2));
     }
 
-    std::vector<nav_msgs::Path> RoadNavigation::getPaths(geometry_msgs::Pose current_pose,
-                                                         std::vector<geometry_msgs::Pose> targets) {
-        std::vector<nav_msgs::Path> paths;
-
+    void RoadNavigation::constructPaths(geometry_msgs::Pose current_pose,
+                                        std::vector<geometry_msgs::Pose> targets) {
         for (unsigned int target_id = 0; target_id < targets.size(); target_id++) {
             Trajectory trajectory;
             trajectory.setStart(current_pose.position.x, current_pose.position.y, tf::getYaw(current_pose.orientation));
@@ -153,8 +158,6 @@ namespace navigation {
             trajectory.generate();
             paths.push_back(convertToNavMsgsPath(trajectory));
         }
-
-        return paths;
     }
 
     std::vector<geometry_msgs::Pose> RoadNavigation::getTargets(geometry_msgs::Pose current_pose,
@@ -196,7 +199,10 @@ namespace navigation {
         if (debug) {
             cv::Mat targets_display(1000, 1000, CV_8U, cv::Scalar(0));
             for (unsigned int i = 0; i < targets.size(); i++) {
-                targets_display.at<uchar>(targets.at(i).position.x, targets.at(i).position.y) = 255;
+                cv::circle(targets_display,
+                           cv::Point(targets.at(i).position.x,
+                                     targets.at(i).position.y),
+                           3, cv::Scalar(255), 1, CV_AA, 0);
             }
             cv::circle(targets_display,
                        cv::Point(targets.at(num_targets / 2).position.x,

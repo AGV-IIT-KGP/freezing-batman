@@ -27,7 +27,7 @@ LPCTest::LPCTest(ros::NodeHandle node_handle) {
     maneuver_msg.poses.resize(num_samples);
     for (unsigned int pose_id = 0; pose_id < maneuver_msg.poses.size(); pose_id++) {
         maneuver_msg.poses.at(pose_id).pose.position.x = pose_id * map_width / num_samples;
-        maneuver_msg.poses.at(pose_id).pose.position.y = map_height / 3;
+        maneuver_msg.poses.at(pose_id).pose.position.y = map_height / 5;
         maneuver_msg.poses.at(pose_id).pose.orientation = tf::createQuaternionMsgFromYaw(0);
     }
 
@@ -39,9 +39,12 @@ LPCTest::LPCTest(ros::NodeHandle node_handle) {
     pose_publisher = node_handle.advertise<geometry_msgs::PoseStamped>("localization/pose", 100);
     // TODO: Obtain this data from simulator and republish it
     map_publisher = node_handle.advertise<nav_msgs::OccupancyGrid>("environment/map", 10);
+    state_publisher = node_handle.advertise<auro666_pilot::State>("vehicle_server/state", 100);
 
     pose_subscriber = node_handle.subscribe("simulator/pose", 2,
                                             &LPCTest::publishPose, this);
+    state_subscriber = node_handle.subscribe("simulator/state", 2,
+                                            &LPCTest::publishState, this);
 }
 
 LPCTest::LPCTest(const LPCTest& orig) {
@@ -57,6 +60,10 @@ void LPCTest::publishPose(const geometry_msgs::Pose::ConstPtr& pose_ptr) {
     pose_msg.header.seq += 1;
 }
 
+void LPCTest::publishState(const auro666_pilot::State::ConstPtr& state_ptr) {
+    state_publisher.publish(*state_ptr);
+}
+
 void LPCTest::sendTestData() {
     maneuver_msg.header.stamp = ros::Time::now();
     maneuver_publisher.publish(maneuver_msg);
@@ -67,12 +74,12 @@ void LPCTest::sendTestData() {
     map_publisher.publish(map_msg);
     map_msg.header.seq += 1;
     
-    pose_msg.pose.position.x = map_width / 10;
-    pose_msg.pose.position.y = map_height / 10;
-    pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-    pose_msg.header.seq = 0;
-    pose_msg.header.stamp = ros::Time::now();
-    pose_publisher.publish(pose_msg);
+//    pose_msg.pose.position.x = 0;
+//    pose_msg.pose.position.y = 0;
+//    pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+//    pose_msg.header.seq = 0;
+//    pose_msg.header.stamp = ros::Time::now();
+//    pose_publisher.publish(pose_msg);
 }
 
 int main(int argc, char **argv) {
@@ -84,7 +91,7 @@ int main(int argc, char **argv) {
     ros::Rate loop_rate(10);
     while (ros::ok()) {
         lpc_tester.sendTestData();
-
+        
         ros::spinOnce();
         loop_rate.sleep();
     }

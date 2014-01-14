@@ -12,8 +12,10 @@
   <depend package="roscpp"/>
   <depend package="geometry_msgs"/>
   <depend package="nav_msgs"/>
-  <depend package="agv_framework"/>
   <depend package="tf"/>
+  <depend package="agv_framework"/>
+  <depend package="auro666_pilot"/>
+  <depend package="local_planner"/>
   
 </package>
 

@@ -14,6 +14,7 @@
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <tf/transform_datatypes.h>
+#include <auro666_pilot/State.h>
 
 class LPCTest {
 public:
@@ -23,6 +24,7 @@ public:
     virtual ~LPCTest();
     
     void publishPose(const geometry_msgs::Pose::ConstPtr& pose_ptr);
+    void publishState(const auro666_pilot::State::ConstPtr& state_ptr);
     void sendTestData();
     
 private:
@@ -37,9 +39,11 @@ private:
     nav_msgs::OccupancyGrid map_msg;
 
     ros::Subscriber pose_subscriber;
+    ros::Subscriber state_subscriber;
     ros::Publisher maneuver_publisher;
     ros::Publisher pose_publisher;
     ros::Publisher map_publisher;
+    ros::Publisher state_publisher;
 };
 
 #endif	/* LPCTEST_HPP */
