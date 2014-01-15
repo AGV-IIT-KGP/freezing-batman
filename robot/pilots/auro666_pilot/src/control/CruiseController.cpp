@@ -61,6 +61,7 @@ void CruiseController::pathEndCheck() {
 
         if (closest_pose_id + 1 == path.poses.size()) {
             path_ended = true;
+            ROS_INFO("[auro666_pilot] Path ended.");
         }
     }
 }

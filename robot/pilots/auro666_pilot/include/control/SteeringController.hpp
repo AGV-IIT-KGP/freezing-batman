@@ -40,7 +40,7 @@ public:
     void SetPose(const geometry_msgs::Pose pose) {
         this->pose.position.x = pose.position.x / 100;
         this->pose.position.y = pose.position.y / 100;
-        this->pose.orientation = pose.orientation;
+        this->pose.orientation = pose.orientation;        
     }
 
     float getSteeringControl();
@@ -49,6 +49,7 @@ private:
     static const double pgain = .2;
     static const double igain = 0;
     static const double dgain = 0;
+    // In meters
     static const double distance = 0.6;
 
     double cte;

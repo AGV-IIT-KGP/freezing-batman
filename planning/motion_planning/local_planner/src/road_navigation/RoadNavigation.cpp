@@ -14,8 +14,9 @@
 namespace navigation {
 
     RoadNavigation::RoadNavigation() {
-        spacing = 10;
         num_targets = 20;
+        // In centimeters
+        spacing = 10;
         target_lookahead = 400;
         dt_input = std::string("DT Input");
         dt_output = std::string("DT Output");
@@ -42,12 +43,9 @@ namespace navigation {
         geometry_msgs::Pose current_pose = pose_ptr->pose;
         nav_msgs::OccupancyGrid map = *map_ptr;
 
-        current_pose.position.x *= 100;
-        current_pose.position.y *= 100;
-
         std::vector<geometry_msgs::Pose> targets = getTargets(current_pose, target_trajectory);
         constructPaths(current_pose, targets);
-        filterPaths(map);
+        //filterPaths(map);
         //setupObstacleCostMap(map);
         setupTargetCostMap(target_trajectory, map);
 
@@ -58,11 +56,11 @@ namespace navigation {
             //       2. Steering angle cost
             best_path = paths.at(0);
             double min_cost = calculateTargetCost(paths.at(0));
-            for (unsigned int i = 0; i < paths.size(); i++) {
-                double cost = calculateTargetCost(paths.at(i));
+            for (unsigned int path_id = 0; path_id < paths.size(); path_id++) {
+                double cost = calculateTargetCost(paths.at(path_id));
                 if (cost < min_cost) {
                     min_cost = cost;
-                    best_path = paths.at(i);
+                    best_path = paths.at(path_id);
                 }
             }
         } else {
