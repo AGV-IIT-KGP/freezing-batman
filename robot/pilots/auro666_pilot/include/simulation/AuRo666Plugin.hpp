@@ -43,6 +43,7 @@ namespace gazebo {
         std::string WHITE;
 
         // TODO: Should come from the AuRo666 Class
+        // In meters
         static const double wheel_radius = 0.3;
         static const double wheel_base = 1.2;
         static const double vehicle_length = 1.6;

@@ -8,7 +8,7 @@
 #ifndef ROAD_HPP
 #define	ROAD_HPP
 
-#include <Environment/Model.hpp>
+#include <environment/Model.hpp>
 
 class Road : public environment::Model {
 public:

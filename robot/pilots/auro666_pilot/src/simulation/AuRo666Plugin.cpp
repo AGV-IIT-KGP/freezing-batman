@@ -25,7 +25,7 @@ namespace gazebo {
 
         first_iteration = true;
         command_theta = 0;
-        command_velocity = 1;
+        command_velocity = 0;
 
         char *argv[] = {"auro666_plugin"};
         int argc = 1;

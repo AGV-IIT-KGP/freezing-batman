@@ -25,7 +25,7 @@ float CruiseController::getCruiseControl() {
     if (path.poses.size() == 0 || path_ended) {
         cmd_rear_wheel_speed = 0;
     } else {
-        cmd_rear_wheel_speed = 4;
+        cmd_rear_wheel_speed = .3;
     }
 
     return cmd_rear_wheel_speed;
@@ -61,6 +61,7 @@ void CruiseController::pathEndCheck() {
 
         if (closest_pose_id + 1 == path.poses.size()) {
             path_ended = true;
+            ROS_INFO("[auro666_pilot] Path ended.");
         }
     }
 }
