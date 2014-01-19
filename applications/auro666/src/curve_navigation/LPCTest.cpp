@@ -26,6 +26,8 @@ LPCTest::LPCTest(ros::NodeHandle node_handle) {
     std::fill(map_msg.data.begin(), map_msg.data.end(), 0);
 
     maneuver_msg.poses.resize(num_samples);
+
+    /* L Turn
     for (unsigned int pose_id = 0; pose_id < num_samples / 2; pose_id++) {
         maneuver_msg.poses.at(pose_id).pose.position.x = pose_id * map_width / num_samples;
         maneuver_msg.poses.at(pose_id).pose.position.y = map_height / 3.;
@@ -36,6 +38,13 @@ LPCTest::LPCTest(ros::NodeHandle node_handle) {
         maneuver_msg.poses.at(pose_id).pose.position.x = map_width / 2.;
         maneuver_msg.poses.at(pose_id).pose.position.y = map_height / 3. + (pose_id - num_samples / 2.) * map_height / 2. / (num_samples / 2.);
         maneuver_msg.poses.at(pose_id).pose.orientation = tf::createQuaternionMsgFromYaw(pi / 2);
+    }
+     */
+
+    for (unsigned int pose_id = 0; pose_id < num_samples; pose_id++) {
+        maneuver_msg.poses.at(pose_id).pose.position.x = pose_id * map_width / num_samples;
+        maneuver_msg.poses.at(pose_id).pose.position.y = map_height / 3. + (map_height / 2. - map_height / 3.) * pose_id / num_samples;
+        maneuver_msg.poses.at(pose_id).pose.orientation = tf::createQuaternionMsgFromYaw(-atan2(map_height / 2. - map_height / 3., map_width));
     }
 
     pose_msg.header.seq = 0;
