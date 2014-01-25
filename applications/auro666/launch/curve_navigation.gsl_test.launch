@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="auro666" type="gsl_tester" name="gsl_tester" cwd="node"/>
+    
+    <node pkg="global_planner" type="global_planner" name="global_planner" cwd="node"/>
+    <node pkg="global_planner" type="global_planner_debugger" name="global_planner_debugger">
+        <param name="debug_mode" type="int" value="1"/>
+    </node>
+    
+    <node pkg="situational_planner" type="situational_planner" name="situational_planner" cwd="node"/>   
+    <node pkg="situational_planner" type="situational_planner_debugger" name="situational_planner_debugger">
+        <param name="debug_mode" type="int" value="1"/>
+    </node> 
+    
+    <node pkg="local_planner" type="local_planner" name="local_planner" cwd="node" output="screen"/>
+    <node pkg="local_planner" type="local_planner_debugger" name="local_planner_debugger">
+        <param name="debug_mode" type="int" value="1"/>
+    </node>
+    
+</launch>
+    

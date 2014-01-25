@@ -14,6 +14,7 @@ UnitTester::UnitTester(ros::NodeHandle node_handle) {
     map_width = 1000;
     map_height = 1000;
     num_samples = 1000;
+    scale = .01;
     pi = 3.14;
 
     map_msg.info.height = map_height;
@@ -23,13 +24,13 @@ UnitTester::UnitTester(ros::NodeHandle node_handle) {
 
     maneuver_msg.poses.resize(num_samples);
     for (unsigned int pose_id = 0; pose_id < maneuver_msg.poses.size(); pose_id++) {
-        maneuver_msg.poses.at(pose_id).pose.position.x = pose_id * map_width / num_samples;
-        maneuver_msg.poses.at(pose_id).pose.position.y = pose_id * map_height / num_samples;
+        maneuver_msg.poses.at(pose_id).pose.position.x = pose_id * map_width / num_samples * scale;
+        maneuver_msg.poses.at(pose_id).pose.position.y = pose_id * map_height / num_samples * scale;
         maneuver_msg.poses.at(pose_id).pose.orientation = tf::createQuaternionMsgFromYaw(pi / 4);
     }
     
-    pose_msg.pose.position.x = map_width / 2;
-    pose_msg.pose.position.y = map_height / 10;
+    pose_msg.pose.position.x = map_width / 2 * scale;
+    pose_msg.pose.position.y = map_height / 10 * scale;
     pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(pi / 2);
 
     pose_msg.header.seq = 0;

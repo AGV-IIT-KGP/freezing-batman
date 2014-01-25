@@ -30,11 +30,10 @@ namespace navigation {
             return paths;
         }
 
-        nav_msgs::Path plan(const nav_msgs::Path::ConstPtr& maneuver_ptr,
-                const geometry_msgs::PoseStamped::ConstPtr& pose_ptr,
-                const nav_msgs::OccupancyGrid::ConstPtr& map_ptr);
+        nav_msgs::Path plan(nav_msgs::Path maneuver_ptr, geometry_msgs::PoseStamped pose_ptr, nav_msgs::OccupancyGrid map_ptr);
 
     private:
+        double scale;
         bool debug;
         int num_targets;
         double spacing;

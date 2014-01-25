@@ -1,17 +1,19 @@
 /* 
  * File:   Debugger.hpp
- * Author: auro666
+ * Author: samuel
  *
- * Created on 11 January, 2014, 9:39 PM
+ * Created on 24 January, 2014, 3:25 AM
  */
 
 #ifndef DEBUGGER_HPP
 #define	DEBUGGER_HPP
 
 #include <ros/ros.h>
-#include <nav_msgs/Path.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <geometry_msgs/Pose.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <nav_msgs/Path.h>
 
 class Debugger {
 public:
@@ -20,16 +22,12 @@ public:
     Debugger(const Debugger& orig);
     virtual ~Debugger();
 
-    void SetCurrent_pose(geometry_msgs::PoseStamped current_pose) {
+    void setCurrent_pose(geometry_msgs::PoseStamped current_pose) {
         this->current_pose = current_pose.pose;
     }
 
-    void SetManeuver(nav_msgs::Path maneuver) {
-        this->maneuver = maneuver; // Meters
-    }
-
-    void SetPath(nav_msgs::Path path) {
-        this->path = path;
+    void setManeuver(nav_msgs::Path maneuver) {
+        this->maneuver = maneuver;
     }
 
     void display(int debug_mode);
@@ -42,12 +40,12 @@ private:
     cv::Mat image;
 
     geometry_msgs::Pose current_pose;
-    nav_msgs::Path path;
     nav_msgs::Path maneuver;
 
     ros::Subscriber pose_subscriber;
     ros::Subscriber maneuver_subscriber;
-    ros::Subscriber path_subscriber;
+
+    void initialize();
 };
 
 #endif	/* DEBUGGER_HPP */

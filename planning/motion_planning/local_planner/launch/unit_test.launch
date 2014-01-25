@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="local_planner" type="local_planner" name="local_planner" cwd="node" output="screen"/>
+    <node pkg="local_planner" type="local_planner_unit_tester" name="local_planner_unit_tester" cwd="node"/>
+    <node pkg="local_planner" type="local_planner_debugger" name="local_planner_debugger">
+        <param name="debug_mode" type="int" value="1"/>
+    </node>
+</launch>
+    
