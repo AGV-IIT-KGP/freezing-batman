@@ -20,7 +20,7 @@ set(AGV_FRAMEWORK libagv_framework.so)
 #uncomment if you have defined messages
 rosbuild_genmsg()
 #uncomment if you have defined services
-#rosbuild_gensrv()
+rosbuild_gensrv()
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
@@ -49,3 +49,13 @@ rosbuild_add_executable(controller
 target_link_libraries(controller ${AGV_FRAMEWORK})
 rosbuild_add_executable(controller_unit_tester src/control/UnitTester.cpp)
 rosbuild_add_executable(controller_debugger src/control/Debugger.cpp)
+
+rosbuild_add_executable(roboteq_server 
+                        src/interface/roboteq/RoboteqServer.cpp 
+                        src/interface/roboteq/RoboteqDevice.cpp)
+rosbuild_add_executable(atmega_server 
+                        src/interface/atmega/AtmegaServer.cpp
+                        src/interface/atmega/AtmegaDevice.cpp
+                        src/interface/atmega/Serial.cpp)
+rosbuild_add_executable(vehicle_interface src/interface/VehicleInterface.cpp)
+rosbuild_add_executable(simple_controller src/control/SimpleController.cpp)
