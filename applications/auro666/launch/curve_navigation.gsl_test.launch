@@ -18,5 +18,9 @@
         <param name="debug_mode" type="int" value="1"/>
     </node>
     
+    <node pkg="auro666_pilot" type="controller" name="controller" cwd="node"/>
+    <node pkg="auro666_pilot" type="controller_debugger" name="controller_debugger">
+        <param name="debug_mode" type="int" value="3"/>
+    </node>
 </launch>
     

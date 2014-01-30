@@ -30,7 +30,7 @@ void LocalPlanner::plan() {
     navigation::RoadNavigation planner;
     nav_msgs::Path path = planner.plan(maneuver, pose, map);
     for (unsigned int pose_id = 0; pose_id < path.poses.size(); pose_id++) {
-        path.poses.at(pose_id).pose.position.x *= scale;
+        path.poses.at(pose_id).pose.position.x *= scale; // Meters
         path.poses.at(pose_id).pose.position.y *= scale;
     }
     path_publisher.publish(path);

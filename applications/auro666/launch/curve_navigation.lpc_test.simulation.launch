@@ -2,10 +2,12 @@
 
 <launch>
     <node pkg="auro666" type="lpc_tester" name="lpc_tester" cwd="node"/>
+    
     <node pkg="local_planner" type="local_planner" name="local_planner" cwd="node"/>
     <node pkg="local_planner" type="local_planner_debugger" name="local_planner_debugger">
         <param name="debug_mode" type="int" value="1"/>
     </node>
+    
     <node pkg="auro666_pilot" type="controller" name="controller" cwd="node"/>
     <node pkg="auro666_pilot" type="controller_debugger" name="controller_debugger">
         <param name="debug_mode" type="int" value="3"/>

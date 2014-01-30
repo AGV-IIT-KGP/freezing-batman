@@ -23,7 +23,7 @@ public:
     GSLTest(const GSLTest& orig);
     virtual ~GSLTest();
     
-    void publishPose(const geometry_msgs::Pose::ConstPtr& pose_ptr);
+    void updatePose(const geometry_msgs::Pose::ConstPtr& pose_ptr);
     void publishState(const auro666_pilot::State::ConstPtr& state_ptr);
     void sendTestData();
 
