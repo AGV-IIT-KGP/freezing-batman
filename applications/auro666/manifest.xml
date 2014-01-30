@@ -16,6 +16,8 @@
   <depend package="agv_framework"/>
   <depend package="auro666_pilot"/>
   <depend package="local_planner"/>
+  <depend package="situational_planner"/>
+  <depend package="global_planner"/>
   
 </package>
 

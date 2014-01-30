@@ -25,9 +25,10 @@ public:
     void sendTestData();
 
 private:
-    int map_width;
-    int map_height;
+    double map_width;
+    double map_height;
     int num_samples;
+    double scale;
     double pi;
 
     // msg containers for data to be sent

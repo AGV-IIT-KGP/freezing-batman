@@ -15,6 +15,7 @@ rosbuild_init()
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+set(AGV_FRAMEWORK libagv_framework.so)
 
 #uncomment if you have defined messages
 #rosbuild_genmsg()
@@ -28,3 +29,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
+
+rosbuild_add_executable(${PROJECT_NAME} src/situational_planner.cpp src/SituationSolver.cpp)
+target_link_libraries(${PROJECT_NAME} ${AGV_FRAMEWORK})
+rosbuild_add_executable(${PROJECT_NAME}_debugger src/Debugger.cpp)

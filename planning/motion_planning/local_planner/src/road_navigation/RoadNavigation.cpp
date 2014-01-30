@@ -14,6 +14,8 @@
 namespace navigation {
 
     RoadNavigation::RoadNavigation() {
+        scale = 100;
+
         num_targets = 20;
         // In centimeters
         spacing = 10;
@@ -36,33 +38,40 @@ namespace navigation {
     RoadNavigation::~RoadNavigation() {
     }
 
-    nav_msgs::Path RoadNavigation::plan(const nav_msgs::Path::ConstPtr& maneuver_ptr,
-                                        const geometry_msgs::PoseStamped::ConstPtr& pose_ptr,
-                                        const nav_msgs::OccupancyGrid::ConstPtr& map_ptr) {
-        nav_msgs::Path target_trajectory = *maneuver_ptr;
-        geometry_msgs::Pose current_pose = pose_ptr->pose;
-        nav_msgs::OccupancyGrid map = *map_ptr;
+    nav_msgs::Path RoadNavigation::plan(nav_msgs::Path maneuver_ptr, geometry_msgs::PoseStamped pose_ptr, nav_msgs::OccupancyGrid map_ptr) {
+        nav_msgs::Path target_trajectory = maneuver_ptr;
+        geometry_msgs::Pose current_pose = pose_ptr.pose;
+        nav_msgs::OccupancyGrid map = map_ptr;
+
+        // TODO: This class shouldn't bother about this conversion. Do it outside.
+        for (unsigned int pose_id = 0; pose_id < target_trajectory.poses.size(); pose_id++) {
+            target_trajectory.poses.at(pose_id).pose.position.x *= scale;
+            target_trajectory.poses.at(pose_id).pose.position.y *= scale;
+        }
+        current_pose.position.x *= scale;
+        current_pose.position.y *= scale;
 
         std::vector<geometry_msgs::Pose> targets = getTargets(current_pose, target_trajectory);
         constructPaths(current_pose, targets);
         filterPaths(map);
         //setupObstacleCostMap(map);
-        setupTargetCostMap(target_trajectory, map);
+        //setupTargetCostMap(target_trajectory, map);
 
         nav_msgs::Path best_path;
         if (paths.size() != 0) {
             // TODO: Costs to include:
             //       1. Obstacle cost
             //       2. Steering angle cost
-            best_path = paths.at(0);
-            double min_cost = calculateTargetCost(paths.at(0));
-            for (unsigned int path_id = 0; path_id < paths.size(); path_id++) {
-                double cost = calculateTargetCost(paths.at(path_id));
-                if (cost < min_cost) {
-                    min_cost = cost;
-                    best_path = paths.at(path_id);
-                }
-            }
+            //            best_path = paths.at(0);
+            //            double min_cost = calculateTargetCost(paths.at(0));
+            //            for (unsigned int path_id = 0; path_id < paths.size(); path_id++) {
+            //                double cost = calculateTargetCost(paths.at(path_id));
+            //                if (cost < min_cost) {
+            //                    min_cost = cost;
+            //                    best_path = paths.at(path_id);
+            //                }
+            //            }
+            best_path = paths.at(paths.size() / 2);
         } else {
             ROS_WARN("[local_planner/RoadNavigation/planRoadDetection] No path found");
             ROS_DEBUG("[local_planner/RoadNavigation/planRoadDetection] current_pose = (%lf, %lf, %lf)",
@@ -168,20 +177,28 @@ namespace navigation {
 
     std::vector<geometry_msgs::Pose> RoadNavigation::getTargets(geometry_msgs::Pose current_pose,
                                                                 nav_msgs::Path target_trajectory) {
-        int closest_target_pose_id = 0;
-        float min_distance = getDistance(current_pose, target_trajectory.poses.at(0).pose);
-        for (unsigned int pose_id = 0; pose_id < target_trajectory.poses.size(); pose_id++) {
-            float distance = getDistance(current_pose, target_trajectory.poses.at(pose_id).pose);
-            if (distance < min_distance) {
-                min_distance = distance;
-                closest_target_pose_id = pose_id;
+        int closest_target_pose_id = -1;
+        if (target_trajectory.poses.size() != 0) {
+            float min_distance = getDistance(current_pose, target_trajectory.poses.at(0).pose);
+            for (unsigned int pose_id = 0; pose_id < target_trajectory.poses.size(); pose_id++) {
+                float distance = getDistance(current_pose, target_trajectory.poses.at(pose_id).pose);
+                if (distance < min_distance) {
+                    min_distance = distance;
+                    closest_target_pose_id = pose_id;
+                }
             }
         }
         ROS_DEBUG("[local_planner/RoadNavigation/getTargets] closest_target_pose_index = %d", closest_target_pose_id);
 
-        unsigned int center_target_pose_id = closest_target_pose_id;
+        std::vector<geometry_msgs::Pose> targets;
+
+        if ((closest_target_pose_id < 0) || (closest_target_pose_id >= (int) target_trajectory.poses.size())) {
+            return targets;
+        }
+
+        int center_target_pose_id = closest_target_pose_id;
         double distance_along_target_trajectory = 0;
-        while (center_target_pose_id + 1 < target_trajectory.poses.size() &&
+        while (center_target_pose_id + 1 < (int) target_trajectory.poses.size() &&
                distance_along_target_trajectory < target_lookahead) {
             distance_along_target_trajectory += getDistance(target_trajectory.poses.at(center_target_pose_id).pose,
                                                             target_trajectory.poses.at(center_target_pose_id + 1).pose);
@@ -193,7 +210,6 @@ namespace navigation {
                   target_trajectory.poses.at(center_target_pose_id).pose.position.y,
                   tf::getYaw(target_trajectory.poses.at(center_target_pose_id).pose.orientation));
 
-        std::vector<geometry_msgs::Pose> targets;
         double yaw = tf::getYaw(target_trajectory.poses.at(center_target_pose_id).pose.orientation);
         for (int target_id = -num_targets / 2; target_id <= num_targets / 2; target_id++) {
             geometry_msgs::Pose target = target_trajectory.poses.at(center_target_pose_id).pose;
@@ -228,7 +244,7 @@ namespace navigation {
             int x = (int) path.poses.at(pose_id).pose.position.x;
             int y = (int) path.poses.at(pose_id).pose.position.y;
             int map_cell_id = y * map.info.width + x;
-            if ((0 <= map_cell_id) && (map_cell_id < map.data.size())) {
+            if ((0 <= map_cell_id) && (map_cell_id < (int) map.data.size())) {
                 if (map.data.at(map_cell_id) > 50) {
                     pass = false;
                 }

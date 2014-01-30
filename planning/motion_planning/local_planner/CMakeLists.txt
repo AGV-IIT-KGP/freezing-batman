@@ -29,7 +29,7 @@ set(AGV_FRAMEWORK libagv_framework.so)
 rosbuild_add_boost_directories()
 #rosbuild_add_executable(example examples/example.cpp)
 rosbuild_add_executable(${PROJECT_NAME} 
-  src/local_planner.cpp
+  src/LocalPlanner.cpp
   src/road_navigation/RoadNavigation.cpp
   src/road_navigation/Clothoid.cpp 
   src/road_navigation/Fresnel.cpp 

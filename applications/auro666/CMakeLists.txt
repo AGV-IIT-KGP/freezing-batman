@@ -30,3 +30,4 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(example ${PROJECT_NAME})
 
 rosbuild_add_executable(lpc_tester src/curve_navigation/LPCTest.cpp)
+rosbuild_add_executable(gsl_tester src/curve_navigation/GSLTest.cpp)
