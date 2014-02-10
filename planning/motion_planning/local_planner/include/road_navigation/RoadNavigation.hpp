@@ -1,6 +1,6 @@
 /* 
  * File:   RoadNavigation.hpp
- * Author: satya
+ * Author: Shiwangi
  *
  * Created on December 13, 2013, 7:37 PM
  */
@@ -15,8 +15,7 @@
 #include <nav_msgs/MapMetaData.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "road_navigation/Trajectory.hpp"
-#include "utils/Pose2D.hpp"
+#include "road_navigation/Clothoid.hpp"
 
 namespace navigation {
 
@@ -47,7 +46,7 @@ namespace navigation {
         std::vector<nav_msgs::Path> paths;
 
         double calculateTargetCost(nav_msgs::Path path);
-        nav_msgs::Path convertToNavMsgsPath(Trajectory& trajectory);
+        nav_msgs::Path convertToNavMsgsPath(Clothoid& trajectory);
         void setupObstacleCostMap(nav_msgs::OccupancyGrid map);
         void setupTargetCostMap(nav_msgs::Path target_trajectory, nav_msgs::OccupancyGrid map);
         void filterPaths(nav_msgs::OccupancyGrid map);

@@ -32,9 +32,7 @@ rosbuild_add_executable(${PROJECT_NAME}
   src/LocalPlanner.cpp
   src/road_navigation/RoadNavigation.cpp
   src/road_navigation/Clothoid.cpp 
-  src/road_navigation/Fresnel.cpp 
-  src/road_navigation/Posture.cpp
-  src/road_navigation/Trajectory.cpp 
+  src/road_navigation/State.cpp
   )
 rosbuild_add_executable(${PROJECT_NAME}_unit_tester src/UnitTester.cpp)
 rosbuild_add_executable(${PROJECT_NAME}_debugger src/Debugger.cpp)

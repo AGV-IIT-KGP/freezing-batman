@@ -1,43 +1,51 @@
 /* 
  * File:   Clothoid.hpp
- * Author: samuel
+ * Author: Shiwangi
  *
- * Created on 21 December, 2013, 12:32 PM
+ * Created on 23 January, 2014, 6:23 PM
  */
 
 #ifndef CLOTHOID_HPP
 #define	CLOTHOID_HPP
 
-#include <ros/ros.h> // To be removed when debugging support is available in agv_framework
-#include <cmath>
 #include <iostream>
+#include <stdlib.h>
+#include <math.h>
 #include <vector>
-#include "Posture.hpp"
-#include "utils/Pose2D.hpp"
+#include <cmath>
+#include <vector>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
+#include <road_navigation/State.h>
+#include <road_navigation/ClothoidPathSegment.h>
 
-namespace navigation {
+static const double PI = 3.14159;
+static const int HEIGHT = 800, WIDTH = 800;
+using namespace std;
 
-    class Clothoid {
-    public:
-        std::vector<Pose2D*> points;
+class Clothoid {
+public:
+    int kMax;
+    int solution;
+    vector<ClothoidPathSegment> paths;
+    
+    Clothoid();
+    void getPath(State start, State end);
+    
+private:
+    bool debug;
+    PathSegment path;
+    State start, end;
 
-        Clothoid(Pose2D& start, Pose2D& goal);
-        Clothoid();
-        Clothoid(const Clothoid& orig);
-        void calculateParameters();
-        void generate();
-        double getSigma();
-        virtual ~Clothoid();
-    private:
-        double sigma;
-        double arc_length;
-        double kMax;
-        Posture start, goal;
+    double calcD(double alpha);
+    int fresnel(double x, double &costerm, double &sinterm);
+    void getTrajectory();
+    void getXY(double s, double a, double b, double c, double& x, double& y);
+    double inRange(double theta);
+    int signum(double a);
+};
 
-        int signum(double x);
-        void solveForXY(double s, double a, double b, double c, double& x, double& y);
-    };
-}
+
 
 #endif	/* CLOTHOID_HPP */
 
