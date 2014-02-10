@@ -53,7 +53,7 @@ namespace navigation {
 
         std::vector<geometry_msgs::Pose> targets = getTargets(current_pose, target_trajectory);
         constructPaths(current_pose, targets);
-        //filterPaths(map);
+        filterPaths(map);
         //setupObstacleCostMap(map);
         //setupTargetCostMap(target_trajectory, map);
 
@@ -74,6 +74,14 @@ namespace navigation {
             best_path = paths.at(paths.size() / 2);
         } else {
             ROS_WARN("[local_planner/RoadNavigation/planRoadDetection] No path found");
+            ROS_DEBUG("[local_planner/RoadNavigation/planRoadDetection] current_pose = (%lf, %lf, %lf)",
+                      current_pose.position.x,
+                      current_pose.position.y,
+                      tf::getYaw(current_pose.orientation));
+            ROS_DEBUG("[local_planner/RoadNavigation/planRoadDetection] center target = (%lf, %lf, %lf)",
+                      targets.at(targets.size() / 2).position.x,
+                      targets.at(targets.size() / 2).position.y,
+                      tf::getYaw(targets.at(targets.size() / 2).orientation));
         }
 
         return best_path;

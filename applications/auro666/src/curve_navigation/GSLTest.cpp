@@ -25,7 +25,7 @@ GSLTest::GSLTest(ros::NodeHandle node_handle) {
     map_publisher = node_handle.advertise<nav_msgs::OccupancyGrid>("environment/map", 10);
 
     state_publisher = node_handle.advertise<auro666_pilot::State>("vehicle_server/state", 100);
-    pose_subscriber = node_handle.subscribe("simulator/pose", 2, &GSLTest::publishPose, this);
+    pose_subscriber = node_handle.subscribe("simulator/pose", 2, &GSLTest::updatePose, this);
     state_subscriber = node_handle.subscribe("simulator/state", 2, &GSLTest::publishState, this);
 }
 
@@ -35,13 +35,10 @@ GSLTest::GSLTest(const GSLTest& orig) {
 GSLTest::~GSLTest() {
 }
 
-void GSLTest::publishPose(const geometry_msgs::Pose::ConstPtr& pose_ptr) {
-    pose_msg.pose.position.x = pose_ptr->position.x * 100;
-    pose_msg.pose.position.y = pose_ptr->position.y * 100;
+void GSLTest::updatePose(const geometry_msgs::Pose::ConstPtr& pose_ptr) {
+    pose_msg.pose.position.x = pose_ptr->position.x;
+    pose_msg.pose.position.y = pose_ptr->position.y;
     pose_msg.pose.orientation = pose_ptr->orientation;
-    pose_msg.header.stamp = ros::Time::now();
-    pose_publisher.publish(pose_msg);
-    pose_msg.header.seq += 1;
 }
 
 void GSLTest::publishState(const auro666_pilot::State::ConstPtr& state_ptr) {
@@ -64,9 +61,9 @@ void GSLTest::initialize() {
     map_width = 6000;
     map_height = 3000;
 
-    pose_msg.pose.position.x = 5; // Meters
-    pose_msg.pose.position.y = 5;
-    pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(PI / 4);
+    pose_msg.pose.position.x = 1; // Meters
+    pose_msg.pose.position.y = 1;
+    pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(0);
 
     pose_msg.header.seq = 0;
     map_msg.header.seq = 0;
