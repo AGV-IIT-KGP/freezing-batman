@@ -8,6 +8,7 @@
 // TODO: Send a dummy maneuver -> test L, U, S and 8
 
 #include <curve_navigation/LPCTest.hpp>
+#include <constants.hpp>
 
 LPCTest::LPCTest() {
 }
@@ -18,6 +19,10 @@ LPCTest::LPCTest(ros::NodeHandle node_handle) {
     map_height = 1000;
     num_samples = 1000;
     pi = 3.14;
+
+    pose_msg.pose.position.x = 1; // Meters
+    pose_msg.pose.position.y = 1;
+    pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(PI / 4);
 
     // TODO: Obtain this data from simulator and republish it
     map_msg.info.height = map_height;
@@ -86,9 +91,9 @@ void LPCTest::sendTestData() {
     //    pose_msg.pose.position.x = 0;
     //    pose_msg.pose.position.y = 0;
     //    pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-    //    pose_msg.header.seq = 0;
-    //    pose_msg.header.stamp = ros::Time::now();
-    //    pose_publisher.publish(pose_msg);
+    pose_msg.header.seq = 0;
+    pose_msg.header.stamp = ros::Time::now();
+    pose_publisher.publish(pose_msg);
 }
 
 int main(int argc, char **argv) {
