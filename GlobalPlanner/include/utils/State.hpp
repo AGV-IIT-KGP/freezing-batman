@@ -30,7 +30,7 @@ namespace navigation    {
         inline const double theta()     const       { return theta_;        }
         inline const double curvature() const       { return curvature_;    }
         
-        //removue this
+        //TODO : removue this
         inline State(){    }
         inline State(int xCordinate, int yCordinate, double theta, double curvature ) : xCordinate_{xCordinate}, yCordinate_{yCordinate}, theta_{inRange(theta)}, curvature_{curvature}    {}
         

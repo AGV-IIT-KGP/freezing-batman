@@ -24,19 +24,21 @@ namespace navigation {
         {
             const GridState currentState=openSet.top();
             openSet.pop();
-            xValueP=currentState.x();
-            yValueP=currentState.y();
-            openNodes.at<uchar>(xValueP,yValueP)=0;
-            closedNodes.at<uchar>(xValueP,yValueP)=1;
+            auto currentX=currentState.x();
+            auto currentY=currentState.y();
+            openNodes.at<uchar>(currentX, currentY)=0;
+            closedNodes.at<uchar>(currentX, currentY)=1;
             
             if(currentState == target)
             {
                 reconstructPath(currentState, start, target);
                 return ;
             }
-            auto& neighbors = neighborNodes(currentState,target);
+            const auto neighbors = neighborNodes(currentState,target);
             populateOpenList(openSet, neighbors);
         }
+        
+        std::cerr<<"NO PATH FOUND"<<std::endl;
         return ; // no route found
         
     }
@@ -99,10 +101,13 @@ namespace navigation {
     void SdcPlanner::tester()
     {
         addObstacles();
-        
-        
         srand((unsigned int) time(nullptr));
         State current { rand()%MAP_WIDTH, rand()%MAP_HEIGHT, 0, 0 }, target { rand()%MAP_WIDTH, rand()%MAP_HEIGHT, 0, 0 };
+        
+        std::cout<<"Start Point : "<<current.x()<<" "<<current.y()<<" ";
+        std::cout<<"Target Point : "<<target.x()<<" "<<target.y()<<" ";
+
+        
         clock_t start = clock();
         plannerWithSimpleAstar(current, target);
         if(pathToTarget=="") std::cout<<"An empty route generated!"<<std::endl;
@@ -196,15 +201,15 @@ namespace navigation {
         }
     }
     
-    const std::vector<GridState>& SdcPlanner::neighborNodes(const GridState& current,const GridState& target)
+    const std::vector<GridState> SdcPlanner::neighborNodes(const GridState& current,const GridState& target)
     {
         //TODO remove i
         int i=0;
         
         std::vector<GridState> neighbors;
 
-        xValueP = current.x();
-        yValueP = current.y();
+        auto xValueP = current.x();
+        auto yValueP = current.y();
         for(auto& direction : directionOfGrids)
         {
             xValueNeighbor=xValueP+direction.x();
@@ -221,7 +226,8 @@ namespace navigation {
             }
             i++;
         }
-        return std::move(neighbors);
+
+        return neighbors;
     }
     
     void SdcPlanner::populateOpenList(sPriorityQueue<GridState>& openSet, const std::vector<GridState>& neighbors)  {

@@ -23,13 +23,13 @@
 #include <ctime>
 #include <algorithm>
 #include <iterator>
-#include "a_star_grid/GridState.hpp"
+#include "GridState.hpp"
 
 namespace navigation {
     
     
     
-       
+    
     template < typename T,typename Sequence = std::vector<T> , typename CompareFunction = std::less<typename Sequence::value_type> >
     class sPriorityQueue : public std::priority_queue<T,Sequence, CompareFunction>
     {
@@ -69,12 +69,11 @@ namespace navigation {
         Direction directionOfGrids[NUMBER_OF_DIRECTIONS] = { Direction(1, 0, 0), Direction(1, 1, 0), Direction(0, 1, 0), Direction(-1, 1, 0), Direction(-1, 0, 0), Direction(-1, -1, 0), Direction(0, -1, 0), Direction(1, -1, 0), };
         
         int xValueNeighbor,yValueNeighbor;
-        int xValueP,yValueP;
         void plannerWithSimpleAstar(const State& start, const State& target);
-
+        
         std::string pathToTarget;
         void reconstructPath(const GridState& current, const GridState& start, const GridState& target);
-        const std::vector<GridState>& neighborNodes(const GridState& current, const GridState& target);
+        const std::vector<GridState> neighborNodes(const GridState& current, const GridState& target);
         void populateOpenList(sPriorityQueue<GridState>& openSet, const std::vector<GridState>& neighbors);
         void addObstacles();
         
