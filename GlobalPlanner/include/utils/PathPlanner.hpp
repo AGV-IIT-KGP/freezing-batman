@@ -19,7 +19,7 @@ namespace navigation {
         
     public:
         
-        virtual const PathPtr traversablePath(const State& start, const State& goal)const = 0;
+        virtual PathPtr traversablePath(const State& start, const State& goal)const = 0;
 
     };
     

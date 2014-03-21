@@ -7,14 +7,13 @@
 //
 
 #include <iostream>
-#include "global_planner/GlobalPlanner.hpp"
-#include <tbb/tbb.h>
-#include <boost/graph/astar_search.hpp>
+#include "utils/State.hpp"
 #include "ss_planner/SSPlanner.hpp"
-#include "a_star_grid/AStarGrid.hpp"
+
 int main(int argc, const char * argv[])
 {
 
+	srand((unsigned int)time(NULL));
     // insert code here...
     std::cout << "Hello, World!\n";
     
@@ -31,9 +30,11 @@ int main(int argc, const char * argv[])
     
     // Testing AStarGrid
     
+	navigation::SSPlanner planner;
+
     while (1) {
-        navigation::SdcPlanner planner;
-        planner.tester();
+        planner.traversablePath(navigation::State(rand()%1000, rand()%1000, 0, 0), navigation::State(rand()%1000, rand()%1000, 0, 0));
+		planner.showPath();
     }
     
     return 0;

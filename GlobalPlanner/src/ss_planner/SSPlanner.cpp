@@ -13,14 +13,14 @@
 #include <functional>
 #include <array>
 
-#include "SSPriority_queue.hpp"
+#include "ss_planner/SSPriority_queue.hpp"
 
 namespace navigation {
     
     
     SSPlanner::SSPlanner()  {
 
-        img = cv::Mat{cvSize(1000, 1000),CV_8UC3,cvScalarAll(0)};
+        img = cv::Mat{cvSize(IMG_WIDTH, IMG_HEIGHT),CV_8UC3,cvScalarAll(0)};
         seeds = SS::dyarray<Seed>(NO_OF_SEEDS);
         
         seeds[0] = Seed(-4, 0, -M_PI, 4);
@@ -31,12 +31,12 @@ namespace navigation {
         
     }
     
-    const double SSPlanner::heuristicCost(const SSState &current, const SSState &goal) const  {
+    double SSPlanner::heuristicCost(const SSState &current, const SSState &goal) const  {
             return sqrt(current.distanceSqTo(goal));
     }
     
     // make array immutable
-    const std::array<SSState, NO_OF_NEIGHBORS>& SSPlanner::neighborNodes(const SSState& current) const    {
+    std::array<SSState, NO_OF_NEIGHBORS> SSPlanner::neighborNodes(const SSState& current) const    {
         
         std::array<SSState, NO_OF_NEIGHBORS> neighbors ;
         
@@ -48,15 +48,23 @@ namespace navigation {
             ++i;
         }
         
-        return std::move(neighbors);
+        return neighbors;
     }
     
-    const PathPtr SSPlanner::reconstructPath(const std::unordered_map<SSState, SSState>& came_from, const SSState& goal) const {
-        
+    PathPtr SSPlanner::reconstructPath(const std::unordered_map<SSState, SSState>& came_from, const SSState& current, const SSState& start) const {
+	
+		SSState temp(current);
+        while ( temp != start) {
+			
+			cv::circle(img, cvPoint(temp.x(), temp.y()), 5, cvScalarAll(255), -1);
+			temp = came_from[temp];
+			
+		}
+		
         return nullptr;
     }
 
-    const PathPtr SSPlanner::traversablePath(const State& start_, const State& goal_)  const {
+    PathPtr SSPlanner::traversablePath(const State& start_, const State& goal_)  const {
         
         const SSState start{start_,0,heuristicCost(start_, goal_)};
         const SSState goal{goal_};
@@ -82,7 +90,7 @@ namespace navigation {
             const SSState current = openSet.top();
             
             if (current == goal)
-                return reconstructPath(cameFrom, goal);
+                return reconstructPath(cameFrom, current, start);
 
             openSet.pop();
             
@@ -96,10 +104,12 @@ namespace navigation {
                     continue;
                 }
                 
-                //neighbor.updateCost();
+//                neighbor.updateCost();
                 cameFrom[neighbor] = current;
                 
-                openSet.updateElement(neighbor, neighbor);
+				openSet.push(neighbor);
+				
+//                openSet.updateElement(neighbor, neighbor);
             
             }
            
@@ -108,4 +118,12 @@ namespace navigation {
         
         return nullptr;
     }
+
+
+	void SSPlanner::showPath()	{
+		
+		cv::imshow("SS_PLANNER", img);
+		cv::waitKey(0);
+		
+	}
 }

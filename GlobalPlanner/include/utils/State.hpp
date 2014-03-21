@@ -50,6 +50,10 @@ namespace navigation    {
         inline bool operator==(const State& b) const    {
             return xCordinate_==b.x() && yCordinate_==b.y() && theta_==b.theta() && curvature_==curvature();
         }
+    	
+		inline bool operator!=(const State& b) const    {
+            return !(xCordinate_==b.x() && yCordinate_==b.y() && theta_==b.theta() && curvature_==curvature());
+        }
         
         const std::string toString() const;
         
