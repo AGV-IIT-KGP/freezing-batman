@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 2.4.6)
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O3 -std=c++0x")
+endif()
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 
 # Set the build type.  Options are:
@@ -15,7 +18,8 @@ rosbuild_init()
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-set(UTILS libUtils.so)
+set(AGV_FRAMEWORK libagv_framework.so)
+#set(UTILS libUtils.so)
 
 #uncomment if you have defined messages
 #rosbuild_genmsg()
@@ -34,6 +38,7 @@ rosbuild_add_executable(
 encoder src/encoder.cpp
 src/encoder.h
 src/encoder_thread.cpp
+src/serial_lnx.cpp
 )
 #target_link_libraries(example ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} ${UTILS})
+target_link_libraries(encoder ${AGV_FRAMEWORK})

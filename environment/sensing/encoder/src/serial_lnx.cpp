@@ -7,7 +7,7 @@
 #include <stdlib.h>
 Tserial::Tserial()
 {
-
+    return;
 }
 
 int Tserial::connect()

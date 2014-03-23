@@ -1,8 +1,8 @@
 #include "encoder.h"
 
-int main() {
+int main(int argc, char**argv) {
     
-    encoder_space::Encoder encoder(ENCODER_COM_PORT, ENCODER_BAUD_RATE);
+    encoder_space::Encoder encoder(ENCODER_COM_PORT, ENCODER_BAUD_RATE, argc, argv);
     encoder_space::EncoderData encoderData;
 
     ros::NodeHandle n;

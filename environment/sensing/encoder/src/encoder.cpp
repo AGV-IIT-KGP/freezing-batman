@@ -1,14 +1,31 @@
 #include "encoder.h"
+#include "serial_lnx.h"
 
 namespace encoder_space {
 	
-	Encoder::Encoder(char *port, int baudRate) {
+	Encoder::Encoder(char *port, int baudRate, int argc, char **argv) : Sensor(argc, argv) {
 		
 		serialConnection = new Tserial();
         serialConnection->connect(BOT_COM_PORT, BOT_BAUD_RATE, spNONE);
         usleep(100);
         
 	}
+
+    bool Encoder::connect(){
+        return true;
+    }
+
+    bool Encoder::disconnect(){
+        return true;
+    }
+
+    bool Encoder::fetch() {
+        return true;
+    }
+
+    void Encoder::publish(int frame_rate) {
+        return;
+    }
 	
 	EncoderData Encoder::fetchEncoderData() {
 		
