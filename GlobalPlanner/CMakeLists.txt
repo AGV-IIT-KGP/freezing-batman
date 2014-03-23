@@ -13,12 +13,35 @@ ADD_DEFINITIONS(
 )
 find_package(OpenCV REQUIRED )
 
-add_executable(globalPlannerTester src/GlobalPlannerTester.cpp
-src/global_planner/GlobalPlanner.cpp  src/a_star_grid/AStarGrid.cpp
-src/utils/State.cpp src/utils/Path.cpp src/utils/PathSegment.cpp)
+add_executable(	globalPlannerTester 
+	src/GlobalPlannerTester.cpp
+	src/global_planner/GlobalPlanner.cpp  
+	src/a_star_grid/AStarGrid.cpp
+	src/utils/State.cpp 
+	src/utils/Path.cpp 
+	src/utils/PathSegment.cpp)
 
-#add_executable(SSPlannerTester src/SSPlannerTester.cpp src/ss_planner/SSPlanner.cpp src/ss_planner/SSPath.cpp src/ss_planner/SSState.cpp src/ss_planner/SSPathSegment.cpp src/ss_planner/SSPriority_queue.cpp)
+add_executable(	SSPlannerTester
+	src/SSPlannerTester.cpp 
+	src/ss_planner/SSPlanner.cpp 
+	src/ss_planner/SSPath.cpp 
+	src/ss_planner/SSState.cpp 
+	src/ss_planner/SSPathSegment.cpp 
+	src/ss_planner/SSPriority_queue.cpp
+	src/utils/State.cpp 	
+	src/utils/Path.cpp 
+	src/utils/PathSegment.cpp)
+
 #add_executable(aStarSeedTester src/AStarSeedTester.cpp src/a_star_seed/AStarSeed.cpp )
-add_executable(aStarGridTester src/AStarGridTester.cpp src/a_star_grid/AStarGrid.cpp src/a_star_grid/GridState.cpp src/utils/State.cpp src/utils/Path.cpp src/utils/PathSegment.cpp)
+
+add_executable(aStarGridTester 
+	src/AStarGridTester.cpp 
+	src/a_star_grid/AStarGrid.cpp 
+	src/a_star_grid/GridState.cpp 
+	src/utils/State.cpp 	
+	src/utils/Path.cpp 
+	src/utils/PathSegment.cpp)
+
 target_link_libraries( globalPlannerTester ${OpenCV_LIBS} )
 target_link_libraries( aStarGridTester ${OpenCV_LIBS} )
+target_link_libraries( SSPlannerTester ${OpenCV_LIBS} )

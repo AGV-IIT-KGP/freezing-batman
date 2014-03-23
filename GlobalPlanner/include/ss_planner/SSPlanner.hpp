@@ -21,7 +21,7 @@
 
 static const unsigned int NO_OF_NEIGHBORS = 11;
 static const unsigned int NO_OF_SEEDS = 5;
-
+static const unsigned int IMG_HEIGHT = 1000, IMG_WIDTH = 1000;
 
 namespace navigation {
     
@@ -38,11 +38,11 @@ namespace navigation {
         // TODO : function will be const or not
         
         SSPlanner();
-        
-        const PathPtr traversablePath(const State& start, const State& goal) const;
-        const double heuristicCost(const SSState& start, const SSState& goal) const;
-        const std::array<SSState, NO_OF_NEIGHBORS>& neighborNodes(const SSState& current) const;
-        const PathPtr reconstructPath(const std::unordered_map<SSState, SSState>& came_from, const SSState& goal) const;
+        void showPath();
+        PathPtr traversablePath(const State& start, const State& goal) const;
+        double heuristicCost(const SSState& start, const SSState& goal) const;
+        std::array<SSState, NO_OF_NEIGHBORS> neighborNodes(const SSState& current) const;
+        PathPtr reconstructPath(const std::unordered_map<SSState, SSState>& came_from, const SSState& current, const SSState& start) const;
         void loadSeeds() const;
     };
     
