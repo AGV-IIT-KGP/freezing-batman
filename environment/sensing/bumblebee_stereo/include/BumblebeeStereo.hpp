@@ -8,7 +8,7 @@
 #ifndef BUMBLEBEESTEREO_HPP
 #define	BUMBLEBEESTEREO_HPP
 
-#include <Environment/Sensor.hpp>
+#include <environment/Sensor.hpp>
 
 class BumblebeeStereo : public environment::Sensor {
 public:
