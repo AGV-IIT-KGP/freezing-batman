@@ -2,12 +2,14 @@ cmake_minimum_required (VERSION 2.8)
 project (GlobalPlanner)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+#SET (CMAKE_C_COMPILER             "/usr/bin/clang")
+#SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++")
 
 
 #TODO : for gcc 4.8.1 only -std flag
 ADD_DEFINITIONS(
     -std=c++11 # Or -std=c++0x
-    -stdlib=libc++# Other flags
+#    -stdlib=libc++# Other flags
 )
 find_package(OpenCV REQUIRED )
 
