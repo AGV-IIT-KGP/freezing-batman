@@ -9,7 +9,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 #TODO : for gcc 4.8.1 only -std flag
 ADD_DEFINITIONS(
     -std=c++11 # Or -std=c++0x
-#    -stdlib=libc++# Other flags
+    -stdlib=libc++# Other flags
 )
 find_package(OpenCV REQUIRED )
 
@@ -50,3 +50,4 @@ add_executable(aStarGridTester
 target_link_libraries( globalPlannerTester ${OpenCV_LIBS} )
 target_link_libraries( aStarGridTester ${OpenCV_LIBS} )
 target_link_libraries( SSPlannerTester ${OpenCV_LIBS} )
+target_link_libraries( aStarSeedTester ${OpenCV_LIBS} )
