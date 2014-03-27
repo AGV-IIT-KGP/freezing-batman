@@ -12,7 +12,7 @@ ADD_DEFINITIONS(
 find_package(OpenCV REQUIRED )
 
 add_executable(	globalPlannerTester 
-	src/GlobalPlannerTester.cpp
+	src/global_planner/GlobalPlannerTester.cpp
 	src/global_planner/GlobalPlanner.cpp  
 	src/a_star_grid/AStarGrid.cpp
 	src/utils/State.cpp 
@@ -20,7 +20,7 @@ add_executable(	globalPlannerTester
 	src/utils/PathSegment.cpp)
 
 add_executable(	SSPlannerTester
-	src/SSPlannerTester.cpp 
+	src/ss_planner/SSPlannerTester.cpp 
 	src/ss_planner/SSPlanner.cpp 
 	src/ss_planner/SSPath.cpp 
 	src/ss_planner/SSState.cpp 
@@ -30,10 +30,15 @@ add_executable(	SSPlannerTester
 	src/utils/Path.cpp 
 	src/utils/PathSegment.cpp)
 
-#add_executable(aStarSeedTester src/AStarSeedTester.cpp src/a_star_seed/AStarSeed.cpp )
+add_executable(aStarSeedTester 
+	src/a_star_seed/AStarSeedTester.cpp 
+	src/a_star_seed/AStarSeed.cpp 
+	src/a_star_seed/StateOfCar.cpp 
+	src/a_star_seed/SSPriority_queue.cpp 
+	src/a_star_seed/State.cpp)
 
 add_executable(aStarGridTester 
-	src/AStarGridTester.cpp 
+	src/a_star_grid/AStarGridTester.cpp 
 	src/a_star_grid/AStarGrid.cpp 
 	src/a_star_grid/GridState.cpp 
 	src/utils/State.cpp 	
