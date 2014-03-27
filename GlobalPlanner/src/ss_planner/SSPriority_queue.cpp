@@ -6,4 +6,4 @@
 //  Copyright (c) 2014 Satya Prakash. All rights reserved.
 //
 
-#include "ss_planner/SSPriority_queue.hpp"
+#include "SSPriority_queue.hpp"

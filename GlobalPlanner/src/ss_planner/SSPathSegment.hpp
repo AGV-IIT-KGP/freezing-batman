@@ -9,13 +9,14 @@
 #ifndef __GlobalPlanner__SSPathSegment__
 #define __GlobalPlanner__SSPathSegment__
 
-#include "utils/PathSegment.hpp"
+#include "PathSegment.hpp"
 #include <iostream>
 
 namespace navigation {
     
     class SSPathSegment :public PathSegment {
-        
+    public:
+        SSPathSegment(const double lengthOfPathSegment, const std::vector<SSState>& pathSegmentPoints): PathSegment(lengthOfPathSegment, pathSegmentPoints) {}
     };
     
     typedef std::shared_ptr<SSPathSegment> SSPathSegmentPtr;

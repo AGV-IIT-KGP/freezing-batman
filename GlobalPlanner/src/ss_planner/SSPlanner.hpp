@@ -9,29 +9,35 @@
 #ifndef __GlobalPlanner__SSPlanner__
 #define __GlobalPlanner__SSPlanner__
 
-#include "global_planner/GlobalPlanner.hpp"
-#include "ss_planner/SSPath.hpp"
-#include "ss_planner/SSState.hpp"
-#include "ss_planner/SSPriority_queue.hpp"
-#include "utils/dyarray.hpp"
-#include "utils/PathPlanner.hpp"
+#include "SSPath.hpp"
+#include "SSState.hpp"
+#include "SSPathSegment.hpp"
+#include "SSPriority_queue.hpp"
+#include "dyarray.hpp"
+#include "PathPlanner.hpp"
 #include <unordered_map>
-#include <opencv/cv.hpp>
-#include <opencv/highgui.h>
-#include "utils/Seed.hpp"
+#include <opencv2/cv.h>
+#include <OpenCV2/highgui.h>
+#include "Seed.hpp"
+#include <array>
 
-static const unsigned int NO_OF_NEIGHBORS = 11;
-static const unsigned int NO_OF_SEEDS = 5;
-static const unsigned int IMG_HEIGHT = 1000, IMG_WIDTH = 1000;
+static const unsigned int NO_OF_NEIGHBORS = 8;
+static const unsigned int NO_OF_SEEDS = 8;
+static const unsigned int IMG_HEIGHT = 800, IMG_WIDTH = 800;
+static const int seedLength = 10;
 
 namespace navigation {
     
+    
+    enum class Heuristic    {
+        SS_HEUCLIDIAN, SS_HMANHATTAN,SS_TEMP
+    };
 
     class SSPlanner : public PathPlanner {
         
 
-        cv::Mat img;
-        SS::dyarray<Seed> seeds;
+        mutable cv::Mat img;
+        std::array<Seed, NO_OF_SEEDS> seeds;
         
 //        static const unsigned int NO_OF_NEIGHBORS = 11;
 
@@ -39,11 +45,12 @@ namespace navigation {
         // TODO : function will be const or not
         
         SSPlanner();
-        void showPath();
+        void showPath(PathPtr path) const;
+        bool isCloseTo(const SSState& current, const SSState& goal) const;
         PathPtr traversablePath(const State& start, const State& goal) const;
-        double heuristicCost(const SSState& start, const SSState& goal) const;
-        std::array<SSState, NO_OF_NEIGHBORS> neighborNodes(const SSState& current) const;
-        PathPtr reconstructPath(const std::unordered_map<SSState, SSState>& came_from, const SSState& current, const SSState& start) const;
+        double heuristicCost(const SSState& start, const SSState& goal, Heuristic hueristic) const;
+        std::array<SSState, NO_OF_NEIGHBORS> neighborNodes(const SSState& current, const SSState& goal) const;
+        PathPtr reconstructPath(std::unordered_map<SSState, SSState>& came_from, const SSState& current, const SSState& start) const;
         void loadSeeds() const;
     };
     

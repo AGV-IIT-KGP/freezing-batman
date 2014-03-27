@@ -6,4 +6,4 @@
 //  Copyright (c) 2014 Satya Prakash. All rights reserved.
 //
 
-#include "ss_planner/SSPathSegment.hpp"
+#include "SSPathSegment.hpp"

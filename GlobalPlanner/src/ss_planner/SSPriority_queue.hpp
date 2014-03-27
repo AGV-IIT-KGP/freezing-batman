@@ -14,18 +14,18 @@
 #include <iterator>
 
 
-namespace std {
+namespace SS {
     
     
 
     template < typename T,typename Sequence = std::vector<T> , typename CompareFunction = std::less<typename Sequence::value_type> >
-    class SSPriorityQueue : public std::priority_queue<T,Sequence, CompareFunction>
+    class PriorityQueue : public std::priority_queue<T,Sequence, CompareFunction>
     {
     public:
         
-        SSPriorityQueue() : priority_queue<T>()    {}
+        PriorityQueue() : std::priority_queue<T>()    {}
         
-        SSPriorityQueue(initializer_list<T> t) : SSPriorityQueue()   {
+        PriorityQueue(std::initializer_list<T> t) : PriorityQueue()   {
             
             this->c = {t};
         }

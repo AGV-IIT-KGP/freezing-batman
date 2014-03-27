@@ -9,7 +9,7 @@
 #ifndef __GlobalPlanner__SSPath__
 #define __GlobalPlanner__SSPath__
 
-#include "utils/Path.hpp"
+#include "Path.hpp"
 
 namespace navigation {
     
