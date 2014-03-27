@@ -22,7 +22,7 @@ namespace navigation    {
         int xCordinate_, yCordinate_;
         double theta_, curvature_;
         
-        static const double inRange(const double theta_) ;
+        static const double inRange(const double theta_) ;//why const return?
         
     public:
         inline const int x()         const       { return xCordinate_;   }
