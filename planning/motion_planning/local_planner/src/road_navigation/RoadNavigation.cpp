@@ -1,6 +1,6 @@
 /* 
  * File:   RoadNavigation.cpp
- * Author: Shiwangi
+ * Author: satya
  * 
  * Created on December 13, 2013, 7:37 PM
  */
@@ -15,6 +15,7 @@ namespace navigation {
 
     RoadNavigation::RoadNavigation() {
         scale = 100;
+
         num_targets = 20;
         // In centimeters
         spacing = 10;
@@ -47,7 +48,6 @@ namespace navigation {
             target_trajectory.poses.at(pose_id).pose.position.x *= scale;
             target_trajectory.poses.at(pose_id).pose.position.y *= scale;
         }
-        
         current_pose.position.x *= scale;
         current_pose.position.y *= scale;
 
@@ -98,22 +98,14 @@ namespace navigation {
         return cost;
     }
 
-    double minuspi2pi(double angle) {
-        if (angle < PI) {
-            return angle;
-        } else {
-            return angle - 2 * PI;
-        }
-    }
-
-    nav_msgs::Path RoadNavigation::convertToNavMsgsPath(Clothoid& trajectory) {
+    nav_msgs::Path RoadNavigation::convertToNavMsgsPath(Trajectory& trajectory) {
         nav_msgs::Path path;
-        for (unsigned int segment_id = 0; segment_id < trajectory.paths.size(); segment_id++) {
-            for (unsigned int point_id = 0; point_id < trajectory.paths.at(segment_id).path.size(); point_id++) {
+        for (unsigned int segment_id = 0; segment_id < trajectory.segments.size(); segment_id++) {
+            for (unsigned int point_id = 0; point_id < trajectory.segments.at(segment_id)->points.size(); point_id++) {
                 geometry_msgs::PoseStamped pose;
-                pose.pose.position.x = trajectory.paths[segment_id].path[point_id].x;
-                pose.pose.position.y = trajectory.paths[segment_id].path[point_id].y;
-                pose.pose.orientation = tf::createQuaternionMsgFromYaw(minuspi2pi(trajectory.paths[segment_id].path[point_id].theta));
+                pose.pose.position.x = trajectory.segments.at(segment_id)->points.at(point_id)->x;
+                pose.pose.position.y = trajectory.segments.at(segment_id)->points.at(point_id)->y;
+                pose.pose.orientation = tf::createQuaternionMsgFromYaw(trajectory.segments.at(segment_id)->points.at(point_id)->theta);
                 path.poses.push_back(pose);
             }
         }
@@ -172,27 +164,14 @@ namespace navigation {
         return sqrt(pow(pose1.position.x - pose2.position.x, 2) + pow(pose1.position.y - pose2.position.y, 2));
     }
 
-    double zero2pi(double angle) {
-        if (angle >= 0) {
-            return angle;
-        } else {
-            return 2 * PI - fabs(angle);
-        }
-    }
-
     void RoadNavigation::constructPaths(geometry_msgs::Pose current_pose,
                                         std::vector<geometry_msgs::Pose> targets) {
         for (unsigned int target_id = 0; target_id < targets.size(); target_id++) {
-            Clothoid curve;
-            State start(current_pose.position.x, current_pose.position.y, zero2pi(tf::getYaw(current_pose.orientation)));
-            State goal(targets.at(target_id).position.x, targets.at(target_id).position.y, zero2pi(tf::getYaw(targets.at(target_id).orientation)));
-            curve.getPath(start, goal);
-            if(curve.solution==0){
-                std::cout<<"The Points are too close"<<std::endl;
-                continue;
-            }                
-            else
-            paths.push_back(convertToNavMsgsPath(curve));
+            Trajectory trajectory;
+            trajectory.setStart(current_pose.position.x, current_pose.position.y, tf::getYaw(current_pose.orientation));
+            trajectory.setGoal(targets.at(target_id).position.x, targets.at(target_id).position.y, tf::getYaw(targets.at(target_id).orientation));
+            trajectory.generate();
+            paths.push_back(convertToNavMsgsPath(trajectory));
         }
     }
 

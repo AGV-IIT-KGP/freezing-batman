@@ -8,9 +8,9 @@
 #ifndef ASTARPLANNER_HPP
 #define	ASTARPLANNER_HPP
 
-#include <GlobalPlanner.hpp>
+#include <planning/motion_planner/GlobalPlanner.hpp>
 
-class AStarPlanner : public GlobalPlanner {
+class AStarPlanner : public planning::GlobalPlanner {
 public:
     AStarPlanner();
     AStarPlanner(const AStarPlanner& orig);
