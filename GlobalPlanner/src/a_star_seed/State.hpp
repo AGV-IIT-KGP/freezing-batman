@@ -19,8 +19,8 @@ namespace navigation    {
         
         // TODO: find a way make it immutable
         // load in swapping after making these const
-        int xCordinate_ = 0, yCordinate_ = 0;
-        int theta_ = 0, curvature_ = 0;
+        int xCordinate_ , yCordinate_;
+        int theta_, curvature_ ;
         
         static const double inRange(const double theta_) ;
         
@@ -87,7 +87,8 @@ namespace navigation    {
         
     };
     
-    typedef std::shared_ptr<State> StatePtr;
+    // typedef std::shared_ptr<State> StatePtr;
+    typedef State* StatePtr;
 }
 
 

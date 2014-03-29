@@ -8,8 +8,7 @@
 
 
 #include <iostream>
-#include <chrono>
-
+#include <sys/time.h>
 #include "AStarSeed.h"
 
 int main(){
@@ -32,16 +31,23 @@ int main(){
         planner.addObstacles(600, 300, 20+rand()%50);
         
         
-        std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
+        // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
+        struct timeval t,c;
+        gettimeofday(&t,NULL);
         
-        auto path = planner.findPathToTargetWithAstar(botLocation, targetLocation);
+        std::vector<navigation::StateOfCar> path = planner.findPathToTargetWithAstar(botLocation, targetLocation);
         
-        std::chrono::steady_clock::time_point endC=std::chrono::steady_clock::now();
+        // std::chrono::steady_clock::time_point endC=std::chrono::steady_clock::now();
         
+        gettimeofday(&c,NULL);
+        double td = t.tv_sec + t.tv_usec/1000000.0;
+        double cd = c.tv_sec + c.tv_usec/1000000.0;
         planner.showPath(path);
-        long long takenTime=std::chrono::duration_cast<std::chrono::microseconds > (endC - startC).count();
-        std::cout<<"Taken time: "<<takenTime<<std::endl;
-        std::cout<<"FPS : "<<(1000000.0)/takenTime<<std::endl;
+        // long long takenTime=std::chrono::duration_cast<std::chrono::microseconds > (endC - startC).count();
+        // std::cout<<"Taken time: "<<takenTime<<std::endl;
+        std::cout<<"FPS:"<< 1.0/(cd-td) <<std::endl; 
+
+        // std::cout<<"FPS : "<<(1000000.0)/takenTime<<std::endl;
 
     }
 

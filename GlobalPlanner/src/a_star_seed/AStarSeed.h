@@ -19,17 +19,12 @@
 #include <queue>
 #include <map>
 #include <unordered_map>
-#include "SSPriority_queue.hpp"
+// #include "SSPriority_queue.hpp"
 #include "StateOfCar.hpp"
 #define LEFT_CMD 0
 #define RIGHT_CMD 1
 
-#define SIM_SEEDS
-#ifdef SIM_SEEDS
-#define SEEDS_FILE "/Users/Satya/Documents/Xcode Projects/OpenCV/OpenCV/seeds2.txt"
-#else
-#define SEEDS_FILE "/Users/Satya/Documents/Xcode Projects/OpenCV/OpenCV/seeds2.txt"
-#endif
+#define SEEDS_FILE "seeds2.txt"
 #define OPEN 1
 #define CLOSED 2
 #define UNASSIGNED 3
@@ -137,7 +132,7 @@ namespace navigation {
 //    };
 
     
-    template < typename T,typename Sequence = std::vector<T> , typename CompareFunction = std::less<typename Sequence::value_type>>
+    template < typename T,typename Sequence = std::vector<T> , typename CompareFunction = std::less<typename Sequence::value_type > >
     class sPriorityQueue : public std::priority_queue<T,Sequence, CompareFunction>
     {
     public:

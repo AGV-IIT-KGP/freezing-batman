@@ -21,7 +21,7 @@ namespace navigation {
     
     class StateOfCar : public State
     {
-        double g_cost_ = 0, h_cost_ = 0, f_cost_ = 0;
+        double g_cost_, h_cost_ , f_cost_ ;
         int seedTaken_;
     public:
         // remove this constructor
