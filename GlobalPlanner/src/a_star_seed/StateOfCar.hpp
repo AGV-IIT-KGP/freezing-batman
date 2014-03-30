@@ -25,7 +25,7 @@ namespace navigation {
         int seedTaken_;
     public:
         // remove this constructor
-        inline StateOfCar():State(){        }
+        inline StateOfCar():State(){}
         inline StateOfCar(const State& state) : State(state)   {}
         
 //        inline StateOfCar(const StateOfCar& state) : State(state.x(), state.y(), state.theta(), state.curvature()), g_cost_(state.gCost()), h_cost_(state.hCost()), f_cost_(state.gCost()+state.hCost())  {}
