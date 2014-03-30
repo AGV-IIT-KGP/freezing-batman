@@ -24,7 +24,7 @@
 #define LEFT_CMD 0
 #define RIGHT_CMD 1
 
-#define SEEDS_FILE "seeds2.txt"
+#define SEEDS_FILE "/Users/Satya/Downloads/seeds2.txt"
 #define OPEN 1
 #define CLOSED 2
 #define UNASSIGNED 3
@@ -35,53 +35,6 @@
 namespace navigation {
     static const int GRID_SIZE =10;
 
-//    class Triplet
-//    {
-//        int xValue,yValue,zValue;
-//    public:
-//        int getXcordinate() const
-//        {
-//            return xValue;
-//        }
-//        int getYcordinate() const
-//        {
-//            return yValue;
-//        }
-//        int getZcordinate() const
-//        {
-//            return zValue;
-//        }
-//        
-//        void setXcordinate(int xVal_)
-//        {
-//            xValue=xVal_;
-//        }
-//        
-//        void setYcordinate(int yVal_)
-//        {
-//            yValue=yVal_;
-//        }
-//        
-//        void setZcordinate(int zVal_)
-//        {
-//            zValue=zVal_;
-//        }
-//        
-//        double distanceTo(Triplet& _point)
-//        {
-//            return sqrt((xValue - _point.xValue) * (xValue - _point.xValue) + (yValue - _point.yValue) * (yValue - _point.yValue));
-//        }
-//        bool isOutsideOfMap()
-//        {
-//            if (!(((xValue >= 0) && (xValue < MAP_MAX)) &&
-//                  ((yValue >= 0) && (yValue < MAP_MAX))))
-//                return true;
-//            else
-//                return false;
-//        }
-//        
-//        
-//    };
     
     class open_map_element {
     public:
@@ -99,37 +52,7 @@ namespace navigation {
         std::vector<State> intermediatePoints;
     };
     
-    
-//    class comparatorForPosition : public std::binary_function<Triplet, Triplet, bool> {
-//    public:
-//        bool operator()(Triplet const& triplet_1, Triplet const& triplet_2) const ;
-//    };
-    
-    
-    
-//    class comparatorForStateOfCar
-//    {
-//    public:
-//        bool operator() (StateOfCar const& p1,StateOfCar const& p2) const
-//        {
-//            if((p1.gCostAlongFollowedPath+p1.heuristicCostToGoal) > ( p2.gCostAlongFollowedPath+p2.heuristicCostToGoal) )
-//                return true;
-//            else
-//                return false;
-//        }
-//    };
-//    
-//    class comparatorDTForStateOfCar
-//    {
-//    public:
-//        bool operator() (StateOfCar const& p1,StateOfCar const& p2) const
-//        {
-//            if(p1.approxCostToGoalFromStartPointWithDistanceTransform > p2.approxCostToGoalFromStartPointWithDistanceTransform)
-//                return true;
-//            else
-//                return false;
-//        }
-//    };
+
 
     
     template < typename T,typename Sequence = std::vector<T> , typename CompareFunction = std::less<typename Sequence::value_type > >
@@ -164,7 +87,8 @@ namespace navigation {
         
     public:
         AStarSeed();
-        void addObstacles(int xValue_,int yValue_,int radius_);
+        void addObstacle(int xValue_, int yValue_, int radius_) ;
+        void addObstacles(const int noOfObstacles);
         std::vector<StateOfCar> findPathToTargetWithAstar(const State& start, const State& goal);
         //        void findPathToTargetWithAstarSS();
     };

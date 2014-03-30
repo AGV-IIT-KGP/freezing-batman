@@ -32,7 +32,7 @@ namespace navigation    {
         
         //TODO : removue this
         inline State(){    }
-        inline State(int xCordinate, int yCordinate, int theta, int curvature ) : xCordinate_{xCordinate}, yCordinate_{yCordinate}, theta_{theta}, curvature_{curvature}    {}
+        inline State(int xCordinate, int yCordinate, int theta, int curvature ) : xCordinate_(xCordinate), yCordinate_(yCordinate), theta_(theta), curvature_(curvature)    {}
         
         inline double distanceSqTo(const State& b) const    {
             

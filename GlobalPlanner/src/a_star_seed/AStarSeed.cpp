@@ -27,7 +27,7 @@ namespace navigation {
         if (startState.isCloseTo(targetState)) {
             //            ROS_INFO("[PLANNER] Target Reached");
             std::cout<<"Bot is On Target"<<std::endl;
-            return {};
+            return std::vector<StateOfCar>();
         }
         
         while (!openSet.empty()) {
@@ -82,7 +82,8 @@ namespace navigation {
             }
             
         }
-        return {};
+        std::cerr<<"NO PATH FOUND"<<std::endl;
+        return std::vector<StateOfCar>();
     }
     
     bool AStarSeed::onTarget(StateOfCar const& currentStateOfCar, const StateOfCar& targetState) {
@@ -111,8 +112,8 @@ namespace navigation {
     
     AStarSeed::AStarSeed()
     {
-        localMap = cv::Mat::zeros(MAP_MAX, MAP_MAX,CV_8UC1);
         loadGivenSeeds();
+        localMap = cv::Mat::zeros(MAP_MAX, MAP_MAX,CV_8UC1);
         mapWithObstacles=cv::Mat::zeros(MAP_MAX, MAP_MAX,CV_8UC3);
         
     }
@@ -222,8 +223,7 @@ namespace navigation {
     bool AStarSeed::isWalkableWithSeeds(StateOfCar const& startState, StateOfCar const& targetState) {
         
         bool ObstacleIsPresent = true;
-        //        std::vector<Triplet>::iterator _iterator;
-        //        for (_iterator=givenSeeds[targetState_.seedTaken].intermediatePointsinSeed.begin();_iterator!=givenSeeds[targetState_.seedTaken].intermediatePointsinSeed.end();_iterator++) {
+
         
         for (auto state : givenSeeds[targetState.seedTaken()].intermediatePoints) {
             int intermediateXcordinate, intermediateYcondinate;
@@ -246,66 +246,34 @@ namespace navigation {
         return ObstacleIsPresent == 1;
     }
     
-    
-    void AStarSeed::addObstacles(int xValue_, int yValue_, int radius_) {
-        for (int iteratorX = -radius_; iteratorX < radius_; iteratorX++) {
-            if (xValue_ + iteratorX >= 0 && xValue_ + iteratorX <= MAP_MAX) {
-                for (int iteratorY = -radius_; iteratorY < radius_; iteratorY++) {
-                    if (yValue_ + iteratorY >= 0 && yValue_ + iteratorY <= MAP_MAX) {
-                        localMap.at<uchar>(xValue_+iteratorX,yValue_+iteratorY)=1;
-                    }
-                }
-            }
+
+    void AStarSeed::addObstacles(const int noOfObstaclesP) {
+        
+        localMap = cv::Mat::zeros(MAP_MAX, MAP_MAX,CV_8UC1);
+        mapWithObstacles=cv::Mat::zeros(MAP_MAX, MAP_MAX,CV_8UC3);
+        
+        int noOfObstacles = noOfObstaclesP;
+        while (noOfObstacles--) {
+            int x = rand()%1000, y = rand()%1000, radius = rand()%80 + 20 ;
+            cv::circle(localMap, cv::Point(y, x), radius, cv::Scalar(255), -1);
+            cv::circle(mapWithObstacles, cv::Point(x, MAP_MAX - y -1), radius, cv::Scalar(255, 255, 255), -1, CV_AA, 0);
         }
         
-        
-        cv::circle(mapWithObstacles, cvPoint(xValue_, MAP_MAX - yValue_ - 1), radius_, CV_RGB(255, 255, 255), -1, CV_AA, 0);
     }
+    
     
 
-    
-    void AStarSeed::plotGrid(const navigation::State &pos)
-    {
-        double gridX,gridY;
-        gridX=(int)(pos.x()/GRID_SIZE)+1;
-        gridY=(int)(pos.y()/GRID_SIZE)+1;
-        
-        int xValue = gridX*GRID_SIZE-GRID_SIZE/2;
-        int yValue = MAP_MAX - (gridY*GRID_SIZE-GRID_SIZE/2) - 1;
-        
-        int xValue_ = gridX*GRID_SIZE+GRID_SIZE/2;
-        int yValue_ = MAP_MAX - (gridY*GRID_SIZE+GRID_SIZE/2) - 1;
-        
-        int xValueInMap = xValue > MAP_MAX ? MAP_MAX - 1 : xValue ;
-        xValueInMap = xValue < 0 ? 0 : xValue;
-        int yValueInMap = yValue > MAP_MAX ? MAP_MAX - 1 : yValue;
-        yValueInMap = yValue < 0 ? 0 : yValue;
-        
-        int xValueInMap_ = xValue_ > MAP_MAX ? MAP_MAX - 1 : xValue_ ;
-        xValueInMap_ = xValue_ < 0 ? 0 : xValue_;
-        int yValueInMap_ = yValue_ > MAP_MAX ? MAP_MAX - 1 : yValue_;
-        yValueInMap_ = yValue_ < 0 ? 0 : yValue_;
-        
-        
-        cv::rectangle(mapWithObstacles, cvPoint(xValueInMap,yValueInMap), cvPoint(xValueInMap_,yValueInMap_), cvScalarAll(255),-1);
-        
-    }
     std::vector<StateOfCar> AStarSeed::reconstructPath(StateOfCar const& currentStateOfCar_, std::map<StateOfCar,StateOfCar>& came_from)
     {
-        //        pthread_mutex_lock(&path_mutex);
-        //
-        //        path.clear();
         
-        int seedTaken = -1;
         StateOfCar currentStateOfCar = currentStateOfCar_;
         
-        std::vector<StateOfCar> path = {currentStateOfCar};
+        std::vector<StateOfCar> path ;
+        
+        path.push_back(currentStateOfCar);
         
         while (came_from.find(currentStateOfCar) != came_from.end()) {
-            //            plotPointInMap(currentStateOfCar.positionOfCar);
-            plotGrid(currentStateOfCar);
-            //            path.insert(path.begin(), s.positionOfCar);
-            seedTaken = currentStateOfCar.seedTaken();
+            
             currentStateOfCar = came_from[currentStateOfCar];
             
             path.push_back(currentStateOfCar);
@@ -314,15 +282,6 @@ namespace navigation {
         
         return path;
 
-        
-        //        pthread_mutex_unlock(&path_mutex);
-        
-//        if (seedTaken != -1) {
-//            //            sendCommand(givenSeeds[seed_id]);
-//        } else {
-//            //            ROS_ERROR("[PLANNER] Invalid Command Requested");
-//            //            Planner::finBot();
-//        }
     }
     
     void AStarSeed::showPath(std::vector<StateOfCar>& path){
@@ -330,6 +289,8 @@ namespace navigation {
         for (auto state : path) {
             plotPointInMap(state);
         }
+        cv::imshow("obstacles Map", localMap);
+
         cv::imshow("[PLANNER] Map", mapWithObstacles);
         cvWaitKey(0);
         
