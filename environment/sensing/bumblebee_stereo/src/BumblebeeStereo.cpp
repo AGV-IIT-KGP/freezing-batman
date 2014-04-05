@@ -6,31 +6,25 @@
  */
 
 #include <BumblebeeStereo.hpp>
-#include <dc1394/conversions.h>
-#include "pgr_registers.h"
 
-BumblebeeStereo::BumblebeeStereo() {
-}
-
-BumblebeeStereo::BumblebeeStereo(const BumblebeeStereo& orig) {
+BumblebeeStereo::BumblebeeStereo(int argc, char** argv) : Sensor(argc, argv) {
 }
 
 BumblebeeStereo::~BumblebeeStereo() {
 }
 
 bool BumblebeeStereo::connect() {
-
+return true;
 }
 
 bool BumblebeeStereo::disconnect() {
-
+return true;
 }
 
 bool BumblebeeStereo::fetch() {
-
+return true;
 }
 
 int main() {
-    int a = 5;
     return 0;
 }

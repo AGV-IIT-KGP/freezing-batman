@@ -8,7 +8,7 @@
 #ifndef BUMBLEBEESTEREO_HPP
 #define	BUMBLEBEESTEREO_HPP
 
-#include <Environment/Sensor.hpp>
+#include <environment/Sensor.hpp>
 
 class BumblebeeStereo : public environment::Sensor {
 public:
@@ -16,6 +16,7 @@ public:
     bool disconnect();
     bool fetch();
     BumblebeeStereo();
+    BumblebeeStereo(int argc, char** argv);
     BumblebeeStereo(const BumblebeeStereo& orig);
     virtual ~BumblebeeStereo();
 };

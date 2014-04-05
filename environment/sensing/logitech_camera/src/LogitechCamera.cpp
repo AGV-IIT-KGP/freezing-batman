@@ -105,6 +105,6 @@ int main(int argc, char** argv) {
         ROS_INFO("New frame acquired. \n");
         rate_enforcer.sleep();
     }
-
     logitech_camera->disconnect();
+return 0;
 }
