@@ -1,30 +1,6 @@
-#include "a_star_seed/AStarSeed.hpp"
-#include <sys/time.h>
+#include "planner.h"
 #include <sstream>
-#include "ros/ros.h"
-#include "std_msgs/String.h"
-#include "geometry_msgs/Twist.h"
-#include "geometry_msgs/Pose.h"
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv/cvaux.hpp>
-#include <opencv/cxcore.h>
-#include <cv.h>
-#include <highgui.h>
-#include <iostream>
-#include <time.h>
-#include <image_transport/image_transport.h>
-#include <cv_bridge/cv_bridge.h>
-#include <sensor_msgs/image_encodings.h>
-#include "devices.h"
-
-#define LEFT_CMD 0
-#define RIGHT_CMD 1
-
-#define MAP_MAX 1000
-#define LOOP_RATE 10
-#define WAIT_TIME 100
-
+#include <nav_msgs/OccupancyGrid.h> 
 int ol_overflow;
 //geometry_msgs::Twist precmdvel;
 int last_cmd;
@@ -34,8 +10,8 @@ subscribe image convert to mat
 then update char ** local map : DONE*/
 
 char local_map[1000][1000];
-navigation::State my_bot_location, my_target_location;
-navigation::State pose;
+Triplet my_bot_location, my_target_location;
+Pose pose;
 
 
 void update_world_map(const sensor_msgs::ImageConstPtr& world_map){
@@ -61,22 +37,19 @@ void update_world_map(const sensor_msgs::ImageConstPtr& world_map){
 }
 
 void update_bot_pose(const geometry_msgs::Pose::ConstPtr _pose){
-    int x = _pose->position.x;
-    int y = _pose->position.y;
-    int z = _pose->position.z;
-    my_bot_location = navigation::State(x,y,z,0);
+    my_bot_location.x = _pose->position.x;
+    my_bot_location.y = _pose->position.y;
+    my_bot_location.z = _pose->position.z;
 }
 void update_target_pose(const geometry_msgs::Pose::ConstPtr _pose){
-    int x = _pose->position.x;
-    int y = _pose->position.y;
-    int z = _pose->position.z;
-    my_target_location = navigation::State(x,y,z,0);
+    my_target_location.x = _pose->position.x;
+    my_target_location.y = _pose->position.y;
+    my_target_location.z = _pose->position.z;
 }
 void update_pose(const geometry_msgs::Pose::ConstPtr _pose){
-    int x = _pose->position.x;
-    int y = _pose->position.y;
-    int z = _pose->position.z;
-    pose = navigation::State(x,y,z,0);
+    pose.position.x = _pose->position.x;
+    pose.position.x = _pose->position.y;
+    pose.position.x = _pose->position.z;
 }
 
 
@@ -84,32 +57,37 @@ int main(int argc,char* argv[]) {
 
     ros::init(argc, argv, "planner");
 
+    ROS_INFO("At line %d\n",__LINE__);
     ros::NodeHandle nh; // nodeHandle
     ros::Publisher pub_path; //Publisher for Path
+
+    ROS_INFO("At line %d\n",__LINE__);
 
     ros::Subscriber sub_world_map = nh.subscribe("/world_map",10, update_world_map); //Subscriber for World Map
     ros::Subscriber sub_bot_pose =  nh.subscribe("/bot_pose", 10 ,update_bot_pose); // topic should same with data published by GPS
     ros::Subscriber sub_target_pose = nh.subscribe("/target_Pose", 10 , update_target_pose); // topic published from GPS
     ros::Subscriber sub3 = nh.subscribe("/pose", 1, update_pose);
 
+    ROS_INFO("At line %d\n",__LINE__);
     /* TO DO
     Custom Message for array of pose3D (check ROS tut).*/
    // pub_path = nh.advertise<geometry_msgs::Twist > ("cmd_vel", 1);
 
     cvNamedWindow("[PLANNER] Map", 0);
 
-    navigation::State botLocation(rand()%100,rand()%100,90,0),targetLocation(900,900,90,0);
-    navigation::AStarSeed planner;
+   planner_space::Planner::loadPlanner(argv);
+
+       ROS_INFO("At line %d\n",__LINE__);
 
     ros::Rate loop_rate(LOOP_RATE);
 
     while (ros::ok()) {
+        cv::Mat map_img(MAP_MAX, MAP_MAX, CV_8UC1, cv::Scalar(0));
 
-        cv::Mat img = cv::Mat::zeros(1000, 1000, CV_8UC1);
-        // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
-        navigation::addObstacles(img, 5);
-        std::vector<navigation::StateOfCar> path = planner.findPathToTargetWithAstar(img,botLocation, targetLocation);
-        planner.showPath(path);
+
+      std::vector<Triplet> path = planner_space::Planner::findPath(my_bot_location, my_target_location, map_img);
+        //pub_path.p 
+
         loop_rate.sleep();
     }
 

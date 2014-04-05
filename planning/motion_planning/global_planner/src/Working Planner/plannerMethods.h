@@ -1,4 +1,5 @@
 #include "planner.h"
+#include <fstream>
 
 /**
  * Control Modes:
@@ -20,13 +21,13 @@
  * seeds.txt contains the full set of paths. Almost always stuck in inf loop.
  * seeds4.txt contains 5 seeds with arc-length ~75. Works fine. (4)
  * seeds5.txt contains 5 seeds with arc-lengths varying from 100 to 50. (2)
- * seeds2.txt contains 5 seeds 75 - 100 - 50 (16-20)
+ * seeds2.txt contains 5 seeds 75 - 100 - 50 (16-test_file.c_str()20)
  */
 
 #ifdef SIM_SEEDS
-#define SEEDS_FILE "../src/Modules/Planner/seeds2.txt"
+#define SEEDS_FILE "seeds2.txt"
 #else
-#define SEEDS_FILE "../src/Modules/Planner/seeds1.txt"
+#define SEEDS_FILE "seeds1.txt"
 #endif
 #define OPEN 1
 #define CLOSED 2
@@ -170,33 +171,55 @@ namespace planner_space {
 //         return NULL;
 //     }
 
-    void loadSeeds() {
-        int n_seeds;
+    void loadSeeds(char** argv) {
+        int n_seeds = -1;
         int return_status;
         double x, y, z;
-        FILE *fp = fopen(SEEDS_FILE, "r");
-        return_status = fscanf(fp, "%d\n", &n_seeds);
-        if (return_status == 0) {
+
+        // FILE *fp = fopen(SEEDS_FILE, "r");
+        fstream fp;
+        fp.open(argv[1]);
+
+        if(fp.is_open())
+            ROS_INFO("File Successfully open\n");
+        else{
+            ROS_INFO("Check File location\n");
+            exit(1);
+        }
+        
+
+        // return_status = fscanf(fp, "%d\n", &n_seeds);
+        ROS_INFO("At line : %d",__LINE__);
+        fp >> n_seeds;
+        ROS_INFO("Number of seeds is : %d\n" , n_seeds);
+
+        if (n_seeds==-1){
             ROS_ERROR("[PLANNER] Incorrect seed file format");
             Planner::finBot();
             exit(1);
         }
+             
+
+      ROS_INFO("At line : %d",__LINE__);
 
         for (int i = 0; i < n_seeds; i++) {
             seed s;
 
 #ifdef SIM_SEEDS
-            return_status = fscanf(fp, "%lf %lf %lf %lf %lf\n", &s.k, &x, &y, &z, &s.cost);
-            if (return_status == 0) {
+            // return_status = fscanf(fp, "%lf %lf %lf %lf %lf\n", &s.k, &x, &y, &z, &s.cost);
+            ROS_INFO("Reached Sim_seeds\n");
+            if(!(fp >> s.k >> x >> y >> z >> s.cost)){
                 ROS_ERROR("[PLANNER] Incorrect seed file format");
                 Planner::finBot();
                 exit(1);
             }
+            ROS_INFO("Crossed Sim_seeds\n");
 
             s.vl = VMAX * s.k / (1 + s.k);
             s.vr = VMAX / (1 + s.k);
 #else
-            fscanf(fp, "%lf %lf %lf %lf %lf %lf\n", &s.vl, &s.vr, &x, &y, &z, &s.cost);
+            fp >> s.vl >> s.vr >> x >> y >> z >> s.cost;
+            // fscanf(fp, "%lf %lf %lf %lf %lf %lf\n", &s.vl, &s.vr, &x, &y, &z, &s.cost);
             s.k = s.vl / s.vr;
 #endif
 
@@ -205,9 +228,10 @@ namespace planner_space {
             s.dest.y = (int) y;
             s.dest.z = (int) z;
 
-            int n_seed_points;
-            return_status = fscanf(fp, "%d\n", &n_seed_points);
-            if (return_status == 0) {
+            int n_seed_points = -1;
+            fp >> n_seed_points;
+            // return_status = fscanf(fp, "%d\n", &n_seed_points);
+            if(n_seed_points == -1) {
                 ROS_ERROR("[PLANNER] Incorrect seed file format");
                 Planner::finBot();
                 exit(1);
@@ -215,8 +239,7 @@ namespace planner_space {
 
             for (int j = 0; j < n_seed_points; j++) {
                 seed_point point;
-                return_status = fscanf(fp, "%lf %lf\n", &point.x, &point.y);
-                if (return_status == 0) {
+                if(!(fp >> point.x >> point.y)) {
                     ROS_ERROR("[PLANNER] Incorrect seed file format");
                     Planner::finBot();
                     exit(1);

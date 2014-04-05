@@ -23,8 +23,8 @@ namespace planner_space {
         return sendCommand(reverse);
     }
     */
-    void Planner::loadPlanner() {
-        loadSeeds();
+    void Planner::loadPlanner(char** argv) {
+        loadSeeds(argv);
         ROS_INFO("[PLANNER] Seeds Loaded");
 
         initBot();

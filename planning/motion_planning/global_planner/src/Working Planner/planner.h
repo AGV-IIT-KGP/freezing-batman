@@ -69,7 +69,7 @@ namespace planner_space {
         //
         //     static ros::Publisher vel_pub;
 
-        static void loadPlanner();
+        static void loadPlanner(char** argv);
         static std::vector<Triplet> findPath(Triplet bot, Triplet target, cv::Mat map_img);
         // static geometry_msgs::Twist findPathDT(Triplet bot, Triplet target, cv::Mat map_img);
         static void finBot();
