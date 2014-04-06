@@ -32,9 +32,13 @@ namespace navigation {
         
         image  = cv::Mat::zeros(MAP_MAX, MAP_MAX,CV_8UC1);
         StateOfCar startState(start), targetState(goal);
-        
-        cv::circle(image, cv::Point(999 - startState.x(), startState.y()), 5, cv::Scalar(255), -1);
-        cv::circle(image, cv::Point(999 - targetState.x(), targetState.y()), 5, cv::Scalar(255), -1);
+
+        printf("%The start point is %d %d \n", startState.x(), startState.y());
+        printf("%The start point is %d %d \n", targetState.x(), targetState.y());
+        // printf("Enter to go ahead\n");
+        // getchar();
+        cv::circle(image, cv::Point(startState.x(), startState.y()), 5, cv::Scalar(255), -1);
+        cv::circle(image, cv::Point(targetState.x(), targetState.y()), 5, cv::Scalar(255), -1);
 
         
         std::map<StateOfCar, open_map_element> openMap;
@@ -194,7 +198,7 @@ namespace navigation {
     
     void AStarSeed::plotPointInMap(const State & pos)
     {
-        cv::circle(image, cv::Point(999 - pos.x(), pos.y()), 3, cv::Scalar(255), -1);
+        cv::circle(image, cv::Point(pos.x(), pos.y()), 3, cv::Scalar(255), -1);
         
     }
     
@@ -241,11 +245,11 @@ namespace navigation {
             
             int intermediateXcordinate = (int) (x * sin(alpha * (CV_PI / 180)) + y * cos(alpha * (CV_PI / 180)) + startState.x());
             
-            int intermediateYcondinate = (int) (-x * cos(alpha * (CV_PI / 180)) + y * sin(alpha * (CV_PI / 180)) + startState.y());
+            int intermediateYcordinate = (int) (-x * cos(alpha * (CV_PI / 180)) + y * sin(alpha * (CV_PI / 180)) + startState.y());
             
-            if (((0 <= intermediateXcordinate) && (intermediateXcordinate < MAP_MAX)) && ((0 <= intermediateYcondinate) && (intermediateYcondinate < MAP_MAX))) {
+            if (((0 <= intermediateXcordinate) && (intermediateXcordinate < MAP_MAX)) && ((0 <= intermediateYcordinate) && (intermediateYcordinate < MAP_MAX))) {
                 
-                fusionMap.at<uchar>(intermediateXcordinate,intermediateYcondinate)== 0 ? NoObstacle *= 1 : NoObstacle *= 0;
+                fusionMap.at<uchar>(intermediateXcordinate,intermediateYcordinate)== 0 ? NoObstacle *= 1 : NoObstacle *= 0;
                 
             } else {
                 return false;
