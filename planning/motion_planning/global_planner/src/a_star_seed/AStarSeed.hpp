@@ -55,7 +55,7 @@ namespace navigation {
         std::vector<StateOfCar> neighborNodesWithSeeds(StateOfCar const& currentStateOfCar_)  ;
         bool onTarget(StateOfCar const& currentStateOfCar_, const StateOfCar& targetState)  ;
         bool isWalkableWithSeeds(StateOfCar const& startState_, StateOfCar const& nextState_) ;
-        std::vector<StateOfCar> reconstructPath(StateOfCar const& currentStateOfCar_,  std::map<StateOfCar,StateOfCar>& came_from) ;
+        std::pair<std::vector<StateOfCar>, Seed>     reconstructPath(StateOfCar const& currentStateOfCar_,  std::map<StateOfCar,StateOfCar>& came_from) ;
         void plotGrid(const State& pos_);
         void showPath(std::vector<StateOfCar>& path);
 
@@ -63,7 +63,7 @@ namespace navigation {
     public:
         AStarSeed();
 
-        std::vector<StateOfCar> findPathToTargetWithAstar(const cv::Mat& fusionMap, const State& start, const State& goal);
+        std::pair<std::vector<StateOfCar>, Seed> findPathToTargetWithAstar(const cv::Mat& fusionMap, const State& start, const State& goal);
         //        void findPathToTargetWithAstarSS();
     };
 }

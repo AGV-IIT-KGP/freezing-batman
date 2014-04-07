@@ -26,15 +26,15 @@ namespace navigation {
         
     }
     
-    std::vector<StateOfCar> AStarSeed::findPathToTargetWithAstar(const cv::Mat& img,const State&  start,const State&  goal) {
+    std::pair<std::vector<StateOfCar>, Seed> AStarSeed::findPathToTargetWithAstar(const cv::Mat& img,const State&  start,const State&  goal) {
         
         fusionMap = img;
         
         image  = cv::Mat::zeros(MAP_MAX, MAP_MAX,CV_8UC1);
         StateOfCar startState(start), targetState(goal);
-
-        printf("%The start point is %d %d \n", startState.x(), startState.y());
-        printf("%The start point is %d %d \n", targetState.x(), targetState.y());
+        std::vector<StateOfCar>emptyState(0);
+        // printf("%The start point is %d %d \n", startState.x(), startState.y());
+        // printf("%The start point is %d %d \n", targetState.x(), targetState.y());
         // printf("Enter to go ahead\n");
         // getchar();
         cv::circle(image, cv::Point(startState.x(), startState.y()), 5, cv::Scalar(255), -1);
@@ -50,7 +50,7 @@ namespace navigation {
         if (startState.isCloseTo(targetState)) {
             //            ROS_INFO("[PLANNER] Target Reached");
             std::cout<<"Bot is On Target"<<std::endl;
-            return std::vector<StateOfCar>();
+            return std::make_pair(emptyState, Seed());
         }
         
         while (!openSet.empty()) {
@@ -107,7 +107,7 @@ namespace navigation {
             
         }
         std::cerr<<"NO PATH FOUND"<<std::endl;
-        return std::vector<StateOfCar>();
+         return std::make_pair(emptyState, Seed());
     }
     
     bool AStarSeed::onTarget(StateOfCar const& currentStateOfCar, const StateOfCar& targetState) {
@@ -261,12 +261,12 @@ namespace navigation {
     
 
 
-    std::vector<StateOfCar> AStarSeed::reconstructPath(StateOfCar const& currentStateOfCar_, std::map<StateOfCar,StateOfCar>& came_from)
+    std::pair<std::vector<StateOfCar>, Seed> AStarSeed::reconstructPath(StateOfCar const& currentStateOfCar_, std::map<StateOfCar,StateOfCar>& came_from)
     {
         
         StateOfCar currentStateOfCar = currentStateOfCar_;
         
-        std::vector<StateOfCar> path ;
+        std::vector<StateOfCar> path(0);
         
         path.push_back(currentStateOfCar);
         
@@ -278,21 +278,22 @@ namespace navigation {
             
         }
         
-        return path;
+        std::cout<<"Path size in reconstructPath is : "<<path.size()<<std::endl;
+        return std::make_pair(path, givenSeeds[path[path.size()-1].seedTaken()])  ;
 
     }
     
     void AStarSeed::showPath(std::vector<StateOfCar>& path){
         
         
-
+        printf("Showing A Path\n");
         for(int i = 0; i< fusionMap.rows; i++){
             for(int j = 0; j< fusionMap.cols; j++){
                 image.at<uchar>(j,i)= fusionMap.at<uchar>(i,j);
             }
         }
 
-        printf("Path size ; %d \n", (int)path.size());
+        printf("Path size in showPath is ; %d \n", (int)path.size());
         for (std::vector<StateOfCar>::iterator stateIt = path.begin(); stateIt != path.end() ; ++stateIt) {
             const State state = *stateIt;
             plotPointInMap(state);

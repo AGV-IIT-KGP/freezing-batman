@@ -17,7 +17,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #uncomment if you have defined messages
-rosbuild_genmsg()
+#rosbuild_genmsg()
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
@@ -26,5 +26,5 @@ rosbuild_genmsg()
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
-rosbuild_add_executable(AStarPlanner src/main.cpp src/a_star_seed/AStarSeed.cpp src/a_star_seed/State.cpp src/a_star_seed/StateOfCar.cpp src/a_star_seed/Seed.cpp src/a_star_seed/SSPriorityQueue.cpp)
+rosbuild_add_executable(Controller src/main.cpp src/controller.cpp)
 #target_link_libraries(example ${PROJECT_NAME})

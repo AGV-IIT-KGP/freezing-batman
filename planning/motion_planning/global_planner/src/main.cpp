@@ -17,7 +17,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include "devices.h"
-
+#include "global_planner/Seed.h"
 #define LEFT_CMD 0
 #define RIGHT_CMD 1
 
@@ -85,7 +85,7 @@ int main(int argc,char* argv[]) {
     ros::init(argc, argv, "planner");
 
     ros::NodeHandle nh; // nodeHandle
-    ros::Publisher pub_path; //Publisher for Path
+    ros::Publisher pub_path = nh.advertise<global_planner::Seed>("/path", 1000); //Publisher for Path
 
     ros::Subscriber sub_world_map = nh.subscribe("/world_map",10, update_world_map); //Subscriber for World Map
     ros::Subscriber sub_bot_pose =  nh.subscribe("/bot_pose", 10 ,update_bot_pose); // topic should same with data published by GPS
@@ -104,13 +104,37 @@ int main(int argc,char* argv[]) {
     ros::Rate loop_rate(LOOP_RATE);
 
     while (ros::ok()) {
+        
+        global_planner::Seed seed;
+        printf("\n\n\nHere entered while loop %d \n",__LINE__);
 
         cv::Mat img = cv::Mat::zeros(1000, 1000, CV_8UC1);
         // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
         navigation::addObstacles(img, 5);
-        std::vector<navigation::StateOfCar> path = planner.findPathToTargetWithAstar(img,botLocation, targetLocation);
-        planner.showPath(path);
+        printf("Here added Obstacles %d \n",__LINE__);
+
+        std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path = planner.findPathToTargetWithAstar(img,botLocation, targetLocation);
+        printf("Here found path %d \n",__LINE__);
+
+        planner.showPath(path.first);
+        printf("Here showed path %d \n",__LINE__);
+
+        seed.x = path.second.finalState.x();
+        seed.y = path.second.finalState.y();
+        seed.theta = path.second.finalState.theta();
+        seed.costOfseed = path.second.costOfseed;
+        seed.velocityRatio = path.second.velocityRatio;
+        seed.leftVelocity = path.second.leftVelocity;
+        seed.rightVelocity = path.second.rightVelocity;
+        seed.curvature = path.second.finalState.curvature();
+        printf("Here initiated seed %d \n",__LINE__);
+
+        pub_path.publish(seed);
+        printf("Here published seed %d \n",__LINE__);
+
+        ros::spinOnce();
         loop_rate.sleep();
+
     }
 
     ROS_INFO("Planner Exited");
