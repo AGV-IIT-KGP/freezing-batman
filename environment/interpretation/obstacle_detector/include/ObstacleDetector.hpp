@@ -24,7 +24,6 @@
 #define scale 220/57
 #define N 7 // canny kernel
 #define AUTO_CALIB 0
-
 #define MAP_MAX 1000
 #define LOOP_RATE 10
 #define WAIT_TIME 100

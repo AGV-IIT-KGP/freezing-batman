@@ -28,3 +28,9 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
+
+include_directories ("${PROJECT_SOURCE_DIR}/include/")
+set(AGV_FRAMEWORK libagv_framework.so)
+
+rosbuild_add_executable(${PROJECT_NAME} src/ObstacleDetector.cpp)
+target_link_libraries(${PROJECT_NAME} m ${AGV_FRAMEWORK})

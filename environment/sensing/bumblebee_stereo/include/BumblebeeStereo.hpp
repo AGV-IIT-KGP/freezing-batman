@@ -16,6 +16,7 @@ public:
     bool disconnect();
     bool fetch();
     BumblebeeStereo();
+    BumblebeeStereo(int argc, char** argv);
     BumblebeeStereo(const BumblebeeStereo& orig);
     virtual ~BumblebeeStereo();
 };

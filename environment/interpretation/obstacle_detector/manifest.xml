@@ -1,4 +1,4 @@
-<package>
+	<package>
   <description brief="obstacle_detector">
 
      obstacle_detector
@@ -8,7 +8,17 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/obstacle_detector</url>
-  <depend package="interpreter"/>
+  <depend package="roscpp"/>
+  
+  <depend package="std_msgs"/>
+  <depend package="sensor_msgs"/>
+  
+  
+  <depend package="agv_framework"/>
+  
+  <depend package="opencv2"/>
+  <depend package="cv_bridge"/>
+  <depend package="image_transport"/>
 
 </package>
 
