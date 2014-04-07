@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/ros-pkg/!svn/ver/38664/stacks/laser_drivers/trunk/hokuyo_node/src/utils
+END
+getFirmwareVersion.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/ros-pkg/!svn/ver/28752/stacks/laser_drivers/trunk/hokuyo_node/src/utils/getFirmwareVersion.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/ros-pkg/!svn/ver/38664/stacks/laser_drivers/trunk/hokuyo_node/src/utils/CMakeLists.txt
+END
+getID.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/ros-pkg/!svn/ver/27516/stacks/laser_drivers/trunk/hokuyo_node/src/utils/getID.cpp
+END

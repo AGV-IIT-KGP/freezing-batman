@@ -1,0 +1,7 @@
+K 13
+svn:mergeinfo
+V 329
+/pkg/branches/gazebo-branch-merge/drivers/laser/hokuyo_node:15683-15684,15739-15794,15797-15820,15822-15839,15852-15870,15983-16008,16010-16016,16129-16141,16145-16169,16245-16262,16274-16334
+/pkg/trunk/stacks/laser_drivers/hokuyo_node:263-17562
+/tags/blaise-merge-dynamic-reconfigure/stacks/laser_drivers/hokuyo_node:25472-25485
+END

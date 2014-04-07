@@ -200,7 +200,7 @@ void LaneDetector::getLanes(const sensor_msgs::ImageConstPtr& image) {
     }
     if ((choice == 2) || (choice == 0)) {
         cvEqualizeHist(gray_frame, gray_frame);
-        cvCopyMakeBorder(gray_frame, kernel_frame, 
+        //cvCopyMakeBorder(gray_frame, kernel_frame, 
         cvSmooth(gray_frame, gray_frame, CV_GAUSSIAN);
         // canny edge detection
         cvCopyMakeBorder(gray_frame, kernel_frame, offset, IPL_BORDER_REPLICATE, cvScalarAll(0));
