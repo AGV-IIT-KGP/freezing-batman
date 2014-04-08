@@ -1,0 +1,22 @@
+<package>
+  <description brief="odometry">
+
+     odometry
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+
+  <url>http://www.agvkgp.com/wiki/eklavya_odometry</url>
+
+  <depend package="std_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="tf"/>
+  <depend package="agv_framework" />
+  <depend package="encoder"/>
+
+</package>
+
+

@@ -1,85 +1,11 @@
+/* 
+ * File:   LaneDetector.cpp
+ * Author: samuel
+ * 
+ * Created on 14 December, 2013, 3:36 AM
+ */
+
 #include "LaneDetector.hpp"
-
-
-// Input: BGR image from camera
-// Output: Enhanced BGR image for lane detection
-// Preprocessign might possibly improve
-// contrast by histogram equalization, or do shadow removal etc.
-cv::Mat LaneDetector::PreprocessImage(cv::Mat cam_img){
-    return cam_img;
-}
-
-
-// Input: the preprocessed BGR image from the camera
-// Output: BGR image with background such as sky and obstacles like the orange
-// cones removed by marking them as black pixels.
-cv::Mat LaneDetector::SeperateBackground(cv::Mat cam_img){
-    return cam_img;
-}
-
-
-// Input: The BGR image from the camera after background seperation
-// Output: Binary image such that only the lane pixels are white and everything
-// else is black.
-cv::Mat LaneDetector::Threshold(cv::Mat cam_img){
-    cv::Mat lane_img;
-    cv::cvtColor(cam_img, lane_img, CV_BGR2GRAY);
-    cv::threshold(lane_img, lane_img, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
-    return lane_img;
-}
-
-
-// Input: the processed binary image with only lanes
-// Output: A list of images with a seperate lane in seprate in image
-std::vector<cv::Mat> LaneDetector::SeperateLanes(cv::Mat lanes_bin_img){
-    std::vector<cv::Mat> lanes;
-    lanes.push_back(lanes_bin_img);
-    return lanes;
-}
-
-
-// Input: Processed binary image with only one lane
-// Output: Binary image with a curve fitted and dilated.
-cv::Mat LaneDetector::FitCurve(cv::Mat lane_bin_img){
-    return lane_bin_img;
-}
-
-
-// Input: A list of images with curve fitted and dilated for each lane
-// Output: A single binary image with all the lanes
-cv::Mat LaneDetector::MergeCurves(std::vector<cv::Mat> lanes){
-    return lanes[0];
-}
-
-
-// Input: A binary image
-// Output: A binary image calculated by the taking the iverse perpective
-// transform from the camera parameters
-cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat lane_img){
-    return lane_img;
-}
-
-// Input: A BGR image of the scene
-// Output: A binary image of lanes with inverse perspective transform
-// caluclated to publish to the planner
-cv::Mat LaneDetector::DetectLanes(cv::Mat cam_img){
-    cv::Mat lane_img;
-    // std::vector<cv::Mat> lanes;
-
-    cam_img = PreprocessImage(cam_img);
-    cam_img = SeperateBackground(cam_img);
-
-    lane_img = Threshold(cam_img);
-
-    return lane_img;
-}
-
-// Input: A BGR image of the scene
-// Output: Returns nothing, publishes the resuls of the lane detection
-void LaneDetector::PublishLanes(cv::Mat cam_img){
-    return;
-}
-
 
 void LaneDetector::interpret() {
 
@@ -160,7 +86,7 @@ CvSeq* LaneDetector::GetHoughLanes(IplImage* img, int vote, int length, int mrgh
 void LaneDetector::initializeLaneVariables(int argc, char** argv, ros::NodeHandle nh) {
 
     it = new image_transport::ImageTransport(nh);
-
+    
     offset = cvPoint((N - 1) / 2, (N - 1) / 2);
     gray_frame = cvCreateImage(size, depth, 1);
     kernel_frame = cvCreateImage(cvSize(gray_frame->width + N - 1, gray_frame->height + N - 1), gray_frame->depth, gray_frame->nChannels);
@@ -274,7 +200,7 @@ void LaneDetector::getLanes(const sensor_msgs::ImageConstPtr& image) {
     }
     if ((choice == 2) || (choice == 0)) {
         cvEqualizeHist(gray_frame, gray_frame);
-        cvCopyMakeBorder(gray_frame, kernel_frame,
+        cvCopyMakeBorder(gray_frame, kernel_frame, 
         cvSmooth(gray_frame, gray_frame, CV_GAUSSIAN);
         // canny edge detection
         cvCopyMakeBorder(gray_frame, kernel_frame, offset, IPL_BORDER_REPLICATE, cvScalarAll(0));
@@ -313,7 +239,7 @@ void LaneDetector::getLanes(const sensor_msgs::ImageConstPtr& image) {
     }
     cvDilate(warp_img, warp_img, ker1, 55);
 
-    publishLanes(wap_img);
+    publishLanes(warp_img);
     cvReleaseImage(&lane);
 }
 
