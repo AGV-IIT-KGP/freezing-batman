@@ -1,4 +1,4 @@
- //
+//
 //  OldPlanner.cpp
 //  OpenCV
 //
@@ -56,12 +56,12 @@ namespace navigation {
         while (!openSet.empty()) {
 
             StateOfCar currentState=openSet.top();
-            if (openMap.find(currentState)!=openMap.end() && openMap[currentState].membership== CLOSED) {
+            if (openMap.find(currentState)!=openMap.end() && openMap[currentState].membership == CLOSED) {
                 openSet.pop();
             }
             
             if (onTarget(currentState, targetState)) {
-//                std::cout<<"openSet size : "<<openSet.size()<<"\n";
+               std::cout<<"openSet size : "<<openSet.size()<<"\n";
 //                std::cout<<"Target Reached"<<std::endl;
                 return reconstructPath(currentState, came_from);
             }
@@ -106,7 +106,7 @@ namespace navigation {
             }
             
         }
-        std::cerr<<"NO PATH FOUND"<<std::endl;
+        // std::cerr<<"NO PATH FOUND"<<std::endl;
          return std::make_pair(emptyState, Seed());
     }
     
@@ -278,7 +278,7 @@ namespace navigation {
             
         }
         
-        std::cout<<"Path size in reconstructPath is : "<<path.size()<<std::endl;
+        // std::cout<<"Path size in reconstructPath is : "<<path.size()<<std::endl;
         return std::make_pair(path, givenSeeds[path[path.size()-1].seedTaken()])  ;
 
     }

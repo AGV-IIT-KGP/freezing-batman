@@ -22,8 +22,7 @@
 #include "StateOfCar.hpp"
 #include "Seed.hpp"
 
-#define SEEDS_FILE "/home/krishna/Downloads/seeds2.txt"
-
+#define SEEDS_FILE "/home/krishna/fuerte_workspace/sandbox/freezing-batman/planning/motion_planning/global_planner/src/a_star_seed/seeds.txt"
 
 namespace navigation {
 

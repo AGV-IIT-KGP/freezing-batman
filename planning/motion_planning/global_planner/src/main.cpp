@@ -18,6 +18,7 @@
 #include <sensor_msgs/image_encodings.h>
 #include "devices.h"
 #include "global_planner/Seed.h"
+#include <sys/time.h>
 #define LEFT_CMD 0
 #define RIGHT_CMD 1
 
@@ -84,13 +85,14 @@ int main(int argc,char* argv[]) {
 
     ros::init(argc, argv, "planner");
 
+
     ros::NodeHandle nh; // nodeHandle
     ros::Publisher pub_path = nh.advertise<global_planner::Seed>("/path", 1000); //Publisher for Path
 
     ros::Subscriber sub_world_map = nh.subscribe("/world_map",10, update_world_map); //Subscriber for World Map
     ros::Subscriber sub_bot_pose =  nh.subscribe("/bot_pose", 10 ,update_bot_pose); // topic should same with data published by GPS
     ros::Subscriber sub_target_pose = nh.subscribe("/target_Pose", 10 , update_target_pose); // topic published from GPS
-    ros::Subscriber sub3 = nh.subscribe("/pose", 1, update_pose);
+    // ros::Subscriber sub3 = nh.subscribe("/pose", 1, update_pose);
 
     /* TO DO
     Custom Message for array of pose3D (check ROS tut).*/
@@ -103,22 +105,27 @@ int main(int argc,char* argv[]) {
 
     ros::Rate loop_rate(LOOP_RATE);
 
-    while (ros::ok()) {
+    srand((unsigned int)time(NULL));
+
+  
+    
+    int iterations = 100;
+
+    while (iterations--  && ros::ok()) {
         
         global_planner::Seed seed;
-        printf("\n\n\nHere entered while loop %d \n",__LINE__);
 
         cv::Mat img = cv::Mat::zeros(1000, 1000, CV_8UC1);
         // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
         navigation::addObstacles(img, 5);
-        printf("Here added Obstacles %d \n",__LINE__);
-
+      
+        struct timeval t,c;
+        gettimeofday(&t,NULL);
+        
         std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path = planner.findPathToTargetWithAstar(img,botLocation, targetLocation);
-        printf("Here found path %d \n",__LINE__);
-
-        planner.showPath(path.first);
-        printf("Here showed path %d \n",__LINE__);
-
+      
+        // planner.showPath(path.first);
+       
         seed.x = path.second.finalState.x();
         seed.y = path.second.finalState.y();
         seed.theta = path.second.finalState.theta();
@@ -127,15 +134,21 @@ int main(int argc,char* argv[]) {
         seed.leftVelocity = path.second.leftVelocity;
         seed.rightVelocity = path.second.rightVelocity;
         seed.curvature = path.second.finalState.curvature();
-        printf("Here initiated seed %d \n",__LINE__);
-
+        
         pub_path.publish(seed);
-        printf("Here published seed %d \n",__LINE__);
 
+        gettimeofday(&c,NULL);
+        double td = t.tv_sec + t.tv_usec/1000000.0;
+        double cd = c.tv_sec + c.tv_usec/1000000.0; // time in seconds for thousand iterations
+
+        std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
+    
         ros::spinOnce();
         loop_rate.sleep();
 
     }
+
+
 
     ROS_INFO("Planner Exited");
 
