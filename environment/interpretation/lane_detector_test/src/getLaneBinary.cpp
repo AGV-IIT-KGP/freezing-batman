@@ -56,7 +56,7 @@ cv::Mat applyThreshold(cv::Mat &img,int debug){
 	cv::Mat grayscale_image(img.rows,img.cols,CV_8UC1,cvScalarAll(0));
 	cv::Mat threshold_image(img.rows,img.cols,CV_8UC1,cvScalarAll(0));
 	cv::cvtColor(img,grayscale_image,CV_BGR2GRAY);
-	if (debug==3){
+	if (debug==4){
 		cv::namedWindow("threshold_control_box",1);
 		cv::createTrackbar("bin_threshold","threshold_control_box",&bin_threshold,255);
 	}
@@ -69,23 +69,20 @@ cv::Mat applyThreshold(cv::Mat &img,int debug){
 					threshold_image.at<uchar>(i,j)=0;
 			}
 		}
-		if (debug==3)
+		if (debug==4) {
 			cv::imshow("threshold_control_box",threshold_image);
-		if (cv::waitKey(33)==27)
+		}
+		if (cv::waitKey(33)==27) {
 			break;
-	}while(debug==3);
+		}
+	}while(debug==4);
 	return threshold_image;
 } //  converting a given image into binary using a threshold_image
 
 
 
 cv::Mat mergeBinaryImages(cv::Mat &bin_img1,cv::Mat &bin_img2,int debug){
-	int merge_threshold=180;
 	cv::Mat merged_image(bin_img1.rows,bin_img1.cols,CV_8UC1,cvScalarAll(0));
-	if (debug==3){
-	cv::namedWindow("merge_control_box",1);
-	cv::createTrackbar("merge_threshold","merge_control_box",&merge_threshold,255);
-	}
 	do{
 		for (int i=0;i<bin_img1.rows;i++){
 			for (int j=0;j<bin_img1.cols;j++){
@@ -93,11 +90,14 @@ cv::Mat mergeBinaryImages(cv::Mat &bin_img1,cv::Mat &bin_img2,int debug){
 					merged_image.at<uchar>(i,j)=255;
 			}
 		}
-		if (debug==3)
-			cv::imshow("merge_control_box",merged_image);
-		if (cv::waitKey(33)==27)
+		if (debug) {
+			cv::namedWindow("Binary Merged Image");
+			cv::imshow("Binary Merged Image",merged_image);
+		}
+		if (cv::waitKey(33)==27) {
 			break;
-	}while(debug==3);
+		}
+	}while(debug);
 	return merged_image;
 }// merging two binary images..
 

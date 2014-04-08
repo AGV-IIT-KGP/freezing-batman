@@ -4,9 +4,18 @@ LaneDetector::LaneDetector(std::string _pub_topic_name, std::string _sub_topic_n
 	debug_mode = _debugMode;
 	pub_topic_name = _pub_topic_name;
 	sub_topic_name = _sub_topic_name;
+
+	// Obstacle Removal
 	obstacle_removal_dilation_size =30;
 	obstacle_removal_hue = 25;
 	obstacle_removal_saturation = 100;
+	
+	// Grass Removal
+	kernel_size = 8;
+	svm = new SVM();
+	svm->init(kernel_size*kernel_size*3);
+	svm->loadModel("Samples.model");
+	
 	setUpCommunication();
 }
 
@@ -14,6 +23,7 @@ LaneDetector::~LaneDetector(){
 }
 
 void LaneDetector::interpret(){
+	
 	cv::Mat result = Image;
 	
 	
@@ -24,24 +34,27 @@ void LaneDetector::interpret(){
 	// }
 	
 
-	/*	
+		
 	result = GrassRemoval(result);
 	if(debug_mode) {
 		cv::namedWindow("GrassRemoval Output");
 		cv::imshow("GrassRemoval Output",result);
 	}
-	*/
+	
 
-	result = ObstacleRemoval(result);
+	/*result = ObstacleRemoval(result);
 	if(debug_mode) {
 		cv::namedWindow("ObstacleRemoval Output");
 		cv::imshow("ObstacleRemoval Output",result);
 	}
+	*/
+	/*
 	result = GetLaneBinary(result);
 	if(debug_mode) {
 		cv::namedWindow("GetLaneBinary Output");
 		cv::imshow("GetLaneBinary Output",result);
 	}
+	*/
 	/*
 	result = SeperateLanes(result);
 	if(debug_mode) {

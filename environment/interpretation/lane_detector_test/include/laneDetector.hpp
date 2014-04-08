@@ -18,6 +18,8 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 
+#include "libsvm/svmWrapper.hpp"
+
 #define WAIT_TIME 10
 
 class LaneDetector : public environment::Interpreter {
@@ -40,7 +42,10 @@ private:
 	int obstacle_removal_hue;              //used to remove obstacle, change only after calibration.
 	int obstacle_removal_saturation;       //used to remove obstacle, change only after calibration.
 
-
+	// Grass Removal
+	SVM *svm;
+	int kernel_size;
+	
 	// Image Processing Functions
 	cv::Mat Preprocessing(cv::Mat &image);   // Image enhancement functions
 	cv::Mat GrassRemoval(cv::Mat &image);    // Apply grass removal and return the image with grass removed
