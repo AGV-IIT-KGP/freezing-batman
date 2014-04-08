@@ -10,6 +10,7 @@
 #include <opencv2/opencv.hpp>
 
 cv::Mat LaneDetector::GrassRemoval(cv::Mat &image){
+	cv::Mat tempImage = image.clone();
 	cv::Mat imgRoi;
 	int result=99;
 	int start_row, start_col;
@@ -33,10 +34,10 @@ cv::Mat LaneDetector::GrassRemoval(cv::Mat &image){
 				start_row = image.rows - kernel_size - 1;
 			}
 			
-			imgRoi = image(cv::Rect(start_col, start_row, kernel_size, kernel_size));
+			imgRoi = tempImage(cv::Rect(start_col, start_row, kernel_size, kernel_size));
 			svm->predict(imgRoi, result);
 			if ( result == 1 ) {
-				cv::rectangle( image, cv::Point( start_col-kernel_size/2, start_row-kernel_size/2 ), cv::Point( start_col+kernel_size/2, start_row+kernel_size/2 ), cv::Scalar( 0, 0, 0 ),CV_FILLED);
+				cv::rectangle( image, cv::Point( start_col, start_row ), cv::Point( start_col+kernel_size, start_row+kernel_size ), cv::Scalar( 0, 0, 0 ),CV_FILLED);
 			}
 		}
 	}

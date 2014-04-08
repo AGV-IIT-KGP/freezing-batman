@@ -26,6 +26,7 @@ class LaneDetector : public environment::Interpreter {
 private:
 
 	int debug_mode;
+	int timeFunctions;
 	std::string sub_topic_name, pub_topic_name;
 	ros::NodeHandle nh_;
 
@@ -37,6 +38,9 @@ private:
 
 	cv::Mat Image; // Raw image
 
+	struct timeval tvalBefore, tvalAfter;
+	double timeElapsed;
+	
 	// Obstacle Removal
 	int obstacle_removal_dilation_size;    //variable used for dilating and eroding.. to be changed only if dimension of image changes.
 	int obstacle_removal_hue;              //used to remove obstacle, change only after calibration.
@@ -61,7 +65,7 @@ private:
 	void setUpCommunication(); // Set up ros communication
 
 public:
-	LaneDetector(std::string _pub_topic_name, std::string _sub_topic_name, int _debugMode = 0);
+	LaneDetector(std::string _pub_topic_name, std::string _sub_topic_name, int _timeFunctions = 0, int _debugMode = 0);
 	~LaneDetector();
 	void interpret();
 };
