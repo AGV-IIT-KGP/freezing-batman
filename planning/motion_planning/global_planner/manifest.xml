@@ -9,9 +9,18 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/global_planner</url>
   <depend package="roscpp"/>
-  <depend package="nav_msgs"/>
-  <depend package="agv_framework"/>
+  <!-- <depend package="agv_framework"/> -->
   <depend package="opencv2"/>
+  <depend package="nav_msgs"/>
+  <depend package="sensor_msgs"/>  
+  <depend package="geometry_msgs"/>
+  <depend package="std_msgs"/>
+  <depend package="image_transport"/> 
+  <depend package="cv_bridge"/>
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib"/>
+  </export>
+
 
 </package>
 

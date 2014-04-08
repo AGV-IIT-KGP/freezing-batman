@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.4.6)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+include_directories( include/)
 
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
@@ -17,7 +18,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #uncomment if you have defined messages
-#rosbuild_genmsg()
+rosbuild_genmsg()
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
@@ -26,6 +27,5 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
-rosbuild_add_executable(${PROJECT_NAME} src/global_planner.cpp src/OnlineMapsPlanner.cpp)
-rosbuild_add_executable(${PROJECT_NAME}_debugger src/Debugger.cpp)
+rosbuild_add_executable(AStarPlanner src/main.cpp src/a_star_seed/AStarSeed.cpp src/a_star_seed/State.cpp src/a_star_seed/StateOfCar.cpp src/a_star_seed/Seed.cpp src/a_star_seed/SSPriorityQueue.cpp)
 #target_link_libraries(example ${PROJECT_NAME})

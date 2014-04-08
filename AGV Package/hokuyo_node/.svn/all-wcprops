@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/ros-pkg/!svn/ver/40260/stacks/laser_drivers/trunk/hokuyo_node
+END
+manifest.xml
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ros-pkg/!svn/ver/29656/stacks/laser_drivers/trunk/hokuyo_node/manifest.xml
+END
+hokuyo_test.launch
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/ros-pkg/!svn/ver/26778/stacks/laser_drivers/trunk/hokuyo_node/hokuyo_test.launch
+END
+mainpage.dox
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/ros-pkg/!svn/ver/26710/stacks/laser_drivers/trunk/hokuyo_node/mainpage.dox
+END
+hokuyo_test.vcg
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/ros-pkg/!svn/ver/26436/stacks/laser_drivers/trunk/hokuyo_node/hokuyo_test.vcg
+END
+hokuyo_test_intensity.launch
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/ros-pkg/!svn/ver/26778/stacks/laser_drivers/trunk/hokuyo_node/hokuyo_test_intensity.launch
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/ros-pkg/!svn/ver/26436/stacks/laser_drivers/trunk/hokuyo_node/CMakeLists.txt
+END
+COPYING.lib
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/ros-pkg/!svn/ver/26436/stacks/laser_drivers/trunk/hokuyo_node/COPYING.lib
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/ros-pkg/!svn/ver/27397/stacks/laser_drivers/trunk/hokuyo_node/Makefile
+END
