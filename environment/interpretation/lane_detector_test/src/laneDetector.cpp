@@ -37,20 +37,18 @@ void LaneDetector::interpret(){
 		cv::namedWindow("ObstacleRemoval Output");
 		cv::imshow("ObstacleRemoval Output",result);
 	}
-	/*
 	result = GetLaneBinary(result);
 	if(debug_mode) {
 		cv::namedWindow("GetLaneBinary Output");
 		cv::imshow("GetLaneBinary Output",result);
 	}
-	*/
-
+	/*
 	result = SeperateLanes(result);
 	if(debug_mode) {
 		cv::namedWindow("SeperateLanes Output");
 		cv::imshow("SeperateLanes Output",result);
 	}
-	
+	*/
 	/*result = FixBrokenLanes(result);
 	if(debug_mode) {
 		cv::namedWindow("FixBrokenLanes Output");
