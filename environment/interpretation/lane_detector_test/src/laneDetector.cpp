@@ -4,9 +4,9 @@ LaneDetector::LaneDetector(std::string _pub_topic_name, std::string _sub_topic_n
 	debug_mode = _debugMode;
 	pub_topic_name = _pub_topic_name;
 	sub_topic_name = _sub_topic_name;
-	obstacle_removal_dilation_size=11;
-	obstacle_removal_hue=150;
-	obstacle_removal_saturation=160;
+	obstacle_removal_dilation_size =30;
+	obstacle_removal_hue = 25;
+	obstacle_removal_saturation = 100;
 	setUpCommunication();
 }
 
@@ -16,13 +16,13 @@ LaneDetector::~LaneDetector(){
 void LaneDetector::interpret(){
 	cv::Mat result = Image;
 	
-	/*
-	result = Preprocessing(result);
-	if(debug_mode) {
-		cv::namedWindow("Preprocessing Output");
-		cv::imshow("Preprocessing Output",result);
-	}
-	*/
+	
+	// result = Preprocessing(result);
+	// if(debug_mode) {
+	// 	cv::namedWindow("Preprocessing Output");
+	// 	cv::imshow("Preprocessing Output",result);
+	// }
+	
 
 	/*	
 	result = GrassRemoval(result);
@@ -44,18 +44,20 @@ void LaneDetector::interpret(){
 		cv::imshow("GetLaneBinary Output",result);
 	}
 	*/
-	/*result = SeperateLanes(result);
+
+	result = SeperateLanes(result);
 	if(debug_mode) {
 		cv::namedWindow("SeperateLanes Output");
 		cv::imshow("SeperateLanes Output",result);
 	}
-	*/
+	
 	/*result = FixBrokenLanes(result);
 	if(debug_mode) {
 		cv::namedWindow("FixBrokenLanes Output");
 		cv::imshow("FixBrokenLanes Output",result);
 	}
 	*/
+
 	/*
 	result = InversePerspectiveTransform(result);
 	if(debug_mode) {

@@ -45,7 +45,7 @@ int main (int argc, char *argv[]){
 				subscribe_topic_name = std::string(argv[i]);
 				break;
 			default:
-				fprintf(stderr,"Unknown option: -%c\n", argv[i-1][1]);
+				fprintf(stderr, "Unknown option: -%c\n", argv[i-1][1]);
 				exit_with_help();
 		}
 	}

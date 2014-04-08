@@ -7,6 +7,9 @@ cv::Mat HistogramEqualizationColorImage(cv::Mat src);
 cv::Mat RemoveChannel(cv::Mat src, const int channel_id);
 
 cv::Mat LaneDetector::Preprocessing(cv::Mat &image) {
+    cv::Mat result;
+
+    GaussianBlur(image, result, cv::Size(5, 5), 15, 15);
 
     // Histogram equalization
     return HistogramEqualizationColorImage(image);

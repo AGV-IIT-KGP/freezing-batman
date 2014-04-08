@@ -1,0 +1,21 @@
+<package>
+  <description brief="vectornav_ins">
+
+     vectornav_ins
+
+  </description>
+  <author>Harsh Gupta</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/vectornav_ins</url>
+
+    <depend package="roscpp"/>
+    <depend package="rospy"/>
+    <depend package="agv_framework"/>
+    <depend package="opencv2"/>
+    <depend package="image_transport"/> 
+    <depend package="cv_bridge"/>
+
+</package>
+
+

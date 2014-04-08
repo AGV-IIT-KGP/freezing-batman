@@ -29,7 +29,7 @@ cv::Mat LaneDetector::ObstacleRemoval(cv::Mat &image){
 	
    } /*  (debug==2) */
 
-    cv::inRange(img_HSV, cv::Scalar(obstacle_removal_hue,obstacle_removal_saturation,0), cv::Scalar(180,256,255), binary_after_HSV_thresholding); 
+    cv::inRange(img_HSV, cv::Scalar(0, obstacle_removal_saturation,0), cv::Scalar(obstacle_removal_hue,256,255), binary_after_HSV_thresholding); 
     cv::dilate(binary_after_HSV_thresholding, binary_dialated, element);
     
     for (int i=0;i<binary_dialated.rows;i++) {
