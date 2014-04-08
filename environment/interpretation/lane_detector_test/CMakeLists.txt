@@ -30,7 +30,14 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(example ${PROJECT_NAME})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-rosbuild_add_library(svm src/libsvm/svm.cpp src/libsvm/svmWrapper.cpp)
+
+#############################################################################################################################################
+#SVM start
+set(svm_SRC  ${PROJECT_SOURCE_DIR}/src/libsvm/svmWrapper.cpp ${PROJECT_SOURCE_DIR}/src/libsvm/svm.cpp)
+set_source_files_properties(${svm_SRC} PROPERTIES COMPILE_FLAGS "-O3 -fPIC" )
+add_library(svm ${svm_SRC})
+#SVM end
+#############################################################################################################################################
 
 rosbuild_add_executable(generateSamples src/generateSamples.cpp)
 

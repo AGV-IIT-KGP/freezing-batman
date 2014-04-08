@@ -23,6 +23,7 @@ public:
 	int predictFromFile();
 	int predict(std::vector<double> input, int &output);
 	int predict(cv::Mat input, int &output);
+	int predictKernelWise(cv::Mat &_input_, int kernel_size);
 private:
 	int storeOutput;
 	std::vector<double> split(std::string work, char delim, int rep=0);

@@ -1,6 +1,5 @@
 #include "libsvm/svmWrapper.hpp"
 
-
 /*************************************************************/
 /***************  Class Member Functions  ********************/
 /*************************************************************/
@@ -190,4 +189,40 @@ int SVM::predict(cv::Mat _input_, int &_output_) {
 	x[max_nr_attr].index=-1;
 	_output_ = svm_predict(model,x);
 return 0;
+}
+
+int SVM::predictKernelWise(cv::Mat &_input_, int kernel_size){
+	cv::Mat tempImage = _input_.clone();
+	cv::Mat imgRoi;
+	int result=99;
+	int start_row, start_col;
+	
+	for (int i=0;i<_input_.rows;i+=kernel_size/2) {
+		for (int j=0;j<_input_.cols;j+=kernel_size/2) {
+			
+			if ( (_input_.rows-i-1) > kernel_size && (_input_.cols-j-1) > kernel_size ) {
+				start_col = j;
+				start_row = i;
+			}
+			else if ( (_input_.rows-i-1) > kernel_size ) {
+				start_col = _input_.cols - kernel_size - 1;
+				start_row = i;
+			}
+			else if ( (_input_.cols-j-1) > kernel_size ) {
+				start_col = j;
+				start_row = _input_.rows - kernel_size - 1;
+			}
+			else{
+				start_col = _input_.cols - kernel_size - 1;
+				start_row = _input_.rows - kernel_size - 1;
+			}
+			
+			imgRoi = tempImage(cv::Rect(start_col, start_row, kernel_size, kernel_size));
+			predict(imgRoi, result);
+			if ( result == 1 ) {
+				cv::rectangle( _input_, cv::Point( start_col, start_row ), cv::Point( start_col+kernel_size, start_row+kernel_size ), cv::Scalar( 0, 0, 0 ),CV_FILLED);
+			}
+		}
+	}
+return 0;	
 }
