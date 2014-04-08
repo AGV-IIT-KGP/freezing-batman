@@ -5,11 +5,7 @@
  * Created on December 12, 2013, 9:47 PM
  */
 
-#include "BumblebeeStereo.hpp"
-#include <dc1394/conversions.h>
-#include "LifeCycle.hpp"
-#include "pgr_registers.h"
-
+#include <BumblebeeStereo.hpp>
 
 BumblebeeStereo::BumblebeeStereo(int argc, char** argv) : Sensor(argc, argv) {
 }
