@@ -11,7 +11,9 @@ void exit_with_help(){
 	"-d  : Toggle debug mode\n"
 	"	   0 -- Debug mode OFF\n"
 	"	   1 -- Debug mode ON\n"
-	"	   2 -- Debug mode ON with obstacle detector thresholding enabled.\n"
+	"	   2 -- Debug mode ON with obstacle detector thresholding toolBox.\n"
+	"	   3 -- Debug mode ON with Canny Hough thresholding toolBox.\n"
+	"	   4 -- Debug mode ON with Binary thresholding toolBox.\n"
 	"-i  : Node Id\n"
 	"-s  : Subscriber topic name\n"
 	;
