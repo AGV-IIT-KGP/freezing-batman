@@ -3,7 +3,7 @@
 
 
 #include <ros/ros.h>
-
+#include <iostream>
 #include <environment/Interpreter.hpp>
 #include <image_transport/image_transport.h>
 
@@ -25,7 +25,6 @@ private:
 	
 	int debug_mode;
 	std::string sub_topic_name, pub_topic_name;
-	
 	ros::NodeHandle nh_;
 	
 	cv_bridge::CvImage cvi;
@@ -36,6 +35,15 @@ private:
 	
 	cv::Mat Image; // Raw image
 	
+	// Obstacle Removal
+	int obstacle_removal_dilation_size;    //variable used for dilating and eroding.. to be changed only if dimension of image changes.
+	int obstacle_removal_hue;              //used to remove obstacle, change only after calibration. 
+	int obstacle_removal_saturation;       //used to remove obstacle, change only after calibration.  
+	
+
+
+
+
 	// Image Processing Functions	
 	cv::Mat Preprocessing(cv::Mat &image);   // Image enhancement functions
 	cv::Mat GrassRemoval(cv::Mat &image);    // Apply grass removal and return the image with grass removed
@@ -51,7 +59,7 @@ private:
 	void setUpCommunication(); // Set up ros communication
 	
 public:
-	LaneDetector(std::string _pub_topic_name, std::string _sub_topic_name, int _debugMode = 0 );
+	LaneDetector(std::string _pub_topic_name, std::string _sub_topic_name, int _debugMode = 0);
 	~LaneDetector();
 	void interpret();
 };

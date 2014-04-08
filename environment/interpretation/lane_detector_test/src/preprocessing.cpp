@@ -1,15 +1,19 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <cassert>
+#include "laneDetector.hpp"
 
 cv::Mat HistogramEqualizationColorImage(cv::Mat src);
+cv::Mat RemoveChannel(cv::Mat src, const int channel_id);
 
-cv::Mat Preprocessing(cv::Mat src){
+cv::Mat LaneDetector::Preprocessing(cv::Mat &image) {
 
     // Histogram equalization
-    return HistogramEqualizationColorImage(src);
+    return HistogramEqualizationColorImage(image);
 }
 
+
+// Accessory Functions
 cv::Mat HistogramEqualizationColorImage(cv::Mat src){
     cv::Mat channel[3];
     cv::split(src, channel);

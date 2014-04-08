@@ -30,7 +30,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(example ${PROJECT_NAME})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-rosbuild_add_library(laneDetector src/laneDetector.cpp)
+
+rosbuild_add_library(laneDetector src/laneDetector.cpp src/obstacleRemoval.cpp src/preprocessing.cpp)
 
 rosbuild_add_executable(laneDetectorNode src/laneDetectorNode.cpp)
 target_link_libraries(laneDetectorNode laneDetector libagv_framework.so m)
