@@ -49,7 +49,7 @@ target_link_libraries(svmTrain ${lib_SVM})
 
 
 rosbuild_add_library(laneDetector src/laneDetector.cpp src/obstacleRemoval.cpp src/preprocessing.cpp src/getLaneBinary.cpp src/grassRemoval.cpp src/inversePerspectiveTransform.cpp)
-target_link_libraries(laneDetector svm)
+target_link_libraries(laneDetector ${lib_SVM})
 
 rosbuild_add_library(laneDetector src/laneDetector.cpp src/obstacleRemoval.cpp src/preprocessing.cpp src/getLaneBinary.cpp src/grassRemoval.cpp)
 target_link_libraries(laneDetector ${lib_SVM})
