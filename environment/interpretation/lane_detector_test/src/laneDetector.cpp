@@ -5,11 +5,6 @@ LaneDetector::LaneDetector(std::string _pub_topic_name, std::string _sub_topic_n
 	timeFunctions = _timeFunctions;
 	pub_topic_name = _pub_topic_name;
 	sub_topic_name = _sub_topic_name;
-
-	// Obstacle Removal
-	obstacle_removal_dilation_size =30;
-	obstacle_removal_hue = 25;
-	obstacle_removal_saturation = 100;
 	
 	// Grass Removal
 	kernel_size = 8;
@@ -57,7 +52,7 @@ void LaneDetector::interpret(){
 	// 	cv::imshow("GrassRemoval Output",result);
 	// }
 	
-	/*
+	
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
 	}	
@@ -71,7 +66,7 @@ void LaneDetector::interpret(){
 		cv::namedWindow("ObstacleRemoval Output");
 		cv::imshow("ObstacleRemoval Output",result);
 	}
-	*/
+	
 	/*
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
@@ -119,19 +114,19 @@ void LaneDetector::interpret(){
 	*/
 
 	
-	if( timeFunctions ){
-		gettimeofday (&tvalBefore, NULL);
-	}
-	result = InversePerspectiveTransform(result);
-	if( timeFunctions ){
-		gettimeofday (&tvalAfter, NULL);
-		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
-		std::cout << "InversePerspectiveTransform FPS : "<< 1./timeElapsed << std::endl;
-	}
-	if(debug_mode) {
-		cv::namedWindow("InversePerspectiveTransform Output");
-		cv::imshow("InversePerspectiveTransform Output",result);
-	}
+	// if( timeFunctions ){
+	// 	gettimeofday (&tvalBefore, NULL);
+	// }
+	// result = InversePerspectiveTransform(result);
+	// if( timeFunctions ){
+	// 	gettimeofday (&tvalAfter, NULL);
+	// 	timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+	// 	std::cout << "InversePerspectiveTransform FPS : "<< 1./timeElapsed << std::endl;
+	// }
+	// if(debug_mode) {
+	// 	cv::namedWindow("InversePerspectiveTransform Output");
+	// 	cv::imshow("InversePerspectiveTransform Output", result);
+	// }
 	
 	/*PublishLanes(result); */
 }

@@ -27,7 +27,6 @@ cv::Mat TransformImage(cv::Mat &image){
     dst_vertices[2] = cv::Point(bot_x - w/2, 900 - d );
     dst_vertices[3] = cv::Point(bot_x + w/2, 900 - d );
 
-    // cv::Mat wrap_perspective_transform = cv::getPerspectiveTransform(dst_vertices, src_vertices);
     cv::Mat wrap_perspective_transform = cv::getPerspectiveTransform(src_vertices, dst_vertices);
 
     cv::Mat result;
@@ -35,7 +34,6 @@ cv::Mat TransformImage(cv::Mat &image){
     cv::warpPerspective(image, result, wrap_perspective_transform, cv::Size(1000, 1000), cv::INTER_NEAREST , cv::BORDER_CONSTANT);
 
     return result;
-    // Transform the src_vertices to take the y value form the centre
 }
 
 void CallBackFunc(int event, int x, int y, int flags, void* userdata)
@@ -47,6 +45,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
              src_vertices[no_clicks] = cv::Point(x, y);
              std::cout << "x: " << x << "y: " << y << std::endl;
              no_clicks++;
+             if(no_clicks == 4) *done = true;
          }
          else{
              *done = true;
@@ -56,6 +55,8 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 
 cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
     static bool done = false;
+    static bool read_parameters = false;
+
     if (debug_mode == 5 && !done){
         cv::namedWindow("Original Image");
         cv::setMouseCallback("Original Image", CallBackFunc, &done);
@@ -65,7 +66,7 @@ cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
             cv::waitKey(10);
         }
         cv::destroyWindow("Original Image");
-        
+
 
         // Write the parameters to file
         FILE* ipt_data = fopen("data/ipt.dat", "w");
@@ -78,43 +79,26 @@ cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
         fclose(ipt_data);
 
         cv::Mat result = TransformImage(image);
-        cv::cvvDestroyWindow("Original Image");
+        debug_mode = 6;
         return result;
     }
 
     else{
-        FILE* ipt_data = fopen("data/ipt.dat", "r");
+        if(!read_parameters){
+            std::cout << "Reading Inverse Perspective Transform parameters from file" << std::endl;
+            FILE* ipt_data = fopen("data/ipt.dat", "r");
 
-        int x, y;
+            for(int i=0; i < 4; i++){
+                fscanf(ipt_data, "%f %f", &src_vertices[i].x, &src_vertices[i].y);
+                std::cout << " x: " << src_vertices[i].x << " y: " << src_vertices[i].y << std::endl;
+            }
 
-        for(int i=0; i < 4; i++){
-            fscanf(ipt_data, "%f %f", &src_vertices[i].x, &src_vertices[i].y);
+            fclose(ipt_data);
+            read_parameters = true;
         }
-
-        fclose(ipt_data);
 
         cv::Mat result = TransformImage(image);
         return result;
 
     }
 }
-
-// int main(int argc, char** argv){
-//     if(argc < 2){
-//         std::cout << "Enter the input image" << std::endl; 
-//     }
-//
-//     bool done = false;
-//     cv::Mat image = cv::imread(argv[1], CV_LOAD_IMAGE_COLOR);
-//
-//     image_width = image.rows;
-//     image_height = image.cols;
-//
-//     // cv::Mat result = TransformImage(image);
-//
-//     // cv::imshow("result", result);
-//     // cv::waitKey(0);
-//
-//     return 0;
-//
-// }

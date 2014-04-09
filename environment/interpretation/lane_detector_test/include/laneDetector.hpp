@@ -41,11 +41,6 @@ private:
 	struct timeval tvalBefore, tvalAfter;
 	double timeElapsed;
 	
-	// Obstacle Removal
-	int obstacle_removal_dilation_size;    //variable used for dilating and eroding.. to be changed only if dimension of image changes.
-	int obstacle_removal_hue;              //used to remove obstacle, change only after calibration.
-	int obstacle_removal_saturation;       //used to remove obstacle, change only after calibration.
-
 	// Grass Removal
 	SVM *svm;
 	int kernel_size;
