@@ -14,6 +14,7 @@ void exit_with_help(){
 	"	   2 -- Debug mode ON with obstacle detector thresholding toolBox.\n"
 	"	   3 -- Debug mode ON with Canny Hough thresholding toolBox.\n"
 	"	   4 -- Debug mode ON with Binary thresholding toolBox.\n"
+    "      5 -- Set inverse perpective transform matrix. \n"
 	"-i  : Node Id\n"
 	"-s  : Subscriber topic name\n"
 	"-t  : Time the Functions\n"

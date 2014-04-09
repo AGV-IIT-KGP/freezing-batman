@@ -44,7 +44,7 @@ rosbuild_add_executable(generateSamples src/generateSamples.cpp)
 rosbuild_add_executable(svmTrain src/svmTrain.cpp)
 target_link_libraries(svmTrain svm)
 
-rosbuild_add_library(laneDetector src/laneDetector.cpp src/obstacleRemoval.cpp src/preprocessing.cpp src/getLaneBinary.cpp src/grassRemoval.cpp)
+rosbuild_add_library(laneDetector src/laneDetector.cpp src/obstacleRemoval.cpp src/preprocessing.cpp src/getLaneBinary.cpp src/grassRemoval.cpp src/inversePerspectiveTransform.cpp)
 target_link_libraries(laneDetector svm)
 
 rosbuild_add_executable(laneDetectorNode src/laneDetectorNode.cpp)
