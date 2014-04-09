@@ -197,8 +197,8 @@ int SVM::predictKernelWise(cv::Mat &_input_, int kernel_size){
 	int result=99;
 	int start_row, start_col;
 	
-	for (int i=0;i<_input_.rows;i+=kernel_size/2) {
-		for (int j=0;j<_input_.cols;j+=kernel_size/2) {
+	for (int i=0;i<_input_.rows;i+=kernel_size) {
+		for (int j=0;j<_input_.cols;j+=kernel_size) {
 			
 			if ( (_input_.rows-i-1) > kernel_size && (_input_.cols-j-1) > kernel_size ) {
 				start_col = j;
