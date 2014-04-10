@@ -38,19 +38,19 @@ void LaneDetector::interpret(){
 	}
 	*/
     //
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalBefore, NULL);
-	// }	
-	// result = GrassRemoval(result);
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalAfter, NULL);
-	// 	timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
-	// 	std::cout << "GrassRemoval FPS : "<< 1./timeElapsed << std::endl;
-	// }
-	// if(debug_mode) {
-	// 	cv::namedWindow("GrassRemoval Output");
-	// 	cv::imshow("GrassRemoval Output",result);
-	// }
+	if( timeFunctions ){
+		gettimeofday (&tvalBefore, NULL);
+	}	
+	result = GrassRemoval(result);
+	if( timeFunctions ){
+		gettimeofday (&tvalAfter, NULL);
+		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		std::cout << "GrassRemoval FPS : "<< 1./timeElapsed << std::endl;
+	}
+	if(debug_mode) {
+		cv::namedWindow("GrassRemoval Output");
+		cv::imshow("GrassRemoval Output",result);
+	}
 	
 	
 	if( timeFunctions ){
@@ -67,7 +67,7 @@ void LaneDetector::interpret(){
 		cv::imshow("ObstacleRemoval Output",result);
 	}
 	
-	/*
+	
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
 	}	
@@ -81,7 +81,7 @@ void LaneDetector::interpret(){
 		cv::namedWindow("GetLaneBinary Output");
 		cv::imshow("GetLaneBinary Output",result);
 	}
-	*/
+	
 	/*
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
@@ -128,7 +128,7 @@ void LaneDetector::interpret(){
 	// 	cv::imshow("InversePerspectiveTransform Output", result);
 	// }
 	
-	/*PublishLanes(result); */
+	PublishLanes(result); 
 }
 
 void LaneDetector::setUpCommunication(){
@@ -162,8 +162,9 @@ void LaneDetector::SubscribeImage(const sensor_msgs::ImageConstPtr& msg) {
 }
 
 void LaneDetector::PublishLanes(cv::Mat &image){
-	
-	cvi.encoding = sensor_msgs::image_encodings::BGR8;
-	cvi.image = image;
-	pub.publish(cvi.toImageMsg());
+	cv_bridge::CvImage message;
+    message.encoding = sensor_msgs::image_encodings::BGR8;
+    message.image = image;
+    cv::cvtColor(message.image,message.image,CV_GRAY2BGR);
+	pub.publish(message.toImageMsg());
 }
