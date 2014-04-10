@@ -30,7 +30,6 @@ private:
 	std::string sub_topic_name, pub_topic_name;
 	ros::NodeHandle nh_;
 
-	cv_bridge::CvImage cvi;
 	sensor_msgs::CvBridge bridge;
 	image_transport::ImageTransport it;
 	image_transport::Publisher pub;
