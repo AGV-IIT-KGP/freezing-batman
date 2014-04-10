@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.4.6)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-include(${PROJECT_SOURCE_DIR}/include)
-#add_definitions(-std=c++0x)
+include_directories( include/)
+
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
 #  Debug          : w/ debug symbols, w/o optimization
@@ -16,17 +16,17 @@ rosbuild_init()
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-
+set(CXX_FLAGS "-lboost_system")
 #uncomment if you have defined messages
-rosbuild_genmsg()
+#rosbuild_genmsg()
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
+rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-rosbuild_add_executable(local_planner src/main.cpp src/a_star_seed/a_star_seed.cpp src/a_star_seed/state.cpp src/a_star_seed/state_of_car.cpp src/a_star_seed/seed.cpp src/a_star_seed/ss_priority_queue.cpp)
+rosbuild_add_executable(Fusion src/fusion.cpp src/main.cpp)
+rosbuild_link_boost(Fusion signals)
 #target_link_libraries(example ${PROJECT_NAME})
