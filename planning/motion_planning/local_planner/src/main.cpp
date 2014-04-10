@@ -36,24 +36,74 @@ int last_cmd;
 subscribe image convert to mat
 then update char ** local map : DONE*/
 
-char local_map[1000][1000];
+cv::Mat local_map;
 navigation::State my_bot_location, my_target_location;
 navigation::State pose;
-
+ros::Publisher pub_path;
+navigation::State botLocation(100,100,90,0);
+navigation::State targetLocation(900,900,90,0);
+navigation::AStarSeed planner;
 
 void update_world_map(const sensor_msgs::ImageConstPtr& world_map){
     //TODO : copy function for occupancy grid
     cv_bridge::CvImagePtr cv_ptr;
+    printf("Here\n");
+
     try
     {
-      cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::BGR8);
-      cv::Mat bin = cv::Mat::zeros(cv_ptr->image.size(),CV_8UC1);
-      cv::cvtColor(cv_ptr->image,bin,CV_BGR2GRAY);
-      for(int i=0;i<cv_ptr->image.rows;i++){
-        for(int j=0;j<cv_ptr->image.cols;j++){
-            local_map[i][j] = (char)('0'+cv_ptr->image.at<uchar>(i,j));
+        cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::MONO8);
+        cvNamedWindow("Lets Plan",0);
+        cv::imshow("Lets Plan",cv_ptr->image);
+        cv::waitKey(0);
+
+        local_map = cv_ptr->image.clone();
+        std::cout<<"Number of channels "<< cv_ptr->image.channels()<<std::endl;
+        
+        // cv::cvtColor(cv_ptr->image,local_map,CV_BGR2GRAY);
+        cvNamedWindow("Planner",0);
+        cv::imshow("Planner",local_map);
+        cv::waitKey(0);
+        
+        if(local_map.at<uchar>(botLocation.x(), botLocation.y())!=0 && local_map.at<uchar>(targetLocation.x(), targetLocation.y())!=0 )
+        {
+            ROS_INFO("Target or Bot on obstacle....Sirry exiting \n");
+            exit(0);
         }
-      }
+        
+        local_planner::Seed seed;
+        std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path;
+
+        cv::Mat img = local_map.clone();
+         // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
+            // navigation::addObstacles(img, 5);
+          
+        std::cout<<"Got Map at line : "<<__LINE__<<std::endl;
+        struct timeval t,c;
+        gettimeofday(&t,NULL);
+          
+        std::cout<<__LINE__<<std::endl;
+        path = planner.findPathToTargetWithAstar(img , botLocation, targetLocation);
+        std::cout<<__LINE__<<std::endl;
+           planner.showPath(path.first);
+           // if(path.finalState.x()==0)
+          // if(path.velocityRatio == 0)
+          //   continue;
+        seed.x = path.second.finalState.x();
+        seed.y = path.second.finalState.y();
+        seed.theta = path.second.finalState.theta();
+        seed.costOfseed = path.second.costOfseed;
+        seed.velocityRatio = path.second.velocityRatio;
+        seed.leftVelocity = path.second.leftVelocity;
+        seed.rightVelocity = path.second.rightVelocity;
+        seed.curvature = path.second.finalState.curvature();
+         
+        std::cout<<__LINE__<<std::endl;
+        pub_path.publish(seed);
+        std::cout<<__LINE__<<std::endl;
+        gettimeofday(&c,NULL);
+        double td = t.tv_sec + t.tv_usec/1000000.0;
+        double cd = c.tv_sec + c.tv_usec/1000000.0; // time in seconds for thousand iterations
+        std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
 
     }
     catch (cv_bridge::Exception& e)
@@ -87,13 +137,16 @@ int main(int argc,char* argv[]) {
 
     ros::init(argc, argv, "planner");
 
+    std::cout<<"Entered Planner \n";
 
     ros::NodeHandle nh; // nodeHandle
-    ros::Publisher pub_path = nh.advertise<local_planner::Seed>("/path", 1000); //Publisher for Path
 
-    ros::Subscriber sub_world_map = nh.subscribe("/world_map",10, update_world_map); //Subscriber for World Map
-    ros::Subscriber sub_bot_pose =  nh.subscribe("/bot_pose", 10 ,update_bot_pose); // topic should same with data published by GPS
-    ros::Subscriber sub_target_pose = nh.subscribe("/target_Pose", 10 , update_target_pose); // topic published from GPS
+    pub_path= nh.advertise<local_planner::Seed>("/path", 1000); //Publisher for Path
+
+    ros::Subscriber sub_world_map = nh.subscribe("/world_map",1000, update_world_map); //Subscriber for World Map
+    ros::Subscriber sub_bot_pose =  nh.subscribe("/bot_pose", 1000 ,update_bot_pose); // topic should same with data published by GPS
+    ros::Subscriber sub_target_pose = nh.subscribe("/target_Pose", 1000 , update_target_pose); // topic published from GPS
+ 
     // ros::Subscriber sub3 = nh.subscribe("/pose", 1, update_pose);
 
     /* TO DO
@@ -101,70 +154,22 @@ int main(int argc,char* argv[]) {
    // pub_path = nh.advertise<geometry_msgs::Twist > ("cmd_vel", 1);
 
     cvNamedWindow("[PLANNER] Map", 0);
-
-    navigation::State botLocation(rand()%100,rand()%100,90,0),targetLocation(900,900,90,0);
-    navigation::AStarSeed planner;
+    std::cout<<__LINE__<<std::endl;
 
     ros::Rate loop_rate(LOOP_RATE);
 
     srand((unsigned int)time(NULL));
-
-          struct timeval t,c;
-
-    
     int iterations = 100;
-        gettimeofday(&t,NULL);
 
-    while (iterations-- &&  ros::ok()) {
-        
-
-              local_planner::Seed seed;
-
-        std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path;
-
-        cv::Mat img = cv::Mat::zeros(1000, 1000, CV_8UC1);
-
-
-        // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
-        navigation::addObstacles(img, 25);
-
-
-             path = planner.findPathToTargetWithAstar(img,botLocation, targetLocation);
-             // planner.showPath(path.first);
-
-        
-
-
-
-
-        planner.showPath(path.first);
-        
-
-        seed.x = path.second.finalState.x();
-        seed.y = path.second.finalState.y();
-        seed.theta = path.second.finalState.theta();
-        seed.costOfseed = path.second.costOfseed;
-        seed.velocityRatio = path.second.velocityRatio;
-        seed.leftVelocity = path.second.leftVelocity;
-        seed.rightVelocity = path.second.rightVelocity;
-        seed.curvature = path.second.finalState.curvature();
-        
-        pub_path.publish(seed);
+    while (iterations--  && ros::ok()) {
+        ROS_INFO("Iter number : %d\n",iterations);
 
         ros::spinOnce();
         loop_rate.sleep();
 
     }
-
-        gettimeofday(&c,NULL);
-        double td = t.tv_sec + t.tv_usec/1000000.0;
-        double cd = c.tv_sec + c.tv_usec/1000000.0; // time in seconds for thousand iterations
-
-    
-        std::cout<<"FPS:"<< 100/(cd-td) <<std::endl;
-
-
     ROS_INFO("Planner Exited");
 
     return 0;
+
 }

@@ -164,9 +164,6 @@ int main(int argc,char* argv[]) {
         loop_rate.sleep();
 
     }
-
-
-
     ROS_INFO("Planner Exited");
 
     return 0;
