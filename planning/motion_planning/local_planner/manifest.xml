@@ -4,16 +4,19 @@
      local_planner
 
   </description>
-  <author>Samuel</author>
+  <author>Satya Prakash</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/local_planner</url>
   <depend package="roscpp"/>
   <depend package="opencv2"/>
-  <depend package="message_filters"/>
-  <depend package="geometry_msgs"/>
-  <depend package="tf"/>
   <depend package="agv_framework"/>
+  <depend package="nav_msgs"/>
+  <depend package="sensor_msgs"/>  
+  <depend package="geometry_msgs"/>
+  <depend package="std_msgs"/>
+  <depend package="image_transport"/> 
+  <depend package="cv_bridge"/>
 </package>
 
 
