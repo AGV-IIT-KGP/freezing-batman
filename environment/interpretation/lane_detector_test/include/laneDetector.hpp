@@ -30,6 +30,8 @@ private:
 	std::string sub_topic_name, pub_topic_name;
 	ros::NodeHandle nh_;
 
+    std::string data_path;
+
 	cv_bridge::CvImage cvi;
 	sensor_msgs::CvBridge bridge;
 	image_transport::ImageTransport it;
@@ -41,11 +43,6 @@ private:
 	struct timeval tvalBefore, tvalAfter;
 	double timeElapsed;
 	
-	// Obstacle Removal
-	int obstacle_removal_dilation_size;    //variable used for dilating and eroding.. to be changed only if dimension of image changes.
-	int obstacle_removal_hue;              //used to remove obstacle, change only after calibration.
-	int obstacle_removal_saturation;       //used to remove obstacle, change only after calibration.
-
 	// Grass Removal
 	SVM *svm;
 	int kernel_size;

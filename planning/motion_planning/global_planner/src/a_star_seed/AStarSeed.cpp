@@ -49,19 +49,20 @@ namespace navigation {
         emptySeed.leftVelocity = 0;
         emptySeed.rightVelocity = 0;
         // emptySeed.curvature = 0;
+
         // printf("%The start point is %d %d \n", startState.x(), startState.y());
         // printf("%The start point is %d %d \n", targetState.x(), targetState.y());
         // printf("Enter to go ahead\n");
         // getchar();
         cv::circle(image, cv::Point(startState.x(), startState.y()), 5, cv::Scalar(255), -1);
         cv::circle(image, cv::Point(targetState.x(), targetState.y()), 5, cv::Scalar(255), -1);
-
         std::cout<<__LINE__<<std::endl;
 
         std::map<StateOfCar, open_map_element> openMap;
         std::map<StateOfCar,StateOfCar> came_from;
         
         SS::PriorityQueue<StateOfCar> openSet;
+
         if(fusionMap.at<char>(goal.x(), goal.y()) != 0){
             std::cout<<"Target is on the obstacle\n";
             return emptySeed;
@@ -100,6 +101,7 @@ namespace navigation {
 //            std::cout<<"current x : "<<currentState.x()<<" current y : "<<currentState.y()<<std::endl;
 //
 //            plotPointInMap(currentState);
+
            //   cv::imshow("[PLANNER] Map", image);
            // cvWaitKey(0);
             openMap[currentState].membership = UNASSIGNED;
@@ -236,12 +238,11 @@ namespace navigation {
     
 
     std::vector<StateOfCar> AStarSeed::neighborNodesWithSeeds(StateOfCar const& currentState) {
-        
-        
         int size =  givenSeeds.size() ;
         std::vector<StateOfCar> neighbours(size);
 
         for ( int i = 0; i <size; i++) {
+
             double deltaX = givenSeeds[i].finalState.x();
             double deltaY = givenSeeds[i].finalState.y();
             double deltaZ = givenSeeds[i].finalState.theta();
@@ -297,6 +298,7 @@ namespace navigation {
 
 
     Seed AStarSeed::reconstructPath(StateOfCar const& currentStateOfCar_, std::map<StateOfCar,StateOfCar>& came_from)
+
     {
         
         StateOfCar currentStateOfCar = currentStateOfCar_;
@@ -316,12 +318,14 @@ namespace navigation {
         // std::cout<<"Path size in reconstructPath is : "<<path.size()<<std::endl;
         return givenSeeds[path[path.size()-1].seedTaken()]  ;
 
+
     }
     
     void AStarSeed::showPath(std::vector<StateOfCar>& path){
         
         
         printf("Showing A Path\n");
+
         // for(int i = 0; i< fusionMap.rows; i++){
         //     for(int j = 0; j< fusionMap.cols; j++){
         //         image.at<uchar>(j,i)= fusionMap.at<uchar>(i,j);

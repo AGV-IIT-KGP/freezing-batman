@@ -34,6 +34,7 @@ int last_cmd;
 subscribe image convert to mat
 then update char ** local map : DONE*/
 
+
 cv::Mat local_map;
 navigation::State my_bot_location, my_target_location;
 navigation::State pose;
@@ -99,6 +100,7 @@ void update_world_map(const sensor_msgs::ImageConstPtr world_map){
         double td = t.tv_sec + t.tv_usec/1000000.0;
         double cd = c.tv_sec + c.tv_usec/1000000.0; // time in seconds for thousand iterations
         std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
+
     }
     catch (cv_bridge::Exception& e)
     {
@@ -140,7 +142,7 @@ int main(int argc,char* argv[]) {
     ros::Subscriber sub_world_map = nh.subscribe("/world_map",1000, update_world_map); //Subscriber for World Map
     ros::Subscriber sub_bot_pose =  nh.subscribe("/bot_pose", 1000 ,update_bot_pose); // topic should same with data published by GPS
     ros::Subscriber sub_target_pose = nh.subscribe("/target_Pose", 1000 , update_target_pose); // topic published from GPS
-   
+ 
     // ros::Subscriber sub3 = nh.subscribe("/pose", 1, update_pose);
 
     /* TO DO
@@ -153,11 +155,11 @@ int main(int argc,char* argv[]) {
     ros::Rate loop_rate(LOOP_RATE);
 
     srand((unsigned int)time(NULL));
-
     int iterations = 100;
 
     while (iterations--  && ros::ok()) {
         // ROS_INFO("Iter number : %d\n",iterations);
+
         ros::spinOnce();
         loop_rate.sleep();
 

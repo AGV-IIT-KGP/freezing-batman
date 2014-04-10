@@ -24,6 +24,7 @@
 
 #define SEEDS_FILE "seeds2.txt"
 
+
 namespace navigation {
 
     void addObstacles(cv::Mat& img, const int noOfObstacles);

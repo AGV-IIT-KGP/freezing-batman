@@ -13,6 +13,10 @@ rosbuild_init()
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+
+set(DATA_PATH ${PROJECT_SOURCE_DIR}/data)
+
+add_definitions(-DDATA_PATH=${DATA_PATH})
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
@@ -30,6 +34,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(example ${PROJECT_NAME})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
+configure_file( config.h.in ${PROJECT_SOURCE_DIR}/include/config.h)
+
 
 #############################################################################################################################################
 #SVM start
@@ -39,13 +45,27 @@ add_library(svm ${svm_SRC})
 #SVM end
 #############################################################################################################################################
 
+#set(lib_SVM  ${PROJECT_SOURCE_DIR}/libsvmWrapper.so ${PROJECT_SOURCE_DIR}/libsvm.so)
+set(lib_SVM  ${PROJECT_SOURCE_DIR}/lib/libsvm.a)
+
 rosbuild_add_executable(generateSamples src/generateSamples.cpp)
 
 rosbuild_add_executable(svmTrain src/svmTrain.cpp)
-target_link_libraries(svmTrain svm)
+target_link_libraries(svmTrain ${lib_SVM})
+
+
+rosbuild_add_library(laneDetector 
+    src/laneDetector.cpp 
+    src/obstacleRemoval.cpp 
+    src/preprocessing.cpp 
+    src/getLaneBinary.cpp
+    src/grassRemoval.cpp 
+    src/seperateLanes.cpp
+    src/inversePerspectiveTransform.cpp)
+target_link_libraries(laneDetector svm)
 
 rosbuild_add_library(laneDetector src/laneDetector.cpp src/obstacleRemoval.cpp src/preprocessing.cpp src/getLaneBinary.cpp src/grassRemoval.cpp)
-target_link_libraries(laneDetector svm)
+target_link_libraries(laneDetector ${lib_SVM})
 
 rosbuild_add_executable(laneDetectorNode src/laneDetectorNode.cpp)
 target_link_libraries(laneDetectorNode laneDetector libagv_framework.so m)

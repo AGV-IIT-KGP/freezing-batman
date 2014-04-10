@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <string>
 
+#include <iostream>
+#include <vector>
+
 void exit_with_help(){
 	std::cout<<
 	"Usage: lane-detector [options]\n"
@@ -14,6 +17,8 @@ void exit_with_help(){
 	"	   2 -- Debug mode ON with obstacle detector thresholding toolBox.\n"
 	"	   3 -- Debug mode ON with Canny Hough thresholding toolBox.\n"
 	"	   4 -- Debug mode ON with Binary thresholding toolBox.\n"
+    "      5 -- Set inverse perpective transform matrix. \n"
+    "      6 -- Debug mode ON for inverse perspective transform. \n"
 	"-i  : Node Id\n"
 	"-s  : Subscriber topic name\n"
 	"-t  : Time the Functions\n"
@@ -51,6 +56,8 @@ int main (int argc, char *argv[]){
 			case 't':
 				time_functions = atoi(argv[i]);
 				break;
+            // case 'n':
+            //     do_not_usek
 			default:
 				fprintf(stderr, "Unknown option: -%c\n", argv[i-1][1]);
 				exit_with_help();
