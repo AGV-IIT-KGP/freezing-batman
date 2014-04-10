@@ -19,7 +19,7 @@ void ObstacleDetector::interpret() {
 		cv::waitKey(WAIT_TIME);
     }
 
-	int dilation_size = 30;
+	int dilation_size = EXPAND_OBS;
 	cv::Mat element = cv::getStructuringElement( cv::MORPH_ELLIPSE,
                                        cv::Size( 2*dilation_size + 1, 2*dilation_size+1 ),
                                        cv::Point( dilation_size, dilation_size ) );
@@ -46,7 +46,7 @@ void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
             double x1 = -1 * sin(angle) * dist;
             double y1 = cos(angle) * dist;
             int x = (int) ((x1 * 100) + CENTERX);
-            int y = (int) ((y1 * 100) + CENTERY + 30);
+            int y = (int) ((y1 * 100) + CENTERY + LIDAR_Y_SHIFT);
 
             if (x >= 0 && y >= 0 && (int) x < MAP_MAX && (int) y < MAP_MAX) {
                 int x2 = (x);
@@ -73,10 +73,10 @@ ObstacleDetector::ObstacleDetector(int argc, char *argv[],ros::NodeHandle &node_
 	else{
 	 sub_topic_name = std::string("/scan");
 	}
-it = new image_transport::ImageTransport(nh);
-sub = nh.subscribe(sub_topic_name.c_str(), 2, &ObstacleDetector::scanCallback,this);
-img = cv::Mat(MAP_MAX,MAP_MAX,CV_8UC1,cvScalarAll(0));
-pub = it->advertise(topic_name.c_str(), 10);
+    it = new image_transport::ImageTransport(nh);
+    sub = nh.subscribe(sub_topic_name.c_str(), 2, &ObstacleDetector::scanCallback,this);
+    img = cv::Mat(MAP_MAX,MAP_MAX,CV_8UC1,cvScalarAll(0));
+    pub = it->advertise(topic_name.c_str(), 10);
 }
 
 ObstacleDetector::~ObstacleDetector() {
@@ -94,7 +94,6 @@ int main(int argc, char** argv) {
     ros::init(argc, argv, node_name.c_str());
     ros::NodeHandle nh;
     ObstacleDetector obstacle_detector(argc, argv, nh);
-    //image_transport::Subscriber sub = lane_detector.getLaneNode()->subscribe("camera/image", 2, &LaneDetector::getLanes, &lane_detector);
     ros::Rate loop_rate(LOOP_RATE);
     ROS_INFO("Obstacle Detector Thread Started...");
     while (ros::ok()) {

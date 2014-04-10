@@ -13,18 +13,22 @@
 #include <sensor_msgs/image_encodings.h>
 #include "sensor_msgs/LaserScan.h"
 
-#define DEBUG 1
-
-#define CENTERX 500
-#define CENTERY 100
-#define HOKUYO_SCALE 100
-#define RADIUS 30
-#define EXPAND_ITER 60
+static const int DEBUG =1 ;
 
 
-#define MAP_MAX 1000
-#define LOOP_RATE 10
-#define WAIT_TIME 100
+
+// SCALING  : 100 in cm.
+
+static const int CENTERX =500;
+static const int CENTERY =100;
+static const int HOKUYO_SCALE= 100;
+// static const int RADIUS =30;
+static const int EXPAND_OBS =30;
+static const int LIDAR_Y_SHIFT=30;
+
+static const int MAP_MAX =1000;
+static const int LOOP_RATE =10;
+static const int WAIT_TIME =100;
 
 
 class ObstacleDetector : public environment::Interpreter {
