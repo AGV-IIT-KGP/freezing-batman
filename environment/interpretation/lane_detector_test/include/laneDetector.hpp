@@ -1,7 +1,6 @@
 #ifndef _LANE_DETECTOR_HPP_
 #define _LANE_DETECTOR_HPP_
 
-
 #include <ros/ros.h>
 #include <iostream>
 #include <environment/Interpreter.hpp>
@@ -29,6 +28,8 @@ private:
 	int timeFunctions;
 	std::string sub_topic_name, pub_topic_name;
 	ros::NodeHandle nh_;
+
+    std::string data_path;
 
 	cv_bridge::CvImage cvi;
 	sensor_msgs::CvBridge bridge;

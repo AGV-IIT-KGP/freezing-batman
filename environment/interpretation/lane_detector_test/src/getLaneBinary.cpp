@@ -1,7 +1,5 @@
 #include "laneDetector.hpp"
 
-
-
 cv::Mat applyCanny(cv::Mat &img,int debug){
 	cv::Mat grayscale_image(img.rows,img.cols,CV_8UC1,cvScalarAll(0));
 	cv::Mat canny_image(img.rows,img.cols,CV_8UC1,cvScalarAll(0));
@@ -104,15 +102,15 @@ cv::Mat mergeBinaryImages(cv::Mat &bin_img1,cv::Mat &bin_img2,int debug){
 
 
 cv::Mat LaneDetector::GetLaneBinary(cv::Mat &image){
-	cv::Mat canny_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
-	cv::Mat hough_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
+	// cv::Mat canny_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
+	// cv::Mat hough_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
 	cv::Mat threshold_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
-	cv::Mat merged_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
+	// cv::Mat merged_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
 	threshold_image=applyThreshold(image,debug_mode);
-	canny_image=applyCanny(image,debug_mode);
-	hough_image=applyHough(canny_image,debug_mode);
-	merged_image=mergeBinaryImages(threshold_image,hough_image,debug_mode);
-	return merged_image;
+	// canny_image=applyCanny(image,debug_mode);
+	// hough_image=applyHough(canny_image,debug_mode);
+	// merged_image=mergeBinaryImages(threshold_image,hough_image,debug_mode);
+	return threshold_image;
 	
 		
 }   // Detect lanes and return a binary image with Lanes only

@@ -3,6 +3,8 @@
 #include <ros/ros.h>
 #include <stdlib.h>
 #include <string>
+#include <iostream>
+#include <vector>
 
 void exit_with_help(){
 	std::cout<<
@@ -29,6 +31,7 @@ int main (int argc, char *argv[]){
 	std::string node_id="0", subscribe_topic_name="/camera/image";
 	int debug_mode = 0 ;
 	int time_functions=0;
+    
 	// parse options
 	for(int i=1;i<argc;i++)
 	{
@@ -53,6 +56,8 @@ int main (int argc, char *argv[]){
 			case 't':
 				time_functions = atoi(argv[i]);
 				break;
+            // case 'n':
+            //     do_not_usek
 			default:
 				fprintf(stderr, "Unknown option: -%c\n", argv[i-1][1]);
 				exit_with_help();
