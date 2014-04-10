@@ -1,0 +1,2 @@
+float32 rear_wheel_speed
+float32 steer_angle

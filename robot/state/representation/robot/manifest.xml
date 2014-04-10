@@ -1,0 +1,15 @@
+<package>
+  <description brief="robot">
+
+     robot
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/robot</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

@@ -1,0 +1,16 @@
+<package>
+  <description brief="gps_ins">
+
+     gps_ins
+
+  </description>
+  <author>Satya Prakash</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/gps_ins</url>
+  <depend package="roscpp"/>
+  <depend package="sensor"/>
+
+</package>
+
+

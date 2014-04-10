@@ -1,0 +1,86 @@
+Background\ ColorB=0
+Background\ ColorG=0
+Background\ ColorR=0
+Camera\ Config=1.45279 1.83216 943.158 -0.994666 -0.761147 0.442857
+Camera\ Type=rviz::OrbitViewController
+Camera.Enabled=0
+Camera.Image\ Rendering=background & overlay
+Camera.Image\ Topic=/camera/image_raw
+Camera.Overlay\ Alpha=0.5
+Camera.Queue\ Size=2
+Camera.Transport\ Hint=raw
+Camera.Zoom\ Factor=1
+Fixed\ Frame=/base_link
+Imu.Alpha=1
+Imu.ColorB=0.8
+Imu.ColorG=0.2
+Imu.ColorR=0.8
+Imu.Enabled=1
+Imu.History\ Length=1
+Imu.Topic=/imu
+LaserScan..AxisColorAutocompute\ Value\ Bounds=1
+LaserScan..AxisColorAxis=2
+LaserScan..AxisColorMax\ Value=10
+LaserScan..AxisColorMin\ Value=-10
+LaserScan..AxisColorUse\ Fixed\ Frame=1
+LaserScan..FlatColorColorB=1
+LaserScan..FlatColorColorG=1
+LaserScan..FlatColorColorR=1
+LaserScan..IntensityAutocompute\ Intensity\ Bounds=1
+LaserScan..IntensityChannel\ Name=intensity
+LaserScan..IntensityMax\ ColorB=1
+LaserScan..IntensityMax\ ColorG=1
+LaserScan..IntensityMax\ ColorR=1
+LaserScan..IntensityMax\ Intensity=101
+LaserScan..IntensityMin\ ColorB=0
+LaserScan..IntensityMin\ ColorG=0
+LaserScan..IntensityMin\ ColorR=0
+LaserScan..IntensityMin\ Intensity=101
+LaserScan..IntensityUse\ full\ RGB\ spectrum=0
+LaserScan.Alpha=1
+LaserScan.Billboard\ Size=0.01
+LaserScan.Color\ Transformer=Intensity
+LaserScan.Decay\ Time=0
+LaserScan.Enabled=0
+LaserScan.Position\ Transformer=XYZ
+LaserScan.Queue\ Size=10
+LaserScan.Selectable=1
+LaserScan.Style=1
+LaserScan.Topic=/scan
+Map.Alpha=0.7
+Map.Draw\ Behind=0
+Map.Enabled=0
+Map.Topic=/map
+Property\ Grid\ Splitter=563,146
+Property\ Grid\ State=expanded=.Global Options,Imu.Enabled;splitterratio=0.5
+QMainWindow=000000ff00000000fd00000003000000000000011d00000317fc0200000002fb000000100044006900730070006c006100790073010000001d00000317000000ee00fffffffb0000000c00430061006d0065007200610000000238000000d80000001900ffffff000000010000013100000317fc0200000003fb0000001e0054006f006f006c002000500072006f0070006500720074006900650073010000001d000000c90000006700fffffffb0000000a0056006900650077007301000000ec00000179000000bb00fffffffb0000001200530065006c0065006300740069006f006e010000026b000000c90000006700ffffff00000003000005650000003efc0100000001fb0000000800540069006d0065010000000000000565000002bf00ffffff0000030b0000031700000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+RobotModel.Alpha=1
+RobotModel.Collision\ Enabled=0
+RobotModel.Enabled=0
+RobotModel.Robot\ Description=robot_description
+RobotModel.TF\ Prefix=
+RobotModel.Update\ Interval=0
+RobotModel.Visual\ Enabled=1
+Target\ Frame=/base_link
+Tool\ 2D\ Nav\ GoalTopic=/move_base_simple/goal
+Tool\ 2D\ Pose\ EstimateTopic=initialpose
+[Display0]
+ClassName=rviz::RobotModelDisplay
+Name=RobotModel
+[Display1]
+ClassName=rviz::LaserScanDisplay
+Name=LaserScan
+[Display2]
+ClassName=rviz_plugin_tutorials::ImuDisplay
+Name=Imu
+[Display3]
+ClassName=rviz::CameraDisplay
+Name=Camera
+[Display4]
+ClassName=rviz::MapDisplay
+Name=Map
+[Window]
+Height=924
+Width=1397
+X=-44
+Y=-56

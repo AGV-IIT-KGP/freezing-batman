@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="situational_planner" type="situational_planner" name="situational_planner" cwd="node" output="screen"/>    
+    <node pkg="situational_planner" type="situational_planner_debugger" name="situational_planner_debugger">
+        <param name="debug_mode" type="int" value="1"/>
+    </node>
+</launch>
+    

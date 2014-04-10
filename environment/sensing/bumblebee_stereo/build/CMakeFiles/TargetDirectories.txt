@@ -1,0 +1,16 @@
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/ROSBUILD_genmsg_cpp.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/ROSBUILD_genmsg_lisp.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/ROSBUILD_gensrv_cpp.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/ROSBUILD_gensrv_lisp.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/bumblebee_stereo.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/clean-test-results.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/rosbuild_precompile.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/rosbuild_premsgsrvgen.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/rospack_genmsg.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/rospack_genmsg_libexe.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/rospack_gensrv.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/test.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/test-future.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/test-results.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/test-results-run.dir
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/build/CMakeFiles/tests.dir

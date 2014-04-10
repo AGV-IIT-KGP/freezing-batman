@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="auro666_pilot" type="roboteq_server" name="roboteq_server" output="screen"/>
+    <node pkg="auro666_pilot" type="vehicle_interface" name="vehicle_interface"/>  
+</launch>
+  

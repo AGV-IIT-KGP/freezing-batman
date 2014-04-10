@@ -1,0 +1,19 @@
+<package>
+  <description brief="my_fusion">
+
+     my_fusion
+
+  </description>
+  <author>Krishna</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/my_fusion</url>
+  <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="std_msgs"/>
+  <depend package="image_transport"/>
+  <depend package="cv_bridge"/>
+
+</package>
+
+

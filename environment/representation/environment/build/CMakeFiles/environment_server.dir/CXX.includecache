@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/Representation.hpp
+environment/Model.hpp
+-
+vector
+-
+
+../include/Server.hpp
+Representation.hpp
+-
+
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/agv_framework/include/environment/Model.hpp
+
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/representation/environment/src/Server.cpp
+Server.hpp
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/representation/environment/src/Server.hpp
+

@@ -1,0 +1,15 @@
+<package>
+  <description brief="user_interface">
+
+     user_interface
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/user_interface</url>
+  <depend package="roscpp"/>
+
+</package>
+
+

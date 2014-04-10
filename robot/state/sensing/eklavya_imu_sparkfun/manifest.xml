@@ -1,0 +1,19 @@
+
+<package>
+  <description brief="eklavya_imu_sparkfun">
+
+     eklavya_imu_sparkfun
+
+  </description>
+  <author>Jit Ray Chowdhury</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>https://github.com/jitrc/eklavya-ros-pkg</url>
+   <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="tf"/>
+  <depend package="std_msgs"/>
+
+</package>
+
+

@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/BumblebeeStereo.hpp
+environment/Sensor.hpp
+-
+
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/agv_framework/include/environment/Sensor.hpp
+
+/home/krishna/fuerte_workspace/sandbox/freezing-batman/environment/sensing/bumblebee_stereo/src/BumblebeeStereo.cpp
+BumblebeeStereo.hpp
+-
+

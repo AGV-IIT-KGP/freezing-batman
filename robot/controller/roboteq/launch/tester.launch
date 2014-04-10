@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node pkg="eklavya_roboteq" type="tester" name="tester" args="2" output="screen" cwd="node"/>
+  
+</launch>
+  

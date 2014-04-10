@@ -1,0 +1,15 @@
+<package>
+  <description brief="drivable_region_detector">
+
+     drivable_region_detector
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/drivable_region_detector</url>
+  <depend package="interpreter"/>
+
+</package>
+
+
