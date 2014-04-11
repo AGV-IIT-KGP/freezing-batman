@@ -41,7 +41,7 @@ namespace navigation {
 
     
     
-    class AStarSeed : public Planning::Planner
+    class AStarSeed
     {
         static const int MAX_ITERATIONS;
         const std::string SEEDS_FILE;
