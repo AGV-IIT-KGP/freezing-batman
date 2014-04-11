@@ -6,6 +6,7 @@ void exit_with_help(){
 	std::cout<<
 	"Usage: lane-detector [options]\n"
 	"options:\n"
+	"-d  : Non-zero for debug\n"
 	"-s  : Subscriber topic name\n"
     "-p  : Publisher topic name\n"
     "-l  : Maximum distance we need \n"
@@ -16,18 +17,19 @@ void exit_with_help(){
 }
 void ObstacleDetector::publishData(){
 	cv_bridge::CvImage out_msg;
+	out_msg.encoding = sensor_msgs::image_encodings::MONO8;
 	out_msg.image    = img;
 	pub.publish(out_msg.toImageMsg());
 }
 
 void ObstacleDetector::interpret() {
-	if (DEBUG){
+	if (debug){
         cvNamedWindow("Control Box", 1);
     }
     int s=5;
-    cvCreateTrackbar("Kernel 1", "Control Box", &s, 20);
-
-    if (DEBUG) {
+    
+    if (debug) {
+		cvCreateTrackbar("Kernel 1", "Control Box", &s, 20);
 		cv::namedWindow("Raw Scan", 0);
 		cv::imshow("Raw Scan", img);
 		cv::waitKey(WAIT_TIME);
@@ -39,7 +41,7 @@ void ObstacleDetector::interpret() {
                                        cv::Point( dilation_size, dilation_size ) );
     cv::dilate(img, img, element);
 
-    if (DEBUG) {
+    if (debug) {
         cv::namedWindow("Dilate Filter", 1);
         cv::imshow("Dilate Filter", img);
         cv::waitKey(WAIT_TIME);
@@ -48,7 +50,7 @@ publishData();
 }
 
 void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
-    std::cout << "Scan callback called" << std::endl;
+    ROS_INFO("Scan callback called");
 	size_t size = scan.ranges.size();
     float angle = scan.angle_min;
     float maxRangeForContainer = scan.range_max - 0.1f;
@@ -82,7 +84,8 @@ ObstacleDetector::ObstacleDetector(int argc, char *argv[], ros::NodeHandle &node
 	topic_name = std::string("interpreter/obstacleMap/0");
 	sub_topic_name = std::string("/scan");
     min_dist = 0;
-
+	max_dist = 400;
+	debug = 0;
 	for(int i=1;i<argc;i++)
 	{
 		if(argv[i][0] != '-') {
@@ -93,6 +96,9 @@ ObstacleDetector::ObstacleDetector(int argc, char *argv[], ros::NodeHandle &node
 		}
 		switch(argv[i-1][1])
 		{
+			case 'd':
+				debug = atoi(argv[i]);
+				break;
 			case 's':
 				sub_topic_name = std::string(argv[i]);
 				break;
@@ -107,6 +113,7 @@ ObstacleDetector::ObstacleDetector(int argc, char *argv[], ros::NodeHandle &node
                 break;
 			default:
 				fprintf(stderr, "Unknown option: -%c\n", argv[i-1][1]);
+				exit_with_help();
 		}
 	}
 

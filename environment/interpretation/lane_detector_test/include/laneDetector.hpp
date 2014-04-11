@@ -20,6 +20,7 @@
 #include "libsvm/svmWrapper.hpp"
 
 #define WAIT_TIME 10
+#define MAP_MAX 1000
 
 class LaneDetector : public environment::Interpreter {
 private:

@@ -93,23 +93,22 @@ void LaneDetector::interpret(){
 		cv::namedWindow("GetLaneBinary Output");
 		cv::imshow("GetLaneBinary Output",result);
 	}
-
-
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalBefore, NULL);
-	// }
-	// result = SeperateLanes(result);
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalAfter, NULL);
-	// 	timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
-	// 	std::cout << "SeperateLanes FPS : "<< 1./timeElapsed << std::endl;
-	// }
-	// if(debug_mode) {
-	// 	cv::namedWindow("SeperateLanes Output");
-	// 	cv::imshow("SeperateLanes Output",result);
-	// }
-
-
+	/*
+	if( timeFunctions ){
+		gettimeofday (&tvalBefore, NULL);
+	}
+	result = SeperateLanes(result);
+	if( timeFunctions ){
+		gettimeofday (&tvalAfter, NULL);
+		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		std::cout << "SeperateLanes FPS : "<< 1./timeElapsed << std::endl;
+	}
+	if(debug_mode) {
+		cv::namedWindow("SeperateLanes Output");
+		cv::imshow("SeperateLanes Output",result);
+	}
+	*/
+	/*
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
 	}
@@ -128,23 +127,6 @@ void LaneDetector::interpret(){
 	}
 	*/
 
-<<<<<<< HEAD
-
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalBefore, NULL);
-	// }
-	// result = InversePerspectiveTransform(result);
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalAfter, NULL);
-	// 	timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
-	// 	std::cout << "InversePerspectiveTransform FPS : "<< 1./timeElapsed << std::endl;
-	// }
-	// if(debug_mode) {
-	// 	cv::namedWindow("InversePerspectiveTransform Output");
-	// 	cv::imshow("InversePerspectiveTransform Output", result);
-	// }
-
-=======
 	/*
 	if( timeFunctions == 2 ){
 		gettimeofday (&tvalBefore, NULL);
@@ -165,10 +147,15 @@ void LaneDetector::interpret(){
 	*/
 	
 	if( timeFunctions ){
-		std::cout << "Total FPS : "<< 1./totalTimeElapsed << std::endl;
+		if( timeFunctions == 2 ) {
+			std::cout << "Total FPS : "<< 1./totalTimeElapsed << std::endl;
+		}
+		else {
+			ROS_INFO("Total FPS : %lf", 1./totalTimeElapsed );
+		}
 	}
 	
->>>>>>> c77e36f27ef4bb2027fb96bd4cbbf8728d60f275
+
 	PublishLanes(result);
 }
 
@@ -204,15 +191,15 @@ void LaneDetector::SubscribeImage(const sensor_msgs::ImageConstPtr& msg) {
 }
 
 void LaneDetector::PublishLanes(cv::Mat &image){
-
-<<<<<<< HEAD
-=======
-	cvi.encoding = sensor_msgs::image_encodings::BGR8;
-	cvi.image = image;
->>>>>>> c77e36f27ef4bb2027fb96bd4cbbf8728d60f275
+	
 	cv_bridge::CvImage message;
-    message.encoding = sensor_msgs::image_encodings::BGR8;
-    message.image = image;
-    cv::cvtColor(message.image, message.image, CV_GRAY2BGR);
+    message.encoding = sensor_msgs::image_encodings::MONO8;
+    if( debug_mode == 7 ) {
+		message.image = cv::Mat::zeros(MAP_MAX,MAP_MAX,CV_8UC1);
+		cv::resize(image, message.image, message.image.size());
+	}
+	else {
+		message.image = image;
+	}
 	pub.publish(message.toImageMsg());
 }
