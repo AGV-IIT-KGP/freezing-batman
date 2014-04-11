@@ -20,7 +20,9 @@ void exit_with_help(){
     "      6 -- Debug mode ON for inverse perspective transform. \n"
 	"-i  : Node Id\n"
 	"-s  : Subscriber topic name\n"
-	"-t  : Time the Functions\n"
+	"-t  : Time functions\n"
+	"      1: Net FPS\n"
+	"      2: Indivisual functions\n"
 	;
 	exit(1);
 

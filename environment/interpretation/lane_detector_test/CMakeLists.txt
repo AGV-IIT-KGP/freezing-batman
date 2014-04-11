@@ -59,13 +59,9 @@ rosbuild_add_library(laneDetector
     src/preprocessing.cpp 
     src/getLaneBinary.cpp
     src/grassRemoval.cpp 
-    src/seperateLanes.cpp
+#    src/seperateLanes.cpp
     src/inversePerspectiveTransform.cpp)
 target_link_libraries(laneDetector svm)
-
-rosbuild_add_library(laneDetector src/laneDetector.cpp src/obstacleRemoval.cpp src/preprocessing.cpp src/getLaneBinary.cpp src/grassRemoval.cpp)
-target_link_libraries(laneDetector ${lib_SVM})
-
 
 rosbuild_add_executable(laneDetectorNode src/laneDetectorNode.cpp)
 target_link_libraries(laneDetectorNode laneDetector libagv_framework.so m)
