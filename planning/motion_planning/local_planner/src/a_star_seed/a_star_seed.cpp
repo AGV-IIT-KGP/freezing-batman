@@ -16,7 +16,7 @@ namespace navigation {
     
     const int AStarSeed::MAX_ITERATIONS = 1000;
 
-    void addObstacles(cv::Mat& fusionMap, const int noOfObstaclesP = 25) {
+    void addObstacles(cv::Mat& fusionMap, const int noOfObstaclesP = 0) {
         
         int noOfObstacles = noOfObstaclesP;
         while (noOfObstacles--) {
@@ -27,8 +27,9 @@ namespace navigation {
 
             const int x1      = rand()%100;
             const int y1      = rand()%100;
-            cv::circle(fusionMap, cv::Point(y, x), radius, cv::Scalar(255), -1);
-            cv::line(fusionMap, cv::Point(y, x), cv::Point(y+y1,x+x1), cv::Scalar(255), 10);
+
+            cv::circle(fusionMap, cv::Point(fusionMap.cols - y -1, x), radius, cv::Scalar(255), -1);
+            // cv::line(fusionMap, cv::Point(y, x), cv::Point(y+y1,x+x1), cv::Scalar(255), 10);
 
         }
         
@@ -46,7 +47,8 @@ namespace navigation {
         int no_of_iterations = 0;
 
         fusionMap = img;
-        
+                image = fusionMap - fusionMap;
+
 
         StateOfCar startState(start), targetState(goal);
         
@@ -94,11 +96,11 @@ namespace navigation {
                 return reconstructPath(currentState, came_from);
             }
             openSet.pop();
-//            std::cout<<"current x : "<<currentState.x()<<" current y : "<<currentState.y()<<std::endl;
-//
-//            plotPointInMap(currentState);
-//            cv::imshow("[PLANNER] Map", mapWithObstacles);
-//            cvWaitKey(0);
+           std::cout<<"current x : "<<currentState.x()<<" current y : "<<currentState.y()<<std::endl;
+
+           plotPointInMap(currentState);
+           cv::imshow("[PLANNER] Map", image);
+           cvWaitKey(0);
             openMap[currentState].membership = UNASSIGNED;
             openMap[currentState].cost=-currentState.gCost(); 
             openMap[currentState].membership=CLOSED;
@@ -140,8 +142,8 @@ namespace navigation {
                 const double sy = givenSeeds[i].finalState.x();
                 //double sz = givenSeeds[i].destination.getXcordinate();
                 
-                const int x ((int) (currentState.x() + sx * sin(currentState.theta() * (CV_PI / 180)) + sy * cos(currentState.theta() * (CV_PI / 180))));
-                const int y ((int) (currentState.y() -sx * cos(currentState.theta() * (CV_PI / 180)) + sy * sin(currentState.theta() * (CV_PI / 180))));
+                const int x ((int) (currentState.x() + sx * sin(currentState.theta() * (CV_PI / 180.0)) + sy * cos(currentState.theta() * (CV_PI / 180.0))));
+                const int y ((int) (currentState.y() -sx * cos(currentState.theta() * (CV_PI / 180.0)) + sy * sin(currentState.theta() * (CV_PI / 180.0))));
                 
                 StateOfCar temp(State(x,y,0,0));
 
@@ -153,7 +155,7 @@ namespace navigation {
         return false;
     }
     
-    AStarSeed::AStarSeed() : SEEDS_FILE("/home/krishna/fuerte_workspace/sandbox/freezing-batman/planning/motion_planning/local_planner/seeds/seeds2.txt")
+    AStarSeed::AStarSeed() : SEEDS_FILE("/home/krishna/fuerte_workspace/sandbox/freezing-batman/planning/motion_planning/local_planner/seeds/seeds.txt")
     {
         // SEEDS_FILE = std::string("../seeds/seeds2.txt");
         loadGivenSeeds();
@@ -234,8 +236,8 @@ namespace navigation {
             const double deltaY = givenSeeds[i].finalState.y();
             const double deltaZ = givenSeeds[i].finalState.theta();
             
-            const int x = (int) (currentState.x() +deltaX * sin(currentState.theta() * (CV_PI / 180)) + deltaY * cos(currentState.theta() * (CV_PI / 180)));
-            const int y=  (int) (currentState.y() -deltaX * cos(currentState.theta() * (CV_PI / 180)) + deltaY * sin(currentState.theta() * (CV_PI / 180)));
+            const int x = (int) (currentState.x() +deltaX * sin(currentState.theta() * (CV_PI / 180.0)) + deltaY * cos(currentState.theta() * (CV_PI / 180.0)));
+            const int y=  (int) (currentState.y() -deltaX * cos(currentState.theta() * (CV_PI / 180.0)) + deltaY * sin(currentState.theta() * (CV_PI / 180.0)));
             
             const double theta = (int) (deltaZ - (90 - currentState.theta())) ;
             
@@ -269,9 +271,9 @@ namespace navigation {
             int x = state.x();
             int y = state.y();
             
-            int intermediateXcordinate = (int) (x * sin(alpha * (CV_PI / 180)) + y * cos(alpha * (CV_PI / 180)) + startState.x());
+            int intermediateXcordinate = (int) (x * sin(alpha * (CV_PI / 180.0)) + y * cos(alpha * (CV_PI / 180.0)) + startState.x());
             
-            int intermediateYcordinate = (int) (-x * cos(alpha * (CV_PI / 180)) + y * sin(alpha * (CV_PI / 180)) + startState.y());
+            int intermediateYcordinate = (int) (-x * cos(alpha * (CV_PI / 180.0)) + y * sin(alpha * (CV_PI / 180.0)) + startState.y());
             
             if (((0 <= intermediateXcordinate) && (intermediateXcordinate < MAP_MAX)) && ((0 <= intermediateYcordinate) && (intermediateYcordinate < MAP_MAX))) {
                 
@@ -313,7 +315,6 @@ namespace navigation {
     void AStarSeed::showPath(std::vector<StateOfCar>& path) {
         
         
-        image = fusionMap - fusionMap;
         printf("Showing A Path\n");
         for(int i = 0; i< fusionMap.rows; i++){
             for(int j = 0; j< fusionMap.cols; j++){
@@ -330,7 +331,7 @@ namespace navigation {
         cv::imshow("obstacles Map", fusionMap);
         cv::namedWindow("[PLANNER] Map", CV_WINDOW_NORMAL);
         cv::imshow("[PLANNER] Map", image);
-        cvWaitKey(0);
+        cvWaitKey(30);
         
     }
 }

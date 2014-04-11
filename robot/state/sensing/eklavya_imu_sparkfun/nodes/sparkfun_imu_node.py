@@ -79,10 +79,9 @@ while not rospy.is_shutdown():
         words = string.split(line,",")    # Fields split
         if len(words) > 2:
             try:
-                yaw = float(words[0])*grad2rad
-                pitch = -float(words[1])*grad2rad
-                roll = -float(words[2])*grad2rad
-                
+                yaw = float(words[2])
+                pitch = -float(words[1])
+                roll = -float(words[0])               
                 # Publish message
                 imuMsg.linear_acceleration.x = float(words[3])
                 imuMsg.linear_acceleration.y = float(words[4])

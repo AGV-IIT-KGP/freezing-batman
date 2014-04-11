@@ -17,7 +17,7 @@
 namespace navigation {
     
     
-    static const int MAP_MAX = 800;
+    static const int MAP_MAX = 1000;
     
     class StateOfCar : public State
     {

@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
     client = &serviceClient;
 
-    ros::Subscriber sub = n->subscribe("cmd_vel", 1, commandVelocityCallback);
+    ros::Subscriber sub = n->subscribe("/cmd_vel", 1, commandVelocityCallback);
 
     ros::spin();
 
