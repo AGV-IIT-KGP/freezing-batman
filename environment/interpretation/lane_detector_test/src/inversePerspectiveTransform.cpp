@@ -86,7 +86,9 @@ cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
     else{
         if(!read_parameters){
             std::cout << "Reading Inverse Perspective Transform parameters from file" << std::endl;
-            FILE* ipt_data = fopen("data/ipt.dat", "r");
+
+            std::string file_path = data_path + "/ipt.dat";
+            FILE* ipt_data = fopen(file_path.c_str(), "r");
 
             for(int i=0; i < 4; i++){
                 fscanf(ipt_data, "%f %f", &src_vertices[i].x, &src_vertices[i].y);

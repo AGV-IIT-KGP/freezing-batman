@@ -13,6 +13,7 @@ tags
 build
 lib
 bin
+data
 
 *.so
 # Backup files
