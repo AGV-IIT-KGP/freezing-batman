@@ -6,8 +6,14 @@
 #include <string.h>
 #include <stdarg.h>
 #include <limits.h>
+#include <iostream>
 #include <locale.h>
+#include <sys/time.h>
 #include "libsvm/svm.h"
+
+struct timeval tvalBefore, tvalAfter;
+double timeElapsed;
+
 int libsvm_version = LIBSVM_VERSION;
 typedef float Qfloat;
 typedef signed char schar;
@@ -294,14 +300,16 @@ Kernel::~Kernel()
 double Kernel::dot(const svm_node *px, const svm_node *py)
 {
 	double sum = 0;
+	
 	while(px->index != -1)// && py->index != -1)
 	{
-//		if(px->index == py->index)
-//		{
+	/* NOTE SELF : COMMENTED OUT ELSE - by SIDAK */
+	//	if(px->index == py->index)
+	//	{
 			sum += px->value * py->value;
 			++px;
 			++py;
-/*		}
+	/*	}
 		else
 		{
 			if(px->index > py->index)
@@ -309,9 +317,8 @@ double Kernel::dot(const svm_node *px, const svm_node *py)
 			else
 				++px;
 		}			
-*/
+	*/
 	}
- 
 	return sum;
 }
 
@@ -372,6 +379,7 @@ double Kernel::k_function(const svm_node *x, const svm_node *y,
 		default:
 			return 0;  // Unreachable 
 	}
+	return 0;
 }
 
 // An SMO algorithm in Fan et al., JMLR 6(2005), p. 1889--1918
@@ -2525,19 +2533,34 @@ double svm_predict_values(const svm_model *model, const svm_node *x, double* dec
 		int l = model->l;
 		
 		double *kvalue = Malloc(double,l);
+		/* Note: Till here
+		 * GrassRemoval FPS : 163.591
+		 * Time Elapsed        : 0.00611281
+		 */
 		for(i=0;i<l;i++)
 			kvalue[i] = Kernel::k_function(x,model->SV[i],model->param);
-
+		
 		int *start = Malloc(int,nr_class);
 		start[0] = 0;
+		/* Note: Till here
+		 * GrassRemoval FPS : 16.4195
+		 * Time Elapsed        : 0.0609031
+		 */
+		 
 		for(i=1;i<nr_class;i++)
 			start[i] = start[i-1]+model->nSV[i-1];
 
 		int *vote = Malloc(int,nr_class);
 		for(i=0;i<nr_class;i++)
 			vote[i] = 0;
-
+		
 		int p=0;
+		
+		/* Note: Till here
+		 * GrassRemoval FPS : 16.4195
+		 * Time Elapsed        : 0.0609031
+		 */
+		
 		for(i=0;i<nr_class;i++)
 			for(int j=i+1;j<nr_class;j++)
 			{
@@ -2563,16 +2586,21 @@ double svm_predict_values(const svm_model *model, const svm_node *x, double* dec
 					++vote[j];
 				p++;
 			}
-
 		int vote_max_idx = 0;
+		
+		/* Note: Till here
+		 * GrassRemoval FPS : 16.4195
+		 * Time Elapsed        : 0.0609031
+		 */
+		  
 		for(i=1;i<nr_class;i++)
 			if(vote[i] > vote[vote_max_idx])
 				vote_max_idx = i;
-
+		
 		free(kvalue);
 		free(start);
 		free(vote);
-		return model->label[vote_max_idx];
+		return 0;model->label[vote_max_idx];
 	}
 }
 
@@ -2586,6 +2614,11 @@ double svm_predict(const svm_model *model, const svm_node *x)
 		dec_values = Malloc(double, 1);
 	else 
 		dec_values = Malloc(double, nr_class*(nr_class-1)/2);
+		
+	/* Note: Without svm_predict_values
+	 * GrassRemoval FPS : 185.868
+	 * Time Elapsed        : 0.00538015
+	 */
 	double pred_result = svm_predict_values(model, x, dec_values);
 	free(dec_values);
 	return pred_result;

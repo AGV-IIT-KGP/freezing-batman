@@ -21,6 +21,7 @@ char BLUE[]= "\033[0;34m";
 char WHITE[]= "\033[37;01m";
 
 std::ofstream commonFile;
+std::ofstream commonFile2;
 
 cv::Mat img,temp;
 
@@ -31,22 +32,30 @@ int size_sample=8;
 void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 {
 	int countP,countN;
+	int countP2,countN2;
 	cv::Mat imgRoi;
      if  ( event == cv::EVENT_LBUTTONDOWN ){
           std::cout << BLUE << "Saving positive sample - position (" << x << ", " << y << ")" << NORMAL << std::endl;
           imgRoi = temp(cv::Rect(x-size_sample/2, y-size_sample/2, size_sample, size_sample));
           
           commonFile<<"+1 ";
+          commonFile2<<"+1 ";
           countP=0;
+          countP2=1;
           for(int i=0;i<size_sample;i++){
 			  for(int j=0;j<size_sample;j++){
 				  commonFile<<countP++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[0]<<" ";
 				  commonFile<<countP++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[1]<<" ";
 				  commonFile<<countP++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[2]<<" ";
+				  
+				  commonFile2<<countP2++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[0]<<" ";
+				  commonFile2<<countP2++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[1]<<" ";
+				  commonFile2<<countP2++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[2]<<" ";
 			  }
 		  }
           
           commonFile<<countP++<<":-1"<<std::endl;
+          commonFile2<<std::endl;
           cv::rectangle( img, cv::Point( x-size_sample/2, y-size_sample/2 ), cv::Point( x+size_sample/2, y+size_sample/2 ), cv::Scalar( 255, 255, 255 ));
      }
      else if  ( event == cv::EVENT_RBUTTONDOWN ){
@@ -54,16 +63,24 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 		 imgRoi = temp(cv::Rect(x-size_sample/2, y-size_sample/2, size_sample, size_sample));
 		 
 		 commonFile<<"-1 ";
+		 commonFile2<<"-1 ";
 		 countN=0;
+		 countN2=1;
+		 
           for(int i=0;i<size_sample;i++){
 			  for(int j=0;j<size_sample;j++){
 				commonFile<<countN++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[0]<<" ";
 				commonFile<<countN++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[1]<<" ";
 				commonFile<<countN++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[2]<<" ";
+				
+				commonFile2<<countN2++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[0]<<" ";
+				commonFile2<<countN2++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[1]<<" ";
+				commonFile2<<countN2++<<":"<<(int)imgRoi.at<cv::Vec3b>(i,j)[2]<<" ";
 			  }
 		  }
           
           commonFile<<countN++<<":-1"<<std::endl;
+          commonFile2<<std::endl;
           cv::rectangle( img, cv::Point( x-size_sample/2, y-size_sample/2 ), cv::Point( x+size_sample/2, y+size_sample/2 ), cv::Scalar( 0, 0, 0 ));
      }
 }
@@ -75,6 +92,7 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 	commonFile.open("Samples",std::fstream::app);
+	commonFile2.open("Samples2",std::fstream::app);
 	img=cv::imread(argv[1]);
 	
 	if( argc == 3 ){

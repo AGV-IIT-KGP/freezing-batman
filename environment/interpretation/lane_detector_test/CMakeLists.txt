@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.4.6)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 
+#if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -g -O3")
+#endif()
+
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
 #  Debug          : w/ debug symbols, w/o optimization
@@ -34,13 +38,16 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 #############################################################################################################################################
 #SVM start
 set(svm_SRC  ${PROJECT_SOURCE_DIR}/src/libsvm/svmWrapper.cpp ${PROJECT_SOURCE_DIR}/src/libsvm/svm.cpp)
-set_source_files_properties(${svm_SRC} PROPERTIES COMPILE_FLAGS "-O3 -fPIC" )
-add_library(svm ${svm_SRC})
+#set_source_files_properties(${svm_SRC} PROPERTIES COMPILE_FLAGS "-O3 -fPIC" )
+#add_library(svm ${svm_SRC})
+rosbuild_add_library(svm ${svm_SRC})
 #SVM end
 #############################################################################################################################################
 
+
 #set(lib_SVM  ${PROJECT_SOURCE_DIR}/libsvmWrapper.so ${PROJECT_SOURCE_DIR}/libsvm.so)
-set(lib_SVM  ${PROJECT_SOURCE_DIR}/lib/libsvm.a)
+#set(lib_SVM  ${PROJECT_SOURCE_DIR}/lib/libsvm.a)
+set(lib_SVM svm)
 
 rosbuild_add_executable(generateSamples src/generateSamples.cpp)
 
@@ -50,10 +57,6 @@ target_link_libraries(svmTrain ${lib_SVM})
 
 rosbuild_add_library(laneDetector src/laneDetector.cpp src/obstacleRemoval.cpp src/preprocessing.cpp src/getLaneBinary.cpp src/grassRemoval.cpp src/inversePerspectiveTransform.cpp)
 target_link_libraries(laneDetector ${lib_SVM})
-
-rosbuild_add_library(laneDetector src/laneDetector.cpp src/obstacleRemoval.cpp src/preprocessing.cpp src/getLaneBinary.cpp src/grassRemoval.cpp)
-target_link_libraries(laneDetector ${lib_SVM})
-
 
 rosbuild_add_executable(laneDetectorNode src/laneDetectorNode.cpp)
 target_link_libraries(laneDetectorNode laneDetector libagv_framework.so m)

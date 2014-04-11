@@ -40,6 +40,7 @@ private:
 
 	struct timeval tvalBefore, tvalAfter;
 	double timeElapsed;
+	double totalTimeElapsed;
 	
 	// Grass Removal
 	SVM *svm;

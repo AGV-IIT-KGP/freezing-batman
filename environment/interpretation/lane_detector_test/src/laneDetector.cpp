@@ -20,6 +20,8 @@ LaneDetector::~LaneDetector(){
 
 void LaneDetector::interpret(){
 	
+	totalTimeElapsed = 0;
+	
 	cv::Mat result = Image;
 	
 	/*
@@ -30,6 +32,7 @@ void LaneDetector::interpret(){
 	if( timeFunctions ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		totalTimeElapsed += timeElapsed;
 		std::cout << "Preprocessing FPS : "<< 1./timeElapsed << std::endl;
 	}
 	if(debug_mode) {
@@ -37,20 +40,22 @@ void LaneDetector::interpret(){
 		cv::imshow("Preprocessing Output",result);
 	}
 	*/
-    //
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalBefore, NULL);
-	// }	
-	// result = GrassRemoval(result);
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalAfter, NULL);
-	// 	timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
-	// 	std::cout << "GrassRemoval FPS : "<< 1./timeElapsed << std::endl;
-	// }
-	// if(debug_mode) {
-	// 	cv::namedWindow("GrassRemoval Output");
-	// 	cv::imshow("GrassRemoval Output",result);
-	// }
+	
+	if( timeFunctions ){
+	 	gettimeofday (&tvalBefore, NULL);
+	}	
+	result = GrassRemoval(result);
+	if( timeFunctions ){
+		gettimeofday (&tvalAfter, NULL);
+		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		totalTimeElapsed += timeElapsed;
+		std::cout << "GrassRemoval FPS : "<< 1./timeElapsed << std::endl;
+	//	std::cout << "Time Elapsed        : "<< timeElapsed << std::endl;
+	}
+	if(debug_mode) {
+		cv::namedWindow("GrassRemoval Output");
+		cv::imshow("GrassRemoval Output",result);
+	}
 	
 	
 	if( timeFunctions ){
@@ -60,6 +65,7 @@ void LaneDetector::interpret(){
 	if( timeFunctions ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		totalTimeElapsed += timeElapsed;
 		std::cout << "ObstacleRemoval FPS : "<< 1./timeElapsed << std::endl;
 	}
 	if(debug_mode) {
@@ -67,7 +73,7 @@ void LaneDetector::interpret(){
 		cv::imshow("ObstacleRemoval Output",result);
 	}
 	
-	/*
+	
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
 	}	
@@ -75,13 +81,14 @@ void LaneDetector::interpret(){
 	if( timeFunctions ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		totalTimeElapsed += timeElapsed;
 		std::cout << "GetLaneBinary FPS : "<< 1./timeElapsed << std::endl;
 	}
 	if(debug_mode) {
 		cv::namedWindow("GetLaneBinary Output");
 		cv::imshow("GetLaneBinary Output",result);
 	}
-	*/
+	
 	/*
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
@@ -90,6 +97,7 @@ void LaneDetector::interpret(){
 	if( timeFunctions ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		totalTimeElapsed += timeElapsed;
 		std::cout << "SeperateLanes FPS : "<< 1./timeElapsed << std::endl;
 	}
 	if(debug_mode) {
@@ -105,6 +113,7 @@ void LaneDetector::interpret(){
 	if( timeFunctions ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		totalTimeElapsed += timeElapsed;
 		std::cout << "FixBrokenLanes FPS : "<< 1./timeElapsed << std::endl;
 	}
 	if(debug_mode) {
@@ -113,22 +122,28 @@ void LaneDetector::interpret(){
 	}
 	*/
 
+	/*
+	if( timeFunctions ){
+		gettimeofday (&tvalBefore, NULL);
+	}
+	result = InversePerspectiveTransform(result);
+	if( timeFunctions ){
+		gettimeofday (&tvalAfter, NULL);
+		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		totalTimeElapsed += timeElapsed;
+		std::cout << "InversePerspectiveTransform FPS : "<< 1./timeElapsed << std::endl;
+	}
+	if(debug_mode) {
+		cv::namedWindow("InversePerspectiveTransform Output");
+		cv::imshow("InversePerspectiveTransform Output", result);
+	}
+	*/
 	
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalBefore, NULL);
-	// }
-	// result = InversePerspectiveTransform(result);
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalAfter, NULL);
-	// 	timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
-	// 	std::cout << "InversePerspectiveTransform FPS : "<< 1./timeElapsed << std::endl;
-	// }
-	// if(debug_mode) {
-	// 	cv::namedWindow("InversePerspectiveTransform Output");
-	// 	cv::imshow("InversePerspectiveTransform Output", result);
-	// }
+	if( timeFunctions ){
+		std::cout << "Total FPS : "<< 1./totalTimeElapsed << std::endl;;
+	}
 	
-	/*PublishLanes(result); */
+	PublishLanes(result);
 }
 
 void LaneDetector::setUpCommunication(){
@@ -162,8 +177,12 @@ void LaneDetector::SubscribeImage(const sensor_msgs::ImageConstPtr& msg) {
 }
 
 void LaneDetector::PublishLanes(cv::Mat &image){
-	
-	cvi.encoding = sensor_msgs::image_encodings::BGR8;
-	cvi.image = image;
-	pub.publish(cvi.toImageMsg());
+	cv_bridge::CvImage message;
+    message.encoding = sensor_msgs::image_encodings::BGR8;
+    
+    cv::Mat BGR_image(image.rows,image.cols,CV_8UC1);
+	cv::cvtColor(image,BGR_image,CV_GRAY2BGR);
+    
+    message.image = BGR_image;
+	pub.publish(message.toImageMsg());
 }
