@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 2.4.6)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-
 include(${PROJECT_SOURCE_DIR}/include)
 #add_definitions(-std=c++0x)
 # Set the build type.  Options are:
@@ -31,4 +30,3 @@ rosbuild_genmsg()
 #rosbuild_add_executable(example examples/example.cpp)
 rosbuild_add_executable(local_planner src/main.cpp src/a_star_seed/a_star_seed.cpp src/a_star_seed/state.cpp src/a_star_seed/state_of_car.cpp src/a_star_seed/seed.cpp src/a_star_seed/ss_priority_queue.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
-
