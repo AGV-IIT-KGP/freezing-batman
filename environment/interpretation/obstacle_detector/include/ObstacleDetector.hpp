@@ -46,6 +46,8 @@ private:
 	ros::Subscriber sub;
     image_transport::ImageTransport *it;
     image_transport::Publisher pub;
+    int max_dist;
+    int min_dist;
 };
 
 #endif	/* OBSTACLEDETECTOR_HPP */
