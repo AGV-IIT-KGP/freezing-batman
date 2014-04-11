@@ -4,7 +4,7 @@
 #include <iostream>
 
 std::string getDataPath(){
-    std::string path = "/home/harshg/agv/freezing-batman/environment/interpretation/lane_detector_test/data";
+    std::string path = "/home/jashan/ros_workspace/freezing-batman/environment/interpretation/lane_detector_test/data";
     return path;
 }
 

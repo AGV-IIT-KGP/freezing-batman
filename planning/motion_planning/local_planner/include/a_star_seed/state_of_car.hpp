@@ -50,45 +50,52 @@ namespace navigation {
             return x()==b.x() && y()==b.y();
         }
         
-        inline bool operator()(const StateOfCar& b) const  {
-//            return f_cost_ < b.totalCost();
-            double k11 = x();
-            double k12 = y();
-            double k13 = theta();
+//         inline bool operator()(const StateOfCar& b) const  {
+// //            return f_cost_ < b.totalCost();
+//             double k11 = x();
+//             double k12 = y();
+//             double k13 = theta();
             
-            double cantor11 = 0.5 * (k11 + k12) * (k11 + k12 + 1) + k12;
-            double cantor12 = 0.5 * (cantor11 + k13) * (cantor11 + k13 + 1) + k13;
+//             double cantor11 = 0.5 * (k11 + k12) * (k11 + k12 + 1) + k12;
+//             double cantor12 = 0.5 * (cantor11 + k13) * (cantor11 + k13 + 1) + k13;
             
-            double k21 = b.x();
-            double k22 = b.y();
-            double k23 = b.theta();
+//             double k21 = b.x();
+//             double k22 = b.y();
+//             double k23 = b.theta();
             
-            double cantor21 = 0.5 * (k21 + k22) * (k21 + k22 + 1) + k22;
-            double cantor22 = 0.5 * (cantor21 + k23) * (cantor21 + k23 + 1) + k23;
+//             double cantor21 = 0.5 * (k21 + k22) * (k21 + k22 + 1) + k22;
+//             double cantor22 = 0.5 * (cantor21 + k23) * (cantor21 + k23 + 1) + k23;
             
-            return cantor12 < cantor22;
+//             return cantor12 < cantor22;
 
-        }
-        
+//         }
+
+
         inline bool operator<(const StateOfCar& b) const   {
             
-            double k11 = x();
-            double k12 = y();
-            double k13 = theta();
-            
-            double cantor11 = 0.5 * (k11 + k12) * (k11 + k12 + 1) + k12;
-            double cantor12 = 0.5 * (cantor11 + k13) * (cantor11 + k13 + 1) + k13;
-            
-            double k21 = b.x();
-            double k22 = b.y();
-            double k23 = b.theta();
-            
-            double cantor21 = 0.5 * (k21 + k22) * (k21 + k22 + 1) + k22;
-            double cantor22 = 0.5 * (cantor21 + k23) * (cantor21 + k23 + 1) + k23;
-            
-            return cantor12 < cantor22;
-//            return f_cost_ > b.totalCost();
+            return f_cost_ > b.totalCost();
         }
+        
+
+//         inline bool operator<(const StateOfCar& b) const   {
+            
+//             double k11 = x();
+//             double k12 = y();
+//             double k13 = theta();
+            
+//             double cantor11 = 0.5 * (k11 + k12) * (k11 + k12 + 1) + k12;
+//             double cantor12 = 0.5 * (cantor11 + k13) * (cantor11 + k13 + 1) + k13;
+            
+//             double k21 = b.x();
+//             double k22 = b.y();
+//             double k23 = b.theta();
+            
+//             double cantor21 = 0.5 * (k21 + k22) * (k21 + k22 + 1) + k22;
+//             double cantor22 = 0.5 * (cantor21 + k23) * (cantor21 + k23 + 1) + k23;
+            
+//             return cantor12 < cantor22;
+// //            return f_cost_ > b.totalCost();
+//         }
         
 //        StateOfCar operator+(const Seed& seed) const;
 
