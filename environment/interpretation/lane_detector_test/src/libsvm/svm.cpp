@@ -294,14 +294,14 @@ Kernel::~Kernel()
 double Kernel::dot(const svm_node *px, const svm_node *py)
 {
 	double sum = 0;
-	while(px->index != -1 && py->index != -1)
+	while(px->index != -1)// && py->index != -1)
 	{
-		if(px->index == py->index)
-		{
+//		if(px->index == py->index)
+//		{
 			sum += px->value * py->value;
 			++px;
 			++py;
-		}
+/*		}
 		else
 		{
 			if(px->index > py->index)
@@ -309,7 +309,9 @@ double Kernel::dot(const svm_node *px, const svm_node *py)
 			else
 				++px;
 		}			
+*/
 	}
+ 
 	return sum;
 }
 

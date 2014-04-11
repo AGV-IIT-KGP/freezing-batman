@@ -50,30 +50,18 @@ cv::Mat applyHough(cv::Mat &img,int debug){
 
 
 cv::Mat applyThreshold(cv::Mat &img,int debug){
-	int bin_threshold=100;
+	int bin_threshold=180;
+	
 	cv::Mat grayscale_image(img.rows,img.cols,CV_8UC1,cvScalarAll(0));
 	cv::Mat threshold_image(img.rows,img.cols,CV_8UC1,cvScalarAll(0));
-	cv::cvtColor(img,grayscale_image,CV_BGR2GRAY);
+	
 	if (debug==4){
 		cv::namedWindow("threshold_control_box",1);
 		cv::createTrackbar("bin_threshold","threshold_control_box",&bin_threshold,255);
 	}
-	do{
-		for (int i=0;i<grayscale_image.rows;i++){
-			for (int j=0;j<grayscale_image.cols;j++){
-				if (grayscale_image.at<uchar>(i,j)>bin_threshold)
-					threshold_image.at<uchar>(i,j)=255;
-				else
-					threshold_image.at<uchar>(i,j)=0;
-			}
-		}
-		if (debug==4) {
-			cv::imshow("threshold_control_box",threshold_image);
-		}
-		if (cv::waitKey(33)==27) {
-			break;
-		}
-	}while(debug==4);
+	
+	cv::inRange(img, cv::Scalar(bin_threshold, bin_threshold, bin_threshold), cv::Scalar(256,256,256), threshold_image); 
+	
 	return threshold_image;
 } //  converting a given image into binary using a threshold_image
 
@@ -102,17 +90,14 @@ cv::Mat mergeBinaryImages(cv::Mat &bin_img1,cv::Mat &bin_img2,int debug){
 
 
 cv::Mat LaneDetector::GetLaneBinary(cv::Mat &image){
-	// cv::Mat canny_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
-	// cv::Mat hough_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
+//	cv::Mat canny_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
+//	cv::Mat hough_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
 	cv::Mat threshold_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
-	// cv::Mat merged_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
+//	cv::Mat merged_image(image.rows,image.cols,CV_8UC1,cvScalarAll(0));
 	threshold_image=applyThreshold(image,debug_mode);
-	// canny_image=applyCanny(image,debug_mode);
-	// hough_image=applyHough(canny_image,debug_mode);
-	// merged_image=mergeBinaryImages(threshold_image,hough_image,debug_mode);
-	//canny_image=applyCanny(image,debug_mode);
-	//hough_image=applyHough(canny_image,debug_mode);
-	//merged_image=mergeBinaryImages(threshold_image,hough_image,debug_mode);
+//	canny_image=applyCanny(image,debug_mode);
+//	hough_image=applyHough(canny_image,debug_mode);
+//	merged_image=mergeBinaryImages(threshold_image,hough_image,debug_mode);
 	return threshold_image;
 	
 		
