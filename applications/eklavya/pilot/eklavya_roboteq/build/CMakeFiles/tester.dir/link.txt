@@ -1,1 +1,0 @@
-/usr/bin/c++   -O2 -g     -pthread CMakeFiles/tester.dir/src/command_publisher.o  -o ../bin/tester -rdynamic -L/opt/ros/fuerte/lib -lroscpp -lrostime -lrosconsole -lroscpp_serialization -lxmlrpcpp -Wl,-rpath,/opt/ros/fuerte/lib 
