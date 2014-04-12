@@ -25,7 +25,7 @@
 #define RIGHT_CMD 1
 
 #define MAP_MAX 1000
-#define LOOP_RATE 5000
+#define LOOP_RATE 10
 #define WAIT_TIME 100
 
 int ol_overflow;
@@ -36,9 +36,10 @@ int last_cmd;
 subscribe image convert to mat
 then update char ** local map : DONE*/
 
-char local_map[1000][1000];
 navigation::State my_bot_location, my_target_location;
 navigation::State pose;
+navigation::AStarSeed planner;
+cv::Mat local_map;
 
 
 void update_world_map(const sensor_msgs::ImageConstPtr& world_map){
@@ -46,15 +47,28 @@ void update_world_map(const sensor_msgs::ImageConstPtr& world_map){
     cv_bridge::CvImagePtr cv_ptr;
     try
     {
-      cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::BGR8);
-      cv::Mat bin = cv::Mat::zeros(cv_ptr->image.size(),CV_8UC1);
-      cv::cvtColor(cv_ptr->image,bin,CV_BGR2GRAY);
-      for(int i=0;i<cv_ptr->image.rows;i++){
-        for(int j=0;j<cv_ptr->image.cols;j++){
-            local_map[i][j] = (char)('0'+cv_ptr->image.at<uchar>(i,j));
-        }
-      }
+      cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::MONO8);
+      local_map = cv_ptr->image;
+      local_planner::Seed seed;
 
+      std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path;
+      path = planner.findPathToTargetWithAstar(local_map ,my_bot_location, my_target_location);
+      planner.showPath(path.first);
+      for(int i = 0; i < path.first.size(); i++){
+           ROS_INFO("%d %d \n", path.first[i].x(), path.first[i].y());
+      }
+        
+
+        seed.x = path.second.finalState.x();
+        seed.y = path.second.finalState.y();
+        seed.theta = path.second.finalState.theta();
+        seed.costOfseed = path.second.costOfseed;
+        seed.velocityRatio = path.second.velocityRatio;
+        seed.leftVelocity = path.second.leftVelocity;
+        seed.rightVelocity = path.second.rightVelocity;
+        seed.curvature = path.second.finalState.curvature();
+        
+        pub_path.publish(seed);
     }
     catch (cv_bridge::Exception& e)
     {
@@ -93,7 +107,7 @@ int main(int argc,char* argv[]) {
 
     ros::Subscriber sub_world_map = nh.subscribe("/world_map",10, update_world_map); //Subscriber for World Map
     ros::Subscriber sub_bot_pose =  nh.subscribe("/bot_pose", 10 ,update_bot_pose); // topic should same with data published by GPS
-    ros::Subscriber sub_target_pose = nh.subscribe("/target_Pose", 10 , update_target_pose); // topic published from GPS
+    ros::Subscriber sub_target_pose = nh.subscribe("/target_pose", 10 , update_target_pose); // topic published from GPS
     // ros::Subscriber sub3 = nh.subscribe("/pose", 1, update_pose);
 
     /* TO DO
@@ -108,57 +122,16 @@ int main(int argc,char* argv[]) {
     ros::Rate loop_rate(LOOP_RATE);
 
     srand((unsigned int)time(NULL));
-
-          struct timeval t,c;
-
-    
+    struct timeval t,c;
     int iterations = 100;
-        gettimeofday(&t,NULL);
+    gettimeofday(&t,NULL);
 
-    while (iterations--) {
-        
-
-              local_planner::Seed seed;
-
-        std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path;
-
-        cv::Mat img = cv::Mat::zeros(1000, 1000, CV_8UC1);
-
-
-        // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
-        // navigation::addObstacles(img, 5);
-
-
-             path = planner.findPathToTargetWithAstar(img,botLocation, targetLocation);
-             // planner.showPath(path.first);
-
-        
-
-
-
-
-        planner.showPath(path.first);
-        for(int i = 0; i < path.first.size(); i++){
-            ROS_INFO("%d %d \n", path.first[i].x(), path.first[i].y());
-        }
-        
-
-        seed.x = path.second.finalState.x();
-        seed.y = path.second.finalState.y();
-        seed.theta = path.second.finalState.theta();
-        seed.costOfseed = path.second.costOfseed;
-        seed.velocityRatio = path.second.velocityRatio;
-        seed.leftVelocity = path.second.leftVelocity;
-        seed.rightVelocity = path.second.rightVelocity;
-        seed.curvature = path.second.finalState.curvature();
-        
-        pub_path.publish(seed);
-
+    while (ros::ok()) {
+     
         ros::spinOnce();
         loop_rate.sleep();
 
     }
-
         gettimeofday(&c,NULL);
         double td = t.tv_sec + t.tv_usec/1000000.0;
         double cd = c.tv_sec + c.tv_usec/1000000.0; // time in seconds for thousand iterations

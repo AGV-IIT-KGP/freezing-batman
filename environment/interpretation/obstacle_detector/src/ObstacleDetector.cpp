@@ -65,12 +65,8 @@ void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
             int x = (int) ((x1 * 100) + CENTERX);
             int y = (int) ((y1 * 100) + CENTERY + LIDAR_Y_SHIFT);
 
-<<<<<<< HEAD
 
-            if (x >= 0 && y >= 0 && (int) x < MAP_MAX && (int) y < MAP_MAX) {
-=======
             if (x >= 0 && y >= min_dist && (int) x < MAP_MAX && (int) y < max_dist) {
->>>>>>> 36300f2b1e2e4a2f0b968b245250e6074951f4f3
                 int x2 = (x);
                 int y2 = (MAP_MAX - y - 30 - 1);
                 if(!(y2 >= 0 && y2 < MAP_MAX)){
