@@ -21,11 +21,8 @@ LaneDetector::~LaneDetector(){
 }
 
 void LaneDetector::interpret(){
-<<<<<<< HEAD
-=======
 	
 	totalTimeElapsed = 0;
->>>>>>> 36300f2b1e2e4a2f0b968b245250e6074951f4f3
 	cv::Mat result = Image;
 
 
@@ -79,11 +76,7 @@ void LaneDetector::interpret(){
 		cv::namedWindow("ObstacleRemoval Output");
 		cv::imshow("ObstacleRemoval Output",result);
 	}
-<<<<<<< HEAD
-	/*
-=======
 
->>>>>>> 36300f2b1e2e4a2f0b968b245250e6074951f4f3
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
 	}
@@ -100,25 +93,7 @@ void LaneDetector::interpret(){
 		cv::namedWindow("GetLaneBinary Output");
 		cv::imshow("GetLaneBinary Output",result);
 	}
-<<<<<<< HEAD
-
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalBefore, NULL);
-	// }
-	// result = SeperateLanes(result);
-	// if( timeFunctions ){
-	// 	gettimeofday (&tvalAfter, NULL);
-	// 	timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
-	// 	std::cout << "SeperateLanes FPS : "<< 1./timeElapsed << std::endl;
-	// }
-	// if(debug_mode) {
-	// 	cv::namedWindow("SeperateLanes Output");
-	// 	cv::imshow("SeperateLanes Output",result);
-	// }
-
-=======
 	/*
->>>>>>> 36300f2b1e2e4a2f0b968b245250e6074951f4f3
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
 	}

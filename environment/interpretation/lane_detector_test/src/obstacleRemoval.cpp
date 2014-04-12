@@ -30,9 +30,6 @@ int rgb2hsv(float &h, float &s, float &v, int r, int g, int b) {
     else
         h = 171 + 43 * (r - g) / (rgbMax - rgbMin);
 
-<<<<<<< HEAD
-    cv::Mat element = cv::getStructuringElement( cv::MORPH_ELLIPSE,
-=======
 return 0;
 }
 
@@ -62,7 +59,6 @@ cv::Mat LaneDetector::ObstacleRemoval(cv::Mat &image){
     cv::Mat binary_dialated(image.rows, image.cols, CV_8UC1);
     
     cv::Mat element = cv::getStructuringElement( cv::MORPH_RECT,
->>>>>>> 36300f2b1e2e4a2f0b968b245250e6074951f4f3
                                        cv::Size( 2*obstacle_removal_dilation_size + 1, 2*obstacle_removal_dilation_size+1 ),
                                        cv::Point( obstacle_removal_dilation_size, obstacle_removal_dilation_size ) );
     /*if (debug_mode==2) {
