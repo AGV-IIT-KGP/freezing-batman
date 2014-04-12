@@ -1,24 +1,73 @@
-#include "../include/laneDetector.hpp"
+#include "laneDetector.hpp"
 
 static int obstacle_removal_dilation_size = 30;     //variable used for dilating and eroding.. to be changed only if dimension of image changes.
 static int obstacle_removal_hue = 25;               //used to remove obstacle, change only after calibration.
 static int obstacle_removal_saturation = 100;       //used to remove obstacle, change only after calibration.
 
-cv::Mat LaneDetector::ObstacleRemoval(cv::Mat &image){
+int rgb2hsv(float &h, float &s, float &v, int r, int g, int b) {
+    
+    int rgbMin, rgbMax;
 
+    rgbMin = r < g ? (r < b ? r : b) : (g < b ? g : b);
+    rgbMax = r > g ? (r > b ? r : b) : (g > b ? g : b);
+
+    v = rgbMax;
+    if (v == 0) {
+        h = 0;
+        s = 0;
+        return -1;
+    }
+    s = 255 * long(rgbMax - rgbMin) / v;
+    if (s == 0) {
+        h = 0;
+        return -2;
+    }
+
+    if (rgbMax == r)
+        h = 0 + 43 * (g - b) / (rgbMax - rgbMin);
+    else if (rgbMax == g)
+        h = 85 + 43 * (b - r) / (rgbMax - rgbMin);
+    else
+        h = 171 + 43 * (r - g) / (rgbMax - rgbMin);
+
+<<<<<<< HEAD
+    cv::Mat element = cv::getStructuringElement( cv::MORPH_ELLIPSE,
+=======
+return 0;
+}
+
+cv::Mat ObstacleRemovedBinary(cv::Mat &image){
+    cv::Mat binary_after_HSV_thresholding(image.rows, image.cols, CV_8UC1, cv::Scalar(0,0,0));
+    float h=0, s=0, v=0;
+    
+    for (int i=0;i<image.rows;i++) {
+        for (int j=0;j<image.cols;j++) {
+			if( image.at<cv::Vec3b>(i,j)[0] && image.at<cv::Vec3b>(i,j)[1] && image.at<cv::Vec3b>(i,j)[2]){
+				
+				rgb2hsv( h, s, v, (int)image.at<cv::Vec3b>(i,j)[2], (int)image.at<cv::Vec3b>(i,j)[1], (int)image.at<cv::Vec3b>(i,j)[0]);
+				
+				if( h < obstacle_removal_hue && s > obstacle_removal_saturation ) {
+					binary_after_HSV_thresholding.at<cv::Vec3b>(i,j)[0] = 255;
+				}
+				
+			}
+		}
+	}
+    return binary_after_HSV_thresholding;
+}
+
+cv::Mat LaneDetector::ObstacleRemoval(cv::Mat &image){
     cv::Mat img_HSV(image.rows, image.cols, CV_8UC3);
     cv::Mat binary_after_HSV_thresholding(image.rows, image.cols, CV_8UC1);
     cv::Mat binary_dialated(image.rows, image.cols, CV_8UC1);
-
-    cvtColor(image, img_HSV, CV_BGR2HSV);
-
-    cv::Mat element = cv::getStructuringElement( cv::MORPH_ELLIPSE,
+    
+    cv::Mat element = cv::getStructuringElement( cv::MORPH_RECT,
+>>>>>>> 36300f2b1e2e4a2f0b968b245250e6074951f4f3
                                        cv::Size( 2*obstacle_removal_dilation_size + 1, 2*obstacle_removal_dilation_size+1 ),
                                        cv::Point( obstacle_removal_dilation_size, obstacle_removal_dilation_size ) );
-    if (debug_mode==2) {
-        std::string file_path = data_path + "/obstacle.dat";
+    /*if (debug_mode==2) {
 
-        FILE* obstacle_removal_threshold_file = fopen(file_path.c_str(), "w");
+        FILE* obstacle_removal_threshold_file = fopen("data/obstacleRemovalThreshold.dat", "w");
 
         cv::namedWindow("HSV Control Box",1);
         cv::createTrackbar("Dilation element size","HSV Control Box", &obstacle_removal_dilation_size, 180,NULL);
@@ -29,14 +78,15 @@ cv::Mat LaneDetector::ObstacleRemoval(cv::Mat &image){
                                cv::Size( 2*obstacle_removal_dilation_size + 1, 2*obstacle_removal_dilation_size+1 ),
                                cv::Point( obstacle_removal_dilation_size, obstacle_removal_dilation_size ) );
 
-        cv::inRange(img_HSV, cv::Scalar(0, obstacle_removal_saturation,0), cv::Scalar(obstacle_removal_hue,256,255), binary_after_HSV_thresholding);
+//        cv::inRange(img_HSV, cv::Scalar(0, obstacle_removal_saturation,0), cv::Scalar(obstacle_removal_hue,256,255), binary_after_HSV_thresholding); 
+		binary_after_HSV_thresholding = obst
         cv::dilate(binary_after_HSV_thresholding, binary_dialated, element);
 
         for (int i=0;i<binary_dialated.rows;i++) {
             for (int j=0;j<binary_dialated.cols;j++) {
-                if (binary_dialated.at<uchar>(i,j)==255) {
-                    image.at<cv::Vec3b>(i,j)[0]=image.at<cv::Vec3b>(i,j)[1]=image.at<cv::Vec3b>(i,j)[2]=0;
-                }
+        			image.at<cv::Vec3b>(i,j)[0] = ( 255 - binary_dialated.at<uchar>(i,j) ) & image.at<cv::Vec3b>(i,j)[0];
+					image.at<cv::Vec3b>(i,j)[1] = ( 255 - binary_dialated.at<uchar>(i,j) ) & image.at<cv::Vec3b>(i,j)[1];
+					image.at<cv::Vec3b>(i,j)[2] = ( 255 - binary_dialated.at<uchar>(i,j) ) & image.at<cv::Vec3b>(i,j)[2];
             }
         }
 
@@ -48,16 +98,14 @@ cv::Mat LaneDetector::ObstacleRemoval(cv::Mat &image){
 
         return image;
 
-    } /*  (debug==2) */
-
-    cv::inRange(img_HSV, cv::Scalar(0, obstacle_removal_saturation,0), cv::Scalar(obstacle_removal_hue,256,255), binary_after_HSV_thresholding);
-    cv::dilate(binary_after_HSV_thresholding, binary_dialated, element);
-
+    }*/ /*  (debug==2) */
+	binary_after_HSV_thresholding = ObstacleRemovedBinary(image);
+    cv::dilate(binary_after_HSV_thresholding, binary_dialated, element); 
     for (int i=0;i<binary_dialated.rows;i++) {
         for (int j=0;j<binary_dialated.cols;j++) {
-            if (binary_dialated.at<uchar>(i,j)==255) {
-                image.at<cv::Vec3b>(i,j)[0]=image.at<cv::Vec3b>(i,j)[1]=image.at<cv::Vec3b>(i,j)[2]=0;
-            }
+			image.at<cv::Vec3b>(i,j)[0] = ( 255 - binary_dialated.at<uchar>(i,j) ) & image.at<cv::Vec3b>(i,j)[0];
+			image.at<cv::Vec3b>(i,j)[1] = ( 255 - binary_dialated.at<uchar>(i,j) ) & image.at<cv::Vec3b>(i,j)[1];
+			image.at<cv::Vec3b>(i,j)[2] = ( 255 - binary_dialated.at<uchar>(i,j) ) & image.at<cv::Vec3b>(i,j)[2];
         }
     }
     return image;

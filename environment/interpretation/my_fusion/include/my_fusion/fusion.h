@@ -17,3 +17,5 @@
 extern image_transport::Publisher pub_worldmap;
 
 void callback(const sensor_msgs::ImageConstPtr& image, const sensor_msgs::ImageConstPtr& lidar);
+
+void singleCallback(const sensor_msgs::ImageConstPtr& image);

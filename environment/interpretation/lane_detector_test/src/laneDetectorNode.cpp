@@ -19,9 +19,12 @@ void exit_with_help(){
 	"	   4 -- Debug mode ON with Binary thresholding toolBox.\n"
     "      5 -- Set inverse perpective transform matrix. \n"
     "      6 -- Debug mode ON for inverse perspective transform. \n"
+    "      7 -- Inverse perspective transform off, so resizing image. \n"
 	"-i  : Node Id\n"
 	"-s  : Subscriber topic name\n"
-	"-t  : Time the Functions\n"
+	"-t  : Time functions\n"
+	"      1: Net FPS\n"
+	"      2: Indivisual functions\n"
 	;
 	exit(1);
 
@@ -33,8 +36,7 @@ int main (int argc, char *argv[]){
 	int debug_mode = 0 ;
 	int time_functions=0;
 	// parse options
-	for(int i=1;i<argc;i++)
-	{
+	for(int i=1;i<argc;i++) {
 		if(argv[i][0] != '-') {
 			break;
 		}

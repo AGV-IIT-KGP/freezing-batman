@@ -1,20 +1,36 @@
-#include "ObstacleDetector.hpp"	
+#include "../include/ObstacleDetector.hpp"
+#include <climits>
+#include <cassert>
 
+void exit_with_help(){
+	std::cout<<
+	"Usage: lane-detector [options]\n"
+	"options:\n"
+	"-d  : Non-zero for debug\n"
+	"-s  : Subscriber topic name\n"
+    "-p  : Publisher topic name\n"
+    "-l  : Maximum distance we need \n"
+    "-m  : Mininum distance we need \n"
+	;
+	exit(1);
+
+}
 void ObstacleDetector::publishData(){
 	cv_bridge::CvImage out_msg;
+	out_msg.encoding = sensor_msgs::image_encodings::MONO8;
 	out_msg.image    = img;
     out_msg.encoding = sensor_msgs::image_encodings::MONO8;
 	pub.publish(out_msg.toImageMsg());
 }
 
 void ObstacleDetector::interpret() {
-	if (DEBUG){
+	if (debug){
         cvNamedWindow("Control Box", 1);
     }
     int s=5;
-    cvCreateTrackbar("Kernel 1", "Control Box", &s, 20);
-
-    if (DEBUG) {
+    
+    if (debug) {
+		cvCreateTrackbar("Kernel 1", "Control Box", &s, 20);
 		cv::namedWindow("Raw Scan", 0);
 		cv::imshow("Raw Scan", img);
 		cv::waitKey(WAIT_TIME);
@@ -26,7 +42,7 @@ void ObstacleDetector::interpret() {
                                        cv::Point( dilation_size, dilation_size ) );
     cv::dilate(img, img, element);
 
-    if (DEBUG) {
+    if (debug) {
         cv::namedWindow("Dilate Filter", 1);
         cv::imshow("Dilate Filter", img);
         cv::waitKey(WAIT_TIME);
@@ -35,12 +51,12 @@ publishData();
 }
 
 void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
+    ROS_INFO("Scan callback called");
 	size_t size = scan.ranges.size();
     float angle = scan.angle_min;
     float maxRangeForContainer = scan.range_max - 0.1f;
-	
-	img = img-img;
-	
+
+    img = img-img; // Assign zero to all pixels
     for (size_t i = 0; i < size; ++i) {
         float dist = scan.ranges[i];
         if ((dist > scan.range_min) && (dist < maxRangeForContainer)) {
@@ -49,10 +65,17 @@ void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
             int x = (int) ((x1 * 100) + CENTERX);
             int y = (int) ((y1 * 100) + CENTERY + LIDAR_Y_SHIFT);
 
+<<<<<<< HEAD
 
             if (x >= 0 && y >= 0 && (int) x < MAP_MAX && (int) y < MAP_MAX) {
+=======
+            if (x >= 0 && y >= min_dist && (int) x < MAP_MAX && (int) y < max_dist) {
+>>>>>>> 36300f2b1e2e4a2f0b968b245250e6074951f4f3
                 int x2 = (x);
                 int y2 = (MAP_MAX - y - 30 - 1);
+                if(!(y2 >= 0 && y2 < MAP_MAX)){
+                    continue;
+                }
 
                 img.at<uchar>(y2,x2)=255;
             }
@@ -62,18 +85,42 @@ void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
     interpret();
 }
 
-ObstacleDetector::ObstacleDetector(int argc, char *argv[],ros::NodeHandle &node_handle):nh(node_handle) {
-    if (argc>1){
-	 topic_name = std::string("interpreter/obstacleMap/") + std::string(argv[1]);
-	}
-	else{
-	 topic_name = std::string("interpreter/obstacleMap/0");
-	}
-	if (argc>2){
-	 sub_topic_name = std::string(argv[2]);
-	}
-	else{
-	 sub_topic_name = std::string("/scan");
+ObstacleDetector::ObstacleDetector(int argc, char *argv[], ros::NodeHandle &node_handle):nh(node_handle) {
+
+	topic_name = std::string("interpreter/obstacleMap/0");
+	sub_topic_name = std::string("/scan");
+    min_dist = 0;
+	max_dist = 400;
+	debug = 0;
+	for(int i=1;i<argc;i++)
+	{
+		if(argv[i][0] != '-') {
+			break;
+		}
+
+		if (++i>=argc) {
+		}
+		switch(argv[i-1][1])
+		{
+			case 'd':
+				debug = atoi(argv[i]);
+				break;
+			case 's':
+				sub_topic_name = std::string(argv[i]);
+				break;
+            case 'p':
+                topic_name = std::string(argv[i]);
+                break;
+            case 'l':
+                max_dist = atoi(argv[i]);
+                break;
+            case 'm':
+                min_dist = atoi(argv[i]);
+                break;
+			default:
+				fprintf(stderr, "Unknown option: -%c\n", argv[i-1][1]);
+				exit_with_help();
+		}
 	}
 
     it = new image_transport::ImageTransport(nh);
@@ -88,12 +135,12 @@ ObstacleDetector::~ObstacleDetector() {
 
 int main(int argc, char** argv) {
 	std::string node_name;
-	if (argc>1){
-	 node_name = std::string("interpreter_obstacleDetector_") + std::string(argv[1]);
-	}
-	else{
-	 node_name = std::string("interpreter_obstacleDetector_0");
-	}
+	// if (argc>1){
+	//  node_name = std::string("interpreter_obstacleDetector_") + std::string(argv[1]);
+	// }
+	// else{
+	//  node_name = std::string("interpreter_obstacleDetector_0");
+	// }
 
     ros::init(argc, argv, node_name.c_str());
     ros::NodeHandle nh;

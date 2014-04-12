@@ -13,9 +13,6 @@
 #include <sensor_msgs/image_encodings.h>
 #include "sensor_msgs/LaserScan.h"
 
-static const int DEBUG =1 ;
-
-
 
 // SCALING  : 100 in cm.
 
@@ -37,6 +34,7 @@ public:
     ObstacleDetector(int argc, char *argv[],ros::NodeHandle &nh);
     virtual ~ObstacleDetector();
 private:
+	int debug;
 	cv::Mat img;
 	void publishData();
 	void scanCallback(const sensor_msgs::LaserScan& scan);
@@ -46,6 +44,8 @@ private:
 	ros::Subscriber sub;
     image_transport::ImageTransport *it;
     image_transport::Publisher pub;
+    int max_dist;
+    int min_dist;
 };
 
 #endif	/* OBSTACLEDETECTOR_HPP */
