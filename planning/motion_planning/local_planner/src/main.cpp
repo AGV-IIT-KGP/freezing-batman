@@ -102,7 +102,7 @@ int main(int argc,char* argv[]) {
 
     cvNamedWindow("[PLANNER] Map", 0);
 
-    navigation::State botLocation(rand()%100,rand()%100,90,0),targetLocation(900,900,90,0);
+    navigation::State botLocation(500,100,90,0),targetLocation(500,900,90,0);
     navigation::AStarSeed planner;
 
     ros::Rate loop_rate(LOOP_RATE);
@@ -126,7 +126,7 @@ int main(int argc,char* argv[]) {
 
 
         // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
-        navigation::addObstacles(img, 25);
+        navigation::addObstacles(img, 5);
 
 
              path = planner.findPathToTargetWithAstar(img,botLocation, targetLocation);
@@ -138,6 +138,9 @@ int main(int argc,char* argv[]) {
 
 
         planner.showPath(path.first);
+        for(int i = 0; i < path.first.size(); i++){
+            ROS_INFO("%d %d \n", path.first[i].x(), path.first[i].y());
+        }
         
 
         seed.x = path.second.finalState.x();

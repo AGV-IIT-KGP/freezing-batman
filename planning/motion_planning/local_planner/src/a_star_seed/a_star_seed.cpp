@@ -14,10 +14,14 @@
 
 namespace navigation {
     
+
+
     const int AStarSeed::MAX_ITERATIONS = 1000;
 
-    void addObstacles(cv::Mat& fusionMap, const int noOfObstaclesP = 25) {
+    void addObstacles(cv::Mat& img, const int noOfObstaclesP = 0) {
         
+        cv::circle(img, cv::Point(500, img.rows - 300 -1), 100, cv::Scalar(255), -1);
+
         int noOfObstacles = noOfObstaclesP;
         while (noOfObstacles--) {
 
@@ -27,8 +31,7 @@ namespace navigation {
 
             const int x1      = rand()%100;
             const int y1      = rand()%100;
-            cv::circle(fusionMap, cv::Point(y, x), radius, cv::Scalar(255), -1);
-            cv::line(fusionMap, cv::Point(y, x), cv::Point(y+y1,x+x1), cv::Scalar(255), 10);
+            cv::circle(img, cv::Point(x, img.rows - y -1), radius, cv::Scalar(255), -1);
 
         }
         
@@ -36,7 +39,7 @@ namespace navigation {
     
 
     bool AStarSeed::isOnTheObstacle(const State& state){
-        return fusionMap.at<uchar>(state.x(), state.y()) != 0;
+        return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) != 0;
     }
 
     std::pair<std::vector<StateOfCar>, Seed> AStarSeed::findPathToTargetWithAstar(const cv::Mat& img,const State&  start,const State&  goal) {
@@ -47,12 +50,13 @@ namespace navigation {
 
         fusionMap = img;
         
+        image = fusionMap - fusionMap;
 
         StateOfCar startState(start), targetState(goal);
         
         std::map<StateOfCar, open_map_element> openMap;
 
-        std::map<StateOfCar,StateOfCar> came_from;
+        std::map<StateOfCar,StateOfCar, comparatorMapState> came_from;
 
         
         SS::PriorityQueue<StateOfCar> openSet;
@@ -94,7 +98,7 @@ namespace navigation {
                 return reconstructPath(currentState, came_from);
             }
             openSet.pop();
-//            std::cout<<"current x : "<<currentState.x()<<" current y : "<<currentState.y()<<std::endl;
+           // std::cout<<"current x : "<<currentState.x()<<" current y : "<<currentState.y()<<"current cost : "<<currentState.gCost()<<std::endl;
 //
 //            plotPointInMap(currentState);
 //            cv::imshow("[PLANNER] Map", mapWithObstacles);
@@ -111,6 +115,8 @@ namespace navigation {
 
                 double tentativeGCostAlongFollowedPath = neighbor.gCost() + currentState.gCost();
                 double admissible = neighbor.distanceTo(targetState);
+
+                // std::cout<<"admissible : "<<admissible<<"\n";
                 double consistent = admissible;
                 
                 if (!((openMap.find(neighbor) != openMap.end()) &&
@@ -120,6 +126,8 @@ namespace navigation {
                     neighbor.hCost( consistent) ;
                     neighbor.updateTotalCost();
                     
+                    // std::cout<<" open neighbour x : "<<neighbor.x()<<" neighbour y : "<<neighbor.y()<<" neighbour cost : "<<neighbor.gCost()<<std::endl;
+
                     openSet.push(neighbor);
                     openMap[neighbor].membership = OPEN;
                     openMap[neighbor].cost = neighbor.gCost();
@@ -221,7 +229,7 @@ namespace navigation {
     
     void AStarSeed::plotPointInMap(const State & pos)
     {
-        cv::circle(image, cv::Point(pos.x(), pos.y()), 3, cv::Scalar(255), -1);
+        cv::circle(image, cv::Point(pos.x(), image.rows- pos.y() - 1), 3, cv::Scalar(255), -1);
         
     }
     
@@ -241,12 +249,18 @@ namespace navigation {
             
             const StateOfCar neighbour(x,y,theta,0,givenSeeds[i].costOfseed,0,i);
             
+           // std::cout<<"neighbour x : "<<neighbour.x()<<" neighbour y : "<<neighbour.y()<<" neighbour cost : "<<neighbour.gCost()<<std::endl;
+
+           // plotPointInMap(neighbour);
             if ( !isWalkableWithSeeds(currentState, neighbour)) {
+                // std::cout<<"hello\n";   
                 continue;
             }
             neighbours.push_back(neighbour);
         }
-        
+           // cv::imshow("[PLANNER] Map", image);
+           // cvWaitKey(0);
+
         
         return neighbours;
     }
@@ -259,7 +273,6 @@ namespace navigation {
         
         bool NoObstacle = true;
 
-        
         for (std::vector<State>::iterator stateIt = givenSeeds[targetState.seedTaken()].intermediatePoints.begin(); stateIt != givenSeeds[targetState.seedTaken()].intermediatePoints.end(); ++stateIt) {
             
             const State state= *stateIt;
@@ -273,21 +286,26 @@ namespace navigation {
             
             int intermediateYcordinate = (int) (-x * cos(alpha * (CV_PI / 180)) + y * sin(alpha * (CV_PI / 180)) + startState.y());
             
-            if (((0 <= intermediateXcordinate) && (intermediateXcordinate < MAP_MAX)) && ((0 <= intermediateYcordinate) && (intermediateYcordinate < MAP_MAX))) {
-                
-                fusionMap.at<uchar>(intermediateXcordinate,intermediateYcordinate)== 0 ? NoObstacle *= 1 : NoObstacle *= 0;
-                
+            if (((intermediateXcordinate >= 0) && (intermediateXcordinate < MAP_MAX)) && (( intermediateYcordinate >= 0) && (intermediateYcordinate < MAP_MAX))) {
+            // std::cout<<"intermediateXcordinate  : "<<intermediateXcordinate<<" intermediateYcordinate : "<<intermediateYcordinate<<"\n";
+
+                fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate) < 128 ? NoObstacle *= 1 : NoObstacle *= 0;
+                // std::cout<<"fusion : "<<(int)fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate)<<"\n";
+                //   std::cout<<"no obstacle : "<<NoObstacle<<"\n";
+
             } else {
                 return false;
             }
         }
         
+        if(fusionMap.at<uchar>(fusionMap.rows - targetState.y() -1, targetState.x()) != 0)
+            return false;
         return NoObstacle == true;
     }
     
 
 
-    std::pair<std::vector<StateOfCar>, Seed> AStarSeed::reconstructPath(StateOfCar const& currentStateOfCar_, std::map<StateOfCar,StateOfCar>& came_from)   {
+    std::pair<std::vector<StateOfCar>, Seed> AStarSeed::reconstructPath(StateOfCar const& currentStateOfCar_, std::map<StateOfCar,StateOfCar, comparatorMapState>& came_from)   {
         
         StateOfCar currentStateOfCar = currentStateOfCar_;
         
@@ -295,6 +313,7 @@ namespace navigation {
         
         path.push_back(currentStateOfCar);
         
+        std::cout<<"come_from size : "<<came_from.size()<<"\n";
         while (came_from.find(currentStateOfCar) != came_from.end()) {
             
             currentStateOfCar = came_from[currentStateOfCar];
@@ -305,19 +324,22 @@ namespace navigation {
         
         // std::cout<<"Path size in reconstructPath is : "<<path.size()<<std::endl;
 
-        std::cout<<"Seed Taken : "<<path[path.size()-2].seedTaken()<<"\n";  
+        std::cout<<"Seed Taken : "<<path[path.size()-2].seedTaken()<<"\n";
+
+        if(path.size() < 2) 
+            return std::make_pair(path, Seed());
         return std::make_pair(path, givenSeeds[path[path.size()-2].seedTaken()])  ;
 
     }
     
     void AStarSeed::showPath(std::vector<StateOfCar>& path) {
         
+
         
-        image = fusionMap - fusionMap;
         printf("Showing A Path\n");
         for(int i = 0; i< fusionMap.rows; i++){
             for(int j = 0; j< fusionMap.cols; j++){
-                image.at<uchar>(j,i)= fusionMap.at<uchar>(i,j);
+                image.at<uchar>(i,j)= fusionMap.at<uchar>(i,j);
             }
         }
 
