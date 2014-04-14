@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-
-<launch>
-    <node pkg="global_planner" type="global_planner" name="global_planner" cwd="node" output="screen"/>
-    <node pkg="global_planner" type="global_planner_debugger" name="global_planner_debugger">
-        <param name="debug_mode" type="int" value="1"/>
-    </node>
-</launch>
-    

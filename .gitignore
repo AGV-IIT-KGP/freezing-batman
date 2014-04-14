@@ -15,6 +15,7 @@ lib
 bin
 data
 *.orig*
+.DS_Store
 
 *.so
 # Backup files
