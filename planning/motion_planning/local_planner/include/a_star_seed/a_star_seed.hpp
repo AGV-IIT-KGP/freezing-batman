@@ -25,7 +25,6 @@
 
 namespace navigation {
 
-
     void addObstacles(cv::Mat& img, const int noOfObstacles);
     
     
@@ -39,42 +38,46 @@ namespace navigation {
         double cost;
     };
 
-        struct comparatorMapState   {
+    struct comparatorMapState   {
 
 
-    inline bool operator()(const StateOfCar& a, const StateOfCar& b)   {
-//            return f_cost_ < b.totalCost();
-            double k11 = a.x();
-            double k12 = a.y();
-            double k13 = a.theta();
-            
-            double cantor11 = 0.5 * (k11 + k12) * (k11 + k12 + 1) + k12;
-            double cantor12 = 0.5 * (cantor11 + k13) * (cantor11 + k13 + 1) + k13;
-            
-            double k21 = b.x();
-            double k22 = b.y();
-            double k23 = b.theta();
-            
-            double cantor21 = 0.5 * (k21 + k22) * (k21 + k22 + 1) + k22;
-            double cantor22 = 0.5 * (cantor21 + k23) * (cantor21 + k23 + 1) + k23;
-            
-            return cantor12 < cantor22;
+        inline bool operator()(const StateOfCar& a, const StateOfCar& b)   {
+                double k11 = a.x();
+                double k12 = a.y();
+                double k13 = a.theta();
+                
+                double cantor11 = 0.5 * (k11 + k12) * (k11 + k12 + 1) + k12;
+                double cantor12 = 0.5 * (cantor11 + k13) * (cantor11 + k13 + 1) + k13;
+                
+                double k21 = b.x();
+                double k22 = b.y();
+                double k23 = b.theta();
+                
+                double cantor21 = 0.5 * (k21 + k22) * (k21 + k22 + 1) + k22;
+                double cantor22 = 0.5 * (cantor21 + k23) * (cantor21 + k23 + 1) + k23;
+                
+                return cantor12 < cantor22;
 
-    }
-};
+        }
+    };
 
     
     class AStarSeed
     {
-        static const int MAX_ITERATIONS;
-        const std::string SEEDS_FILE;
+
     public:
+        AStarSeed(const std::string& seed_file);
+        std::pair<std::vector<StateOfCar>, Seed> findPathToTargetWithAstar(const cv::Mat& fusionMap, const State& start, const State& goal);
+        void showPath(std::vector<StateOfCar>& path);
+
+    private:
         cv::Mat fusionMap;
         cv::Mat image;
-
+        static const int MAX_ITERATIONS;
+        const std::string SEEDS_FILE;
         std::vector<Seed> givenSeeds;
-        bool isOnTheObstacle(const State& state);
 
+        bool isOnTheObstacle(const State& state);
         void loadGivenSeeds();
         void plotPointInMap(const State& pos_) ;
         std::vector<StateOfCar> neighborNodesWithSeeds(StateOfCar const& currentStateOfCar_)  ;
@@ -82,14 +85,9 @@ namespace navigation {
         bool isWalkableWithSeeds(StateOfCar const& startState_, StateOfCar const& nextState_) ;
         std::pair<std::vector<StateOfCar>, Seed> reconstructPath(StateOfCar const& currentStateOfCar_,  std::map<StateOfCar,StateOfCar, comparatorMapState>& came_from) ;
         void plotGrid(const State& pos_);
-        void showPath(std::vector<StateOfCar>& path);
 
         
-    public:
-        AStarSeed();
 
-        std::pair<std::vector<StateOfCar>, Seed> findPathToTargetWithAstar(const cv::Mat& fusionMap, const State& start, const State& goal);
-        //        void findPathToTargetWithAstarSS();
     };
 }
 

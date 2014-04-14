@@ -10,13 +10,11 @@
 
 namespace planning {
 
-    MasterPlanner::Planner() {
+    Planner::Planner() {
     }
 
-    MasterPlanner::Planner(const MasterPlanner& orig) {
-    }
 
-    MasterPlanner::~Planner() {
+    Planner::~Planner() {
     }
 
 }

@@ -34,6 +34,7 @@ rosbuild_add_library(${PROJECT_NAME}
   src/planning/MotionPlanner.cpp
   src/planning/motion_planner/GlobalPlanner.cpp
   src/planning/motion_planner/LocalPlanner.cpp
+  src/planning/planner.cpp
   src/planning/motion_planner/SituationalPlanner.cpp
   src/robot/Description.cpp
   src/robot/Interpreter.cpp

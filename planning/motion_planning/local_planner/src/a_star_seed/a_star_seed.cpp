@@ -20,6 +20,8 @@ namespace navigation {
 
     void addObstacles(cv::Mat& img, const int noOfObstaclesP = 0) {
         
+
+        srand((unsigned int)time(NULL));
         cv::circle(img, cv::Point(500, img.rows - 300 -1), 100, cv::Scalar(255), -1);
 
         int noOfObstacles = noOfObstaclesP;
@@ -98,11 +100,7 @@ namespace navigation {
                 return reconstructPath(currentState, came_from);
             }
             openSet.pop();
-           // std::cout<<"current x : "<<currentState.x()<<" current y : "<<currentState.y()<<"current cost : "<<currentState.gCost()<<std::endl;
-//
-//            plotPointInMap(currentState);
-//            cv::imshow("[PLANNER] Map", mapWithObstacles);
-//            cvWaitKey(0);
+
             openMap[currentState].membership = UNASSIGNED;
             openMap[currentState].cost=-currentState.gCost(); 
             openMap[currentState].membership=CLOSED;
@@ -116,7 +114,6 @@ namespace navigation {
                 double tentativeGCostAlongFollowedPath = neighbor.gCost() + currentState.gCost();
                 double admissible = neighbor.distanceTo(targetState);
 
-                // std::cout<<"admissible : "<<admissible<<"\n";
                 double consistent = admissible;
                 
                 if (!((openMap.find(neighbor) != openMap.end()) &&
@@ -126,7 +123,6 @@ namespace navigation {
                     neighbor.hCost( consistent) ;
                     neighbor.updateTotalCost();
                     
-                    // std::cout<<" open neighbour x : "<<neighbor.x()<<" neighbour y : "<<neighbor.y()<<" neighbour cost : "<<neighbor.gCost()<<std::endl;
 
                     openSet.push(neighbor);
                     openMap[neighbor].membership = OPEN;
@@ -161,11 +157,9 @@ namespace navigation {
         return false;
     }
     
-    AStarSeed::AStarSeed() : SEEDS_FILE("/home/krishna/fuerte_workspace/sandbox/freezing-batman/planning/motion_planning/local_planner/seeds/seeds2.txt")
+    AStarSeed::AStarSeed(const std::string& seed_file) : SEEDS_FILE("/home/agv/fuerte_workspace/sandbox/freezing-batman/planning/motion_planning/local_planner/seeds/seeds2.txt")
     {
-        // SEEDS_FILE = std::string("../seeds/seeds2.txt");
         loadGivenSeeds();
-        
     }
     
     void AStarSeed::loadGivenSeeds() {
@@ -200,7 +194,6 @@ namespace navigation {
             
             s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
             s.rightVelocity = VMAX / (1 + s.velocityRatio);
-            //s.cost *= 1.2;
             
             s.finalState = State((int)x,(int)y,z,0);
 
@@ -249,17 +242,13 @@ namespace navigation {
             
             const StateOfCar neighbour(x,y,theta,0,givenSeeds[i].costOfseed,0,i);
             
-           // std::cout<<"neighbour x : "<<neighbour.x()<<" neighbour y : "<<neighbour.y()<<" neighbour cost : "<<neighbour.gCost()<<std::endl;
-
-           // plotPointInMap(neighbour);
+     
             if ( !isWalkableWithSeeds(currentState, neighbour)) {
-                // std::cout<<"hello\n";   
                 continue;
             }
             neighbours.push_back(neighbour);
         }
-           // cv::imshow("[PLANNER] Map", image);
-           // cvWaitKey(0);
+       
 
         
         return neighbours;
@@ -287,11 +276,9 @@ namespace navigation {
             int intermediateYcordinate = (int) (-x * cos(alpha * (CV_PI / 180)) + y * sin(alpha * (CV_PI / 180)) + startState.y());
             
             if (((intermediateXcordinate >= 0) && (intermediateXcordinate < MAP_MAX)) && (( intermediateYcordinate >= 0) && (intermediateYcordinate < MAP_MAX))) {
-            // std::cout<<"intermediateXcordinate  : "<<intermediateXcordinate<<" intermediateYcordinate : "<<intermediateYcordinate<<"\n";
 
                 fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate) < 128 ? NoObstacle *= 1 : NoObstacle *= 0;
-                // std::cout<<"fusion : "<<(int)fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate)<<"\n";
-                //   std::cout<<"no obstacle : "<<NoObstacle<<"\n";
+    
 
             } else {
                 return false;
@@ -313,7 +300,6 @@ namespace navigation {
         
         path.push_back(currentStateOfCar);
         
-        std::cout<<"come_from size : "<<came_from.size()<<"\n";
         while (came_from.find(currentStateOfCar) != came_from.end()) {
             
             currentStateOfCar = came_from[currentStateOfCar];
@@ -322,10 +308,6 @@ namespace navigation {
 
         }
         
-        // std::cout<<"Path size in reconstructPath is : "<<path.size()<<std::endl;
-
-        std::cout<<"Seed Taken : "<<path[path.size()-2].seedTaken()<<"\n";
-
         if(path.size() < 2) 
             return std::make_pair(path, Seed());
         return std::make_pair(path, givenSeeds[path[path.size()-2].seedTaken()])  ;
@@ -348,9 +330,6 @@ namespace navigation {
             const State state = *stateIt;
             plotPointInMap(state);
         }
-        cv::namedWindow("obstacles Map", CV_WINDOW_NORMAL);
-        cv::imshow("obstacles Map", fusionMap);
-        cv::namedWindow("[PLANNER] Map", CV_WINDOW_NORMAL);
         cv::imshow("[PLANNER] Map", image);
         cvWaitKey(0);
         

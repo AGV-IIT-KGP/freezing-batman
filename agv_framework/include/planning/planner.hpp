@@ -15,7 +15,6 @@ namespace planning {
     class Planner {
     public:
         Planner();
-        Planner(const MasterPlanner& orig);
         virtual ~Planner();
     private:
 
