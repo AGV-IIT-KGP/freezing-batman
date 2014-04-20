@@ -34,6 +34,7 @@ private:
     int path_type;
 
     nav_msgs::Path path;
+    geometry_msgs::PoseStamped pose_msg;
     
     ros::Publisher state_publisher;
     ros::Publisher pose_publisher;

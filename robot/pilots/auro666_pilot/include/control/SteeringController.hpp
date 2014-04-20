@@ -39,7 +39,7 @@ public:
     float getSteeringControl();
 
 private:
-    static const double pgain = .2;
+    static const double pgain = 1;
     static const double igain = 0;
     static const double dgain = 0;
     // In meters
@@ -49,6 +49,9 @@ private:
     double cte_sum;
     double cte_last;
     double delta_steer_angle;
+    double path_orientation;
+    double current_vehicle_pose;
+    double c; //landing Curve Gain which decides the convergence of cte and curvature of landing curve
 
     geometry_msgs::Pose pose;
     nav_msgs::Path path;
@@ -58,6 +61,7 @@ private:
     unsigned int calculateClosestPoseId(geometry_msgs::Pose steer_point);
     void calculateParams();
     double displacement(geometry_msgs::Pose pose1, geometry_msgs::Pose pose2);
+    int sgn(double d);
     geometry_msgs::Pose obtainSteerPoint(geometry_msgs::Pose pose);
 };
 

@@ -5,6 +5,7 @@
  * Created on 24 January, 2014, 2:13 AM
  */
 
+#include <fstream>
 #include <Debugger.hpp>
 
 Debugger::Debugger() {
@@ -28,7 +29,7 @@ Debugger::~Debugger() {
 
 void Debugger::display(int debug_mode) {
     image = cv::Scalar(255, 255, 255);
-    
+
     for (unsigned int pose_id = 0; pose_id + 1 < waypoints.poses.size(); pose_id++) {
         cv::line(image,
                  cv::Point(waypoints.poses.at(pose_id).pose.position.x * scale,
@@ -36,7 +37,6 @@ void Debugger::display(int debug_mode) {
                  cv::Point(waypoints.poses.at(pose_id + 1).pose.position.x * scale,
                            waypoints.poses.at(pose_id + 1).pose.position.y * scale),
                  cv::Scalar(0, 0, 255), 3, CV_AA, 0);
-
     }
 
     for (unsigned int pose_id = 0; pose_id < waypoints.poses.size(); pose_id++) {
@@ -55,6 +55,38 @@ void Debugger::display(int debug_mode) {
         cv::imshow(window_name.c_str(), image);
         cv::waitKey(10);
     }
+}
+
+void Debugger::dumpCTEPlot() {
+    double scale = 20;
+    image = cv::Mat(cv::Size(map_height * scale, map_width * scale), CV_8UC3, cv::Scalar::all(255));
+
+    for (unsigned int pose_id = 0; pose_id + 1 < waypoints.poses.size(); pose_id++) {
+        cv::line(image,
+                 cv::Point(waypoints.poses.at(pose_id).pose.position.x * scale,
+                           waypoints.poses.at(pose_id).pose.position.y * scale),
+                 cv::Point(waypoints.poses.at(pose_id + 1).pose.position.x * scale,
+                           waypoints.poses.at(pose_id + 1).pose.position.y * scale),
+                 cv::Scalar(0, 0, 255), 3, CV_AA, 0);
+    }
+
+    for (unsigned int pose_id = 0; pose_id < waypoints.poses.size(); pose_id++) {
+        cv::circle(image,
+                   cv::Point(waypoints.poses.at(pose_id).pose.position.x * scale,
+                             waypoints.poses.at(pose_id).pose.position.y * scale),
+                   5, cv::Scalar(0, 255, 0), 3, CV_AA, 0);
+    }
+
+    for (unsigned int pose_id = 0; pose_id + 1 < traversed_path.poses.size(); pose_id++) {
+        cv::line(image,
+                 cv::Point(traversed_path.poses.at(pose_id).pose.position.x * scale,
+                           traversed_path.poses.at(pose_id).pose.position.y * scale),
+                 cv::Point(traversed_path.poses.at(pose_id + 1).pose.position.x * scale,
+                           traversed_path.poses.at(pose_id + 1).pose.position.y * scale),
+                 cv::Scalar(255, 0, 0), 3, CV_AA, 0);
+    }
+
+    cv::imwrite("../results/traversed_path.jpg", image);
 }
 
 void Debugger::initialize() {
@@ -77,6 +109,8 @@ int main(int argc, char **argv) {
         ros::spinOnce();
         loop_rate.sleep();
     }
+
+    debugger.dumpCTEPlot();
 
     return 0;
 }

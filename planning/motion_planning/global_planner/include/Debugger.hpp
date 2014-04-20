@@ -24,6 +24,7 @@ public:
 
     void setCurrent_pose(geometry_msgs::PoseStamped current_pose) {
         this->current_pose = current_pose.pose;
+        traversed_path.poses.push_back(current_pose);
     }
 
     void setWaypoints(nav_msgs::Path waypoints) {
@@ -31,6 +32,7 @@ public:
     }
     
     void display(int debug_mode);
+    void dumpCTEPlot();
 
 private:
     int map_width;
@@ -41,6 +43,7 @@ private:
     
     geometry_msgs::Pose current_pose;
     nav_msgs::Path waypoints;
+    nav_msgs::Path traversed_path;
     
     ros::Subscriber pose_subscriber;
     ros::Subscriber waypoint_subscriber;

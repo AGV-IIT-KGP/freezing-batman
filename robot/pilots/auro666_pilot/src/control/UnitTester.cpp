@@ -14,9 +14,14 @@ UnitTester::UnitTester(ros::NodeHandle& node_handle) {
     path_size = 1000;
     path_type = 1;
 
+    pose_msg.pose.position.x = 1; // Meters
+    pose_msg.pose.position.y = 1;
+    pose_msg.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+    pose_msg.header.seq = 0;
+
     // Mimics other nodes
-    state_publisher = node_handle.advertise<auro666_pilot::State>("vehicle_server/state", 20);
-    pose_publisher = node_handle.advertise<geometry_msgs::Pose>("localization/pose", 100);
+    state_publisher = node_handle.advertise<auro666_pilot::State>("vehicle_server/state", 100);
+    pose_publisher = node_handle.advertise<geometry_msgs::PoseStamped>("localization/pose", 100);
     path_publisher = node_handle.advertise<nav_msgs::Path>("local_planner/path", 10);
 
     // Observed stuff from simulator. Noise can be added later.
@@ -32,8 +37,10 @@ UnitTester::UnitTester(const UnitTester& orig) {
 UnitTester::~UnitTester() {
 }
 
-void UnitTester::publishPose(const geometry_msgs::Pose::ConstPtr& pose) {
-    pose_publisher.publish(*pose);
+void UnitTester::publishPose(const geometry_msgs::Pose::ConstPtr& pose_ptr) {
+    pose_msg.pose.position.x = pose_ptr->position.x;
+    pose_msg.pose.position.y = pose_ptr->position.y;
+    pose_msg.pose.orientation = pose_ptr->orientation;
 }
 
 void UnitTester::publishState(const auro666_pilot::State::ConstPtr& state) {
@@ -48,10 +55,14 @@ void UnitTester::selectPath() {
 }
 
 void UnitTester::sendTestData(int frame_id) {
-    path.header.seq = frame_id;
-    path.header.frame_id = frame_id;
+    pose_msg.header.stamp = ros::Time::now();
+    pose_publisher.publish(pose_msg);
+    pose_msg.header.seq = frame_id;
+
     path.header.stamp = ros::Time::now();
     path_publisher.publish(path);
+    path.header.seq = frame_id;
+    path.header.frame_id = frame_id;
 }
 
 geometry_msgs::Pose UnitTester::pathGenerator(unsigned int pose_id) {
@@ -83,7 +94,7 @@ int main(int argc, char **argv) {
     int frame_id = 0;
     while (ros::ok()) {
         unit_tester.sendTestData(frame_id);
-        
+
         ros::spinOnce();
         loop_rate.sleep();
         ++frame_id;

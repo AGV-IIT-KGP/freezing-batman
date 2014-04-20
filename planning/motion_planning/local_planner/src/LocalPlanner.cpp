@@ -42,9 +42,7 @@ int main(int argc, char **argv) {
     LocalPlanner local_planner(node_handle);
 
     ros::Rate loop_rate(10);
-    while (ros::ok()) {
-        ROS_INFO("How's that for a plan?");
-        
+    while (ros::ok()) {       
         local_planner.plan();
         ros::spinOnce();
         loop_rate.sleep();

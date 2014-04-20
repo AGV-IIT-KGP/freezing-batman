@@ -5,6 +5,7 @@
  * Created on 7 January, 2014, 1:26 PM
  */
 
+#include <fstream>
 #include <ros/ros.h>
 #include <control/Debugger.hpp>
 
@@ -19,7 +20,7 @@ Debugger::Debugger() {
         flat_line.push_back(cv::Point(i, 300));
     }
 
-    path_image.create(600, 800, CV_8UC3);
+    path_image.create(3000, 4000, CV_8UC3);
     cv::namedWindow(path_tracking.c_str(), 0);
 }
 
@@ -49,13 +50,13 @@ void Debugger::display(int debug_mode) {
 
     path_image = cv::Scalar(255, 255, 255);
     for (unsigned int pose_id = 0; pose_id + 1 < target_path.size(); pose_id++) {
-        cv::line(path_image, target_path.at(pose_id),
-                 target_path.at(pose_id + 1), cv::Scalar(0, 0, 255), 3, CV_AA,
+        cv::line(path_image, 5 * target_path.at(pose_id),
+                 5 * target_path.at(pose_id + 1), cv::Scalar(0, 0, 255), 2, CV_AA,
                  0);
     }
     for (unsigned int pose_id = 0; pose_id + 1 < traversed_path.size(); pose_id++) {
-        cv::line(path_image, traversed_path.at(pose_id),
-                 traversed_path.at(pose_id + 1), cv::Scalar(0, 255, 0), 3,
+        cv::line(path_image, 5 * traversed_path.at(pose_id),
+                 5 * traversed_path.at(pose_id + 1), cv::Scalar(0, 255, 0), 2,
                  CV_AA, 0);
     }
 
@@ -65,14 +66,24 @@ void Debugger::display(int debug_mode) {
     }
 }
 
+void Debugger::dumpCTEPlotData() {
+    std::ofstream file;
+    file.open("../results/cte_data.txt");
+    for (unsigned int i = 0; i < cte_data.size(); i++) {
+        file << cte_data[i] << std::endl;
+    }
+    file.close();
+}
+
 void Debugger::updateCurrentPath(const geometry_msgs::PoseStamped::ConstPtr& pose_ptr) {
-    traversed_path.push_back(cv::Point(10 + pose_ptr->pose.position.x, 
+    traversed_path.push_back(cv::Point(10 + pose_ptr->pose.position.x,
                                        300 - pose_ptr->pose.position.y));
 }
 
 void Debugger::updateCTEPlotData(const std_msgs::Float64::ConstPtr& cte_ptr) {
     cte_plot.erase(cte_plot.begin());
     cte_plot.push_back((int) 300 + cte_ptr->data * 100);
+    cte_data.push_back(cte_ptr->data);
 }
 
 void Debugger::updateTargetPath(const nav_msgs::Path::ConstPtr& target_path_ptr) {
@@ -103,5 +114,7 @@ int main(int argc, char **argv) {
         ros::spinOnce();
         loop_rate.sleep();
     }
+
+    debugger.dumpCTEPlotData();
 }
 

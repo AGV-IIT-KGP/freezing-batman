@@ -21,6 +21,7 @@ public:
     virtual ~Debugger();
 
     void display(int debug_mode);
+    void dumpCTEPlotData();
     void updateCurrentPath(const geometry_msgs::PoseStamped::ConstPtr& pose_ptr);
     void updateCTEPlotData(const std_msgs::Float64::ConstPtr& cte_ptr);
     void updateTargetPath(const nav_msgs::Path::ConstPtr& path_ptr);
@@ -30,6 +31,7 @@ private:
     std::string path_tracking;
     
     std::vector<int> cte_plot;
+    std::vector<double> cte_data;
     std::vector<cv::Point> flat_line;
     std::vector<cv::Point> traversed_path;
     std::vector<cv::Point> target_path;

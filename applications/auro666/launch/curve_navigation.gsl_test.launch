@@ -4,7 +4,7 @@
     <node pkg="auro666" type="gsl_tester" name="gsl_tester" cwd="node"/>
     
     <node pkg="global_planner" type="global_planner" name="global_planner" cwd="node"/>
-    <node pkg="global_planner" type="global_planner_debugger" name="global_planner_debugger">
+    <node pkg="global_planner" type="global_planner_debugger" name="global_planner_debugger" cwd="node">
         <param name="debug_mode" type="int" value="1"/>
     </node>
     
@@ -18,8 +18,8 @@
         <param name="debug_mode" type="int" value="1"/>
     </node>
     
-    <node pkg="auro666_pilot" type="controller" name="controller" cwd="node"/>
-    <node pkg="auro666_pilot" type="controller_debugger" name="controller_debugger">
+    <node pkg="auro666_pilot" type="controller" name="controller" cwd="node" output="screen"/>
+    <node pkg="auro666_pilot" type="controller_debugger" name="controller_debugger" cwd="node">
         <param name="debug_mode" type="int" value="3"/>
     </node>
 </launch>
