@@ -157,7 +157,7 @@ namespace navigation {
         return false;
     }
     
-    AStarSeed::AStarSeed(const std::string& seed_file) : SEEDS_FILE("/home/agv/fuerte_workspace/sandbox/freezing-batman/planning/motion_planning/local_planner/seeds/seeds2.txt")
+    AStarSeed::AStarSeed(const std::string& seed_file) : SEEDS_FILE("../freezing-batman/planning/motion_planning/local_planner/seeds/seeds2.txt")
     {
         loadGivenSeeds();
     }
