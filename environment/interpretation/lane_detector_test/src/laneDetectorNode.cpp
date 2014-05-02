@@ -20,7 +20,7 @@ void exit_with_help(){
     "      5 -- Set inverse perpective transform matrix. \n"
     "      6 -- Debug mode ON for inverse perspective transform. \n"
     "      7 -- Inverse perspective transform off, so resizing image. \n"
-    "      9 -- Blah \n"
+    "      9 -- Blah Blah \n"
 	"-i  : Node Id\n"
 	"-s  : Subscriber topic name\n"
 	"-t  : Time functions\n"
