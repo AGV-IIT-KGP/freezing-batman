@@ -35,7 +35,7 @@ int main(int argc, char **argv)
       
       for (unsigned int i=0;i<numberofobs;i++)
       {
-        cv::circle(image, cvPoint(rand()%height,rand()%width), minradius+rand()%(maxradius-minradius), cvScalar(255, -1));
+        cv::circle(image, cvPoint(rand()%height,rand()%width), minradius+rand()%(maxradius-minradius), cvScalar(255),-1);
       }
       cv_bridge::CvImage message;
       message.encoding = sensor_msgs::image_encodings::MONO8;
