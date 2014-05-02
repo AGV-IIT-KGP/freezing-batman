@@ -11,9 +11,9 @@
 
 int main(int argc,char* argv[]) {
 
-    const std::string ndoe_name = "local_planner";
+    const std::string node_name = "local_planner";
 
-    ros::init(argc, argv, ndoe_name.c_str());
+    ros::init(argc, argv, node_name.c_str());
 
     ros::NodeHandle nh;
     
