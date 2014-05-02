@@ -2,19 +2,22 @@
 #include <image_transport/image_transport.h>
 #include <opencv/cvwimage.h>
 #include <opencv/highgui.h>
+#include <cv_bridge/cv_bridge.h>
 #include <cv_bridge/CvBridge.h>
 #include <ctime>
 #include <cstdlib>
+#include <sensor_msgs/image_encodings.h>
 #include "geometry_msgs/Pose.h"
+
  
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "dummy_tester");
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
-    image_transport::Publisher pub = it.advertise("interpreter/fusion/world_map", 10);
-    ros::Publisher pub_target_pose = it.advertise<geometry_msgs::Pose>("/target_pose",10);
-    ros::Publisher pub_bot_pose = it.advertise<geometry_msgs::Pose>("/bot_pose",10);
+    image_transport::Publisher pub_world_map = it.advertise("interpreter/fusion/world_map", 10);
+    ros::Publisher pub_target_pose = nh.advertise<geometry_msgs::Pose>("/target_pose",10);
+    ros::Publisher pub_bot_pose = nh.advertise<geometry_msgs::Pose>("/bot_pose",10);
 
     srand((unsigned int) time(NULL));
 
@@ -24,7 +27,7 @@ int main(int argc, char **argv)
 
     ros::Rate loop_rate(10);
 
-    while (nh.ok()) 
+    while (ros::ok()) 
     {
       cv::Mat image=cv::Mat(height,width,CV_8UC1,cvScalarAll(0));
       
@@ -34,9 +37,10 @@ int main(int argc, char **argv)
       {
         cv::circle(image, cvPoint(rand()%height,rand()%width), minradius+rand()%(maxradius-minradius), cvScalar(255, -1));
       }
-      sensor_msgs::ImagePtr msg;
-      msg.data = sensor_msgs::CvBridge::cvToImgMsg(image, "mono8");
-      pub.publish(msg);
+      cv_bridge::CvImage message;
+      message.encoding = sensor_msgs::image_encodings::MONO8;
+      message.image = image;
+      pub_world_map.publish(message.toImageMsg());
 
         geometry_msgs::Pose target_pose;
         target_pose.position.x = rand()%width;

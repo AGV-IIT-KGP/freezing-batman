@@ -15,7 +15,7 @@ namespace navigation    {
 
     LocalPlanner::LocalPlanner(ros::NodeHandle& nodeHandle) : nh(nodeHandle)  {
         //Subscriber for World Map
-        sub_world_map = nh.subscribe("/world_map",10, &LocalPlanner::updateWorldMap, this); 
+        sub_world_map = nh.subscribe("interpreter/fusion/world_map",10, &LocalPlanner::updateWorldMap, this); 
         // topic should same with data published by GPS
         sub_bot_pose =  nh.subscribe("/bot_pose", 10 ,&LocalPlanner::updateBotPose, this); 
         // topic published from GPS
