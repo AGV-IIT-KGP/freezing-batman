@@ -5,9 +5,12 @@
 #include <cv_bridge/cv_bridge.h>
 #include <cv_bridge/CvBridge.h>
 #include <ctime>
+#include <cmath>
 #include <cstdlib>
 #include <sensor_msgs/image_encodings.h>
 #include "geometry_msgs/Pose.h"
+
+#define PI 3.14159265
 
  
 int main(int argc, char **argv)
@@ -22,13 +25,29 @@ int main(int argc, char **argv)
     srand((unsigned int) time(NULL));
 
     int height=600,width=600;
-    int minradius=10,maxradius=40;
+    int minradius=20,maxradius=60;
     int minobs=2,maxobs=9;
+    int upper_margin_zone=50;
+    int lower_margin_zone=50;
 
     ros::Rate loop_rate(10);
 
     while (ros::ok()) 
     {
+        geometry_msgs::Pose bot_pose;
+        bot_pose.position.x = rand()%width;
+        bot_pose.position.y = rand()%lower_margin_zone;
+        bot_pose.position.z = rand()%360;
+
+        pub_bot_pose.publish(bot_pose);
+
+        geometry_msgs::Pose target_pose;
+        target_pose.position.x = rand()%width;
+        target_pose.position.y = (height-rand()%upper_margin_zone);
+        target_pose.position.z = rand()%360;
+
+        pub_target_pose.publish(target_pose);
+
       cv::Mat image=cv::Mat(height,width,CV_8UC1,cvScalarAll(0));
       
       unsigned int numberofobs=(rand()%(maxobs-minobs)+minobs);
@@ -37,24 +56,13 @@ int main(int argc, char **argv)
       {
         cv::circle(image, cvPoint(rand()%height,rand()%width), minradius+rand()%(maxradius-minradius), cvScalar(255),-1);
       }
+
+
       cv_bridge::CvImage message;
       message.encoding = sensor_msgs::image_encodings::MONO8;
       message.image = image;
       pub_world_map.publish(message.toImageMsg());
 
-        geometry_msgs::Pose target_pose;
-        target_pose.position.x = rand()%width;
-        target_pose.position.y = rand()%height;
-        target_pose.position.z = rand()%360;
-
-        pub_target_pose.publish(target_pose);
-
-        geometry_msgs::Pose bot_pose;
-        bot_pose.position.x = rand()%width;
-        bot_pose.position.y = rand()%height;
-        bot_pose.position.z = rand()%360;
-
-        pub_bot_pose.publish(bot_pose);
       ros::spinOnce();
       loop_rate.sleep();
     }

@@ -68,7 +68,7 @@ namespace navigation {
     public:
         AStarSeed(const std::string& seed_file);
         std::pair<std::vector<StateOfCar>, Seed> findPathToTargetWithAstar(const cv::Mat& fusionMap, const State& start, const State& goal);
-        void showPath(std::vector<StateOfCar>& path);
+        void showPath(std::vector<StateOfCar>& path, const State& start, const State& goal);
 
     private:
         cv::Mat fusionMap;

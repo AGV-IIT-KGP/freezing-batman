@@ -23,15 +23,15 @@ namespace navigation    {
 
         pub_path = nh.advertise<local_planner::Seed>("/path", 1000); //Publisher for Path
 
-        my_bot_location = navigation::State(500, 100, 90, 0);
-        my_target_location = navigation::State(500, 900, 90, 0);
+        // my_bot_location = navigation::State(500, 100, 90, 0);
+        // my_target_location = navigation::State(500, 900, 90, 0);
 
         local_map = cv::Mat::zeros(MAP_MAX, MAP_MAX, CV_8UC1);
 
-        navigation::addObstacles(local_map, 5);
+        // navigation::addObstacles(local_map, 5);
         ROS_INFO("Local Planner(AStarSeed) started.... ");
         ROS_INFO("Publisher : \"/path\" .... ");
-        ROS_INFO("Subscriber : \"/world_map\", \"/bot_pose\", \"/target_pose\" .... ");
+        ROS_INFO("Subscriber : \"interpreter/fusion/world_map\", \"/bot_pose\", \"/target_pose\" .... ");
 
     }
 
@@ -45,7 +45,7 @@ namespace navigation    {
         }
         catch (cv_bridge::Exception& e)
         {
-          ROS_ERROR("cv_bridge exception: %s", e.what());
+               ROS_ERROR("cv_bridge exception: %s", e.what());
           return;
         }
     }
@@ -60,7 +60,7 @@ namespace navigation    {
             std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path = 
                 planner.findPathToTargetWithAstar(local_map ,my_bot_location, my_target_location);
 
-            planner.showPath(path.first);
+            planner.showPath(path.first,my_bot_location, my_target_location);
             publishData(path);
             loop_rate.sleep();
         }
