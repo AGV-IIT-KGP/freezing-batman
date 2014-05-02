@@ -30,7 +30,7 @@ rosbuild_genmsg()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 rosbuild_add_executable(${PROJECT_NAME} src/main.cpp src/local_planner.cpp src/a_star_seed/a_star_seed.cpp src/a_star_seed/state.cpp src/a_star_seed/state_of_car.cpp src/a_star_seed/seed.cpp src/a_star_seed/ss_priority_queue.cpp)
-
+rosbuild_add_executable(local_planner_tester src/tester.cpp)
 target_link_libraries(${PROJECT_NAME} ${AGV_FRAMEWORK})
 
 #target_link_libraries(example ${PROJECT_NAME})
