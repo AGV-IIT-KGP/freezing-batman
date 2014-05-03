@@ -57,14 +57,13 @@ namespace navigation {
         image = fusionMap - fusionMap;
 
         StateOfCar startState(start), targetState(goal);
-        
+
         std::map<StateOfCar, open_map_element> openMap;
 
         std::map<StateOfCar,StateOfCar, comparatorMapState> came_from;
 
-        
         SS::PriorityQueue<StateOfCar> openSet;
-    
+
         openSet.push(startState);
 
         if (startState.isCloseTo(targetState)) {
@@ -316,10 +315,13 @@ namespace navigation {
 
     }
     
-    void AStarSeed::showPath(std::vector<StateOfCar>& path) {
+    void AStarSeed::showPath(std::vector<StateOfCar>& path,const State&  startState,const State&  targetState) {
         
 
-        
+        cv::circle(fusionMap, cvPoint(targetState.x(),fusionMap.rows-1-targetState.y()), 5, cvScalar(128),-1);
+        cv::line(fusionMap, cvPoint(targetState.x(),fusionMap.rows-1-targetState.y()), cvPoint(targetState.x()+15*cos((targetState.theta()*M_PI)/180),fusionMap.rows-1-targetState.y()-15*sin((targetState.theta()*M_PI)/180)),cvScalar(128),1,8,0);
+        cv::circle(fusionMap, cvPoint(startState.x(),fusionMap.rows-1-startState.y()), 5, cvScalar(128),-1);
+        cv::line(fusionMap, cvPoint(startState.x(),fusionMap.rows-1-startState.y()), cvPoint(startState.x()+15*cos((startState.theta()*M_PI)/180),fusionMap.rows-1-startState.y()-15*sin((startState.theta()*M_PI)/180)),cvScalar(128),1,8,0);
         printf("Showing A Path\n");
         for(int i = 0; i< fusionMap.rows; i++){
             for(int j = 0; j< fusionMap.cols; j++){
@@ -332,6 +334,7 @@ namespace navigation {
             const State state = *stateIt;
             plotPointInMap(state);
         }
+
         cv::imshow("[PLANNER] Map", image);
         cvWaitKey(0);
         

@@ -32,7 +32,7 @@
 #include "local_planner/Seed.h"
 #include "a_star_seed/a_star_seed.hpp"
 #include "planning/planner.hpp"
-static const int MAP_MAX = 1000;
+static const int MAP_MAX = 800;
 static const int LOOP_RATE = 10;
 static const int WAIT_TIME = 100;
 
