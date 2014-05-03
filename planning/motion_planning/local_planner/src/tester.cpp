@@ -32,37 +32,37 @@ int main(int argc, char **argv)
 
     while (ros::ok()) 
     {
-      geometry_msgs::Pose bot_pose;
-      bot_pose.position.x = rand()%width;
-      bot_pose.position.y = rand()%lower_margin_zone;
-      bot_pose.position.z = rand()%360;
+        geometry_msgs::Pose bot_pose;
+        bot_pose.position.x = rand()%width;
+        bot_pose.position.y = rand()%lower_margin_zone;
+        bot_pose.position.z = rand()%360;
 
-      pub_bot_pose.publish(bot_pose);
+        pub_bot_pose.publish(bot_pose);
 
-      geometry_msgs::Pose target_pose;
-      target_pose.position.x = rand()%width;
-      target_pose.position.y = (height-rand()%upper_margin_zone);
-      target_pose.position.z = rand()%360;
+        geometry_msgs::Pose target_pose;
+        target_pose.position.x = rand()%width;
+        target_pose.position.y = (height-rand()%upper_margin_zone);
+        target_pose.position.z = rand()%360;
 
-      pub_target_pose.publish(target_pose);
+        pub_target_pose.publish(target_pose);
 
-      cv::Mat image=cv::Mat(height,width,CV_8UC1,cvScalarAll(0));
+        cv::Mat image=cv::Mat(height,width,CV_8UC1,cvScalarAll(0));
       
-      unsigned int numberofobs=(rand()%(maxobs-minobs)+minobs);
+        unsigned int numberofobs=(rand()%(maxobs-minobs)+minobs);
       
-      for (unsigned int i=0;i<numberofobs;i++)
-      {
-        cv::circle(image, cvPoint(rand()%height,rand()%width), minradius+rand()%(maxradius-minradius), cvScalar(255),-1);
-      }
+        for (unsigned int i=0;i<numberofobs;i++)
+        {
+          cv::circle(image, cvPoint(rand()%height,rand()%width), minradius+rand()%(maxradius-minradius), cvScalar(255),-1);
+        }
 
 
-      cv_bridge::CvImage message;
-      message.encoding = sensor_msgs::image_encodings::MONO8;
-      message.image = image;
-      pub_world_map.publish(message.toImageMsg());
+        cv_bridge::CvImage message;
+        message.encoding = sensor_msgs::image_encodings::MONO8;
+        message.image = image;
+        pub_world_map.publish(message.toImageMsg());
 
-      ros::spinOnce();
-      loop_rate.sleep();
+        ros::spinOnce();
+        loop_rate.sleep();
     }
     return 0;
  }
