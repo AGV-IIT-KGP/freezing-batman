@@ -55,14 +55,13 @@ namespace navigation {
         image = fusionMap - fusionMap;
 
         StateOfCar startState(start), targetState(goal);
-        
+
         std::map<StateOfCar, open_map_element> openMap;
 
         std::map<StateOfCar,StateOfCar, comparatorMapState> came_from;
-        
-        
+
         SS::PriorityQueue<StateOfCar> openSet;
-    
+
         openSet.push(startState);
 
         if (startState.isCloseTo(targetState)) {

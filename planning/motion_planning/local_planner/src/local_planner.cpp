@@ -45,7 +45,7 @@ namespace navigation    {
         }
         catch (cv_bridge::Exception& e)
         {
-               ROS_ERROR("cv_bridge exception: %s", e.what());
+          ROS_ERROR("cv_bridge exception: %s", e.what());
           return;
         }
     }
