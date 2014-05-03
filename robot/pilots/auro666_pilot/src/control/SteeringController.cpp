@@ -44,6 +44,8 @@ float SteeringController::getSteeringControl() {
         }
     }
 
+    cmd_steer_angle = cmd_steer_angle > 1.04719755 ? 1.04719755 : cmd_steer_angle;
+    cmd_steer_angle = cmd_steer_angle < -1.04719755 ? -1.04719755 : cmd_steer_angle;
     ROS_INFO("[auro666_plugin/SteeringController/getSteeringControl] cmd_steer_angle = %lf", cmd_steer_angle * 180 / 3.14);
     return cmd_steer_angle;
 }
