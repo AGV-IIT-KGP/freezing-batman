@@ -76,7 +76,7 @@ namespace navigation {
         static const int MAX_ITERATIONS;
         const std::string SEEDS_FILE;
         std::vector<Seed> givenSeeds;
-
+        void distanceTransform();
         bool isOnTheObstacle(const State& state);
         void loadGivenSeeds();
         void plotPointInMap(const State& pos_) ;
