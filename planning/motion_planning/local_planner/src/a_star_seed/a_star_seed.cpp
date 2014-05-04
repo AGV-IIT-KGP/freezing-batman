@@ -41,7 +41,7 @@ namespace navigation {
     
 
     bool AStarSeed::isOnTheObstacle(const State& state){
-        return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) != 0;
+        return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) == 255;
     }
 
     std::pair<std::vector<StateOfCar>, Seed> AStarSeed::findPathToTargetWithAstar(const cv::Mat& img,const State&  start,const State&  goal) {
@@ -320,6 +320,7 @@ namespace navigation {
         cv::line(fusionMap, cvPoint(targetState.x(),fusionMap.rows-1-targetState.y()), cvPoint(targetState.x()+15*cos((targetState.theta()*M_PI)/180),fusionMap.rows-1-targetState.y()-15*sin((targetState.theta()*M_PI)/180)),cvScalar(128),1,8,0);
         cv::circle(fusionMap, cvPoint(startState.x(),fusionMap.rows-1-startState.y()), 5, cvScalar(128),-1);
         cv::line(fusionMap, cvPoint(startState.x(),fusionMap.rows-1-startState.y()), cvPoint(startState.x()+15*cos((startState.theta()*M_PI)/180),fusionMap.rows-1-startState.y()-15*sin((startState.theta()*M_PI)/180)),cvScalar(128),1,8,0);
+        
         printf("Showing A Path\n");
         for(int i = 0; i< fusionMap.rows; i++){
             for(int j = 0; j< fusionMap.cols; j++){
