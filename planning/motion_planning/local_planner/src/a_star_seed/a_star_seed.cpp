@@ -12,6 +12,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+//remove this
+#include "ros/package.h"
 namespace navigation {
     
 
@@ -157,7 +159,7 @@ namespace navigation {
         return false;
     }
     
-    AStarSeed::AStarSeed(const std::string& seed_file) : SEEDS_FILE("../freezing-batman/planning/motion_planning/local_planner/seeds/seeds2.txt")
+    AStarSeed::AStarSeed(const std::string& seed_file) : SEEDS_FILE(ros::package::getPath("local_planner")+"/seeds/seeds2.txt")
     {
         loadGivenSeeds();
     }
