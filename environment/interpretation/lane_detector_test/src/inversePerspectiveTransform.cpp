@@ -23,7 +23,7 @@ int h;
 void loadVariable()
 {
     int status=1;
-    std::string path = ros::package::getPath("lane_detector_test")+"/include/botVariable.txt";
+    std::string path = ros::package::getPath("lane_detector_test")+"/data/botVariable.txt";
     FILE *readFile;
     readFile = fopen(path.c_str(),"r");
     status = status && fscanf(readFile, "bot_x = %d", &bot_x);
@@ -88,11 +88,19 @@ cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
 
 
         // Write the parameters to file
-        FILE* ipt_data = fopen("data/ipt.dat", "w");
+        int status=1;
+        std::string path = ros::package::getPath("lane_detector_test") +
+            "/data/ipt.txt";
+        FILE* ipt_data = fopen(path.c_str(), "w");
 
         for(int i=0; i < 4; i++){
 
-            fprintf(ipt_data, "%f %f\n", src_vertices[i].x, src_vertices[i].y);
+            status = status && fprintf(ipt_data, "%f %f\n", src_vertices[i].x, src_vertices[i].y);
+        }
+
+        if(!status){
+            printf("Couldn't write to file ");
+            printf(path.c_str());
         }
 
         fclose(ipt_data);
@@ -106,16 +114,23 @@ cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
         if(!read_parameters){
             std::cout << "Reading Inverse Perspective Transform parameters from file" << std::endl;
 
-            std::string file_path = data_path + "/ipt.dat";
-            FILE* ipt_data = fopen(file_path.c_str(), "r");
+            int status=1;
+            std::string path = ros::package::getPath("lane_detector_test") +
+                "/data/ipt.txt";
+            FILE* ipt_data = fopen(path.c_str(), "r");
 
             for(int i=0; i < 4; i++){
-                fscanf(ipt_data, "%f %f", &src_vertices[i].x, &src_vertices[i].y);
+                status = status && fscanf(ipt_data, "%f %f", &src_vertices[i].x, &src_vertices[i].y);
                 std::cout << " x: " << src_vertices[i].x << " y: " << src_vertices[i].y << std::endl;
             }
 
             fclose(ipt_data);
             read_parameters = true;
+
+            if(!status){
+                printf("Couldn't read file ");
+                printf(path.c_str());
+            }
         }
 
         cv::Mat result = TransformImage(image);

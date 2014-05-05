@@ -14,9 +14,6 @@ rosbuild_init()
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-set(DATA_PATH ${PROJECT_SOURCE_DIR}/data)
-
-add_definitions(-DDATA_PATH=${DATA_PATH})
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
@@ -54,12 +51,12 @@ rosbuild_add_executable(svmTrain src/svmTrain.cpp)
 target_link_libraries(svmTrain ${lib_SVM})
 
 
-rosbuild_add_library(laneDetector 
-    src/laneDetector.cpp 
-    src/obstacleRemoval.cpp 
-    src/preprocessing.cpp 
+rosbuild_add_library(laneDetector
+    src/laneDetector.cpp
+    src/obstacleRemoval.cpp
+    src/preprocessing.cpp
     src/getLaneBinary.cpp
-    src/grassRemoval.cpp 
+    src/grassRemoval.cpp
 #    src/seperateLanes.cpp
     src/inversePerspectiveTransform.cpp)
 target_link_libraries(laneDetector svm)
