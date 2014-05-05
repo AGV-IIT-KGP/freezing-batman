@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Satya Prakash. All rights reserved.
 //
 
-
 #include "a_star_seed/a_star_seed.hpp"
 #include <stdio.h>
 #include <string.h>
@@ -15,14 +14,9 @@
 //remove this
 #include "ros/package.h"
 namespace navigation {
-    
-
-
     const int AStarSeed::MAX_ITERATIONS = 1000;
 
     void addObstacles(cv::Mat& img, const int noOfObstaclesP = 0) {
-        
-
         srand((unsigned int)time(NULL));
         cv::circle(img, cv::Point(500, img.rows - 300 -1), 100, cv::Scalar(255), -1);
 
@@ -36,32 +30,23 @@ namespace navigation {
             const int x1      = rand()%100;
             const int y1      = rand()%100;
             cv::circle(img, cv::Point(x, img.rows - y -1), radius, cv::Scalar(255), -1);
-
-        }
-        
+        }        
     }
     
-
     bool AStarSeed::isOnTheObstacle(const State& state){
         return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) != 0;
     }
 
     std::pair<std::vector<StateOfCar>, Seed> AStarSeed::findPathToTargetWithAstar(const cv::Mat& img,const State&  start,const State&  goal) {
-        
-
         // USE : for garanteed termination of planner
         int no_of_iterations = 0;
 
         fusionMap = img;
-        
         image = fusionMap - fusionMap;
 
         StateOfCar startState(start), targetState(goal);
-
         std::map<StateOfCar, open_map_element> openMap;
-
         std::map<StateOfCar,StateOfCar, comparatorMapState> came_from;
-
         SS::PriorityQueue<StateOfCar> openSet;
 
         openSet.push(startState);
@@ -96,8 +81,8 @@ namespace navigation {
 
             // TODO : use closeTo instead of onTarget
             if (onTarget(currentState, targetState)) {
-               std::cout<<"openSet size : "<<openSet.size()<<"\n";
-//                std::cout<<"Target Reached"<<std::endl;
+                // std::cout<<"openSet size : "<<openSet.size()<<"\n";
+                // std::cout<<"Target Reached"<<std::endl;
                 return reconstructPath(currentState, came_from);
             }
             openSet.pop();
@@ -123,17 +108,14 @@ namespace navigation {
                     neighbor.gCost( tentativeGCostAlongFollowedPath) ;
                     neighbor.hCost( consistent) ;
                     neighbor.updateTotalCost();
-                    
-
                     openSet.push(neighbor);
                     openMap[neighbor].membership = OPEN;
                     openMap[neighbor].cost = neighbor.gCost();
-                    
                 }
             }
             no_of_iterations++;
         }
-        // std::cerr<<"NO PATH FOUND"<<std::endl;
+        std::cerr<<"NO PATH FOUND\n";
             return std::make_pair(std::vector<StateOfCar>(), Seed());
     }
     
@@ -296,17 +278,13 @@ namespace navigation {
     std::pair<std::vector<StateOfCar>, Seed> AStarSeed::reconstructPath(StateOfCar const& currentStateOfCar_, std::map<StateOfCar,StateOfCar, comparatorMapState>& came_from)   {
         
         StateOfCar currentStateOfCar = currentStateOfCar_;
-        
         std::vector<StateOfCar> path;
         
         path.push_back(currentStateOfCar);
         
         while (came_from.find(currentStateOfCar) != came_from.end()) {
-            
             currentStateOfCar = came_from[currentStateOfCar];
-        
             path.push_back(currentStateOfCar);
-
         }
         
         if(path.size() < 2) 
@@ -317,7 +295,6 @@ namespace navigation {
     
     void AStarSeed::showPath(std::vector<StateOfCar>& path,const State&  startState,const State&  targetState) {
         
-
         cv::circle(fusionMap, cvPoint(targetState.x(),fusionMap.rows-1-targetState.y()), 5, cvScalar(128),-1);
         cv::line(fusionMap, cvPoint(targetState.x(),fusionMap.rows-1-targetState.y()), cvPoint(targetState.x()+15*cos((targetState.theta()*M_PI)/180),fusionMap.rows-1-targetState.y()-15*sin((targetState.theta()*M_PI)/180)),cvScalar(128),1,8,0);
         cv::circle(fusionMap, cvPoint(startState.x(),fusionMap.rows-1-startState.y()), 5, cvScalar(128),-1);
