@@ -2,17 +2,22 @@
 #include <cmath>
 #include <algorithm>
 
-#define MULTIPLIER 1
+#include "ros/package.h"
+
+const int MULTIPLIER = 3;
 
 int main()
 {
 	int numberOfSeeds, numberOfIntermediatePoints;
-	double gridSpacing, velocityRatio, finalX, finalY, finalOrientation, costOfSeed;
+	double velocityRatio, finalX, finalY, finalOrientation, costOfSeed;
 	double intermediateXValue, intermediateYValue;
 
 	FILE *seedOutput,readInput;
 	
-	seedOutput=fopen("./test_seeds.txt","w");
+	std::string SEEDS_FILE;
+	SEEDS_FILE = ros::package::getPath("local_planner")+"/seeds/test_seeds.txt";
+	
+	seedOutput=fopen(SEEDS_FILE.c_str(),"w");
 	
 	//printf("OutputFormat:\nnumberOfSseeds\nvelocityRatio finalX finalY finalOrientation costOfSeed\nnSeedPoints\nintermediateXValue intermediateYValue\n");
 	
@@ -30,6 +35,7 @@ int main()
 		double radiusOfCurvature = (finalX*finalX + finalY*finalY)/(2 * finalX);
 		double theta = (M_PI - 2 * finalOrientation);
 
+		//to do expression for velocity ratio
 		velocityRatio = 0;
 		costOfSeed = finalX + finalY - finalOrientation;
 
@@ -83,11 +89,12 @@ int main()
 
 	}
 
+	//generating straight seed
 	velocityRatio = 0;
 	finalX = 0;
 	finalY = (2*numberOfSeeds+1)*MULTIPLIER;
 	finalOrientation = M_PI/2;
-	costOfSeed = finalY*0.75;
+	costOfSeed = finalY*0.75;//hard-coded
 	fprintf(seedOutput, "%lf %lf %lf %lf %lf\n", velocityRatio, finalX, finalY, finalOrientation*180/M_PI, costOfSeed);
 	numberOfIntermediatePoints = (finalX + finalY)/MULTIPLIER;
 	
