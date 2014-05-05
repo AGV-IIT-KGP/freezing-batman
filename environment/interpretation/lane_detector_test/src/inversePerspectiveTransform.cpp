@@ -7,19 +7,38 @@
 #include <stdio.h>
 #include "laneDetector.hpp"
 
+#include "ros/package.h"
+
 cv::Point2f src_vertices[4];
 
 int no_clicks = 0;
 
-const int bot_x = 500;
-const int bot_y = 900;
+int bot_x;
+int bot_y;
 
-const int d = 100;
-const int w = 100;
-const int h = 100;
+int d;
+int w;
+int h;
+
+void loadVariable()
+{
+    int status=1;
+    std::string path = ros::package::getPath("lane_detector_test")+"/include/botVariable.txt";
+    FILE *readFile;
+    readFile = fopen(path.c_str(),"r");
+    status = status && fscanf(readFile, "bot_x = %d", &bot_x);
+    status = status && fscanf(readFile, "bot_y = %d", &bot_y);
+    status = status && fscanf(readFile, "d = %d", &d);
+    status = status && fscanf(readFile, "w = %d", &w);
+    status = status && fscanf(readFile, "h = %d", &h);
+    printf("%d %d %d %d %d\n",bot_x,bot_y,d,w,h);
+    if(!status)
+        printf("load in reading bot variable file\n");
+}
 
 cv::Mat TransformImage(cv::Mat &image){
 
+    loadVariable();
     cv::Point2f dst_vertices[4];
 
     dst_vertices[0] = cv::Point(bot_x - w/2, 900 - d - h);
