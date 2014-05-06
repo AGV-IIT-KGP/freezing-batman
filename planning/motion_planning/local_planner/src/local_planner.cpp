@@ -6,20 +6,17 @@
 //  Copyright (c) 2014 Satya Prakash. All rights reserved.
 //
 
-
-
 #include "local_planner.hpp"
 
-namespace navigation    {
+namespace navigation {
 
-
-    LocalPlanner::LocalPlanner(ros::NodeHandle& nodeHandle) : nh(nodeHandle)  {
+    LocalPlanner::LocalPlanner(ros::NodeHandle& nodeHandle) : nh(nodeHandle) {
         //Subscriber for World Map
-        sub_world_map = nh.subscribe("interpreter/fusion/world_map",10, &LocalPlanner::updateWorldMap, this); 
+        sub_world_map = nh.subscribe("interpreter/fusion/world_map", 10, &LocalPlanner::updateWorldMap, this);
         // topic should same with data published by GPS
-        sub_bot_pose =  nh.subscribe("/bot_pose", 10 ,&LocalPlanner::updateBotPose, this); 
+        sub_bot_pose = nh.subscribe("/bot_pose", 10, &LocalPlanner::updateBotPose, this);
         // topic published from GPS
-        sub_target_pose = nh.subscribe("/target_pose", 10 , &LocalPlanner::updateTargetPose, this);
+        sub_target_pose = nh.subscribe("/target_pose", 10, &LocalPlanner::updateTargetPose, this);
 
         pub_path = nh.advertise<local_planner::Seed>("/path", 1000); //Publisher for Path
 
@@ -32,42 +29,36 @@ namespace navigation    {
         ROS_INFO("Local Planner(AStarSeed) started.... ");
         ROS_INFO("Publisher : \"/path\" .... ");
         ROS_INFO("Subscriber : \"interpreter/fusion/world_map\", \"/bot_pose\", \"/target_pose\" .... ");
-
     }
 
-    void LocalPlanner::updateWorldMap(const sensor_msgs::ImageConstPtr& world_map){
+    void LocalPlanner::updateWorldMap(const sensor_msgs::ImageConstPtr& world_map) {
         //TODO : copy function for occupancy grid
         cv_bridge::CvImagePtr cv_ptr;
-        try
-        {
+        try {
             cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::MONO8);
             local_map = cv_ptr->image;
-        }
-        catch (cv_bridge::Exception& e)
-        {
-          ROS_ERROR("cv_bridge exception: %s", e.what());
-          return;
+        }        catch (cv_bridge::Exception& e) {
+            ROS_ERROR("cv_bridge exception: %s", e.what());
+            return;
         }
     }
 
-    void LocalPlanner::plan()    {
-        ros::Rate loop_rate(LOOP_RATE);  
+    void LocalPlanner::plan() {
+        ros::Rate loop_rate(LOOP_RATE);
         navigation::AStarSeed planner(std::string(""));
 
         while (ros::ok()) {
-     
             ros::spinOnce();
-            std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path = 
-                planner.findPathToTargetWithAstar(local_map ,my_bot_location, my_target_location);
+            std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path =
+                    planner.findPathToTargetWithAstar(local_map, my_bot_location, my_target_location);
 
-            planner.showPath(path.first,my_bot_location, my_target_location);
+            planner.showPath(path.first, my_bot_location, my_target_location);
             publishData(path);
             loop_rate.sleep();
         }
     }
 
     void LocalPlanner::publishData(std::pair<std::vector<navigation::StateOfCar>, navigation::Seed>& path) {
-
         local_planner::Seed seed;
 
         seed.x = path.second.finalState.x();
@@ -80,7 +71,5 @@ namespace navigation    {
         seed.curvature = path.second.finalState.curvature();
 
         pub_path.publish(seed);
-
     }
-
 }
