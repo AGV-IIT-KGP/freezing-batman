@@ -14,7 +14,7 @@ namespace navigation {
 		double hCostNormalised;
 	public:
 		double hCostDT(const LState& startState_,const LState& endState_);
-		double hCostPathLength(const LState& startState_,const LState& endState_);//depends only on x and y coordinates
+		double hCostPathToTarget(const LState& startState_,const LState& endState_);//depends only on x and y coordinates
 		double hCostTurnAngle(const LState& startState_,const LState& endState_);//depends on theta, and indirectly takes curvature also into account.
 		double heuristicNormalise(double, double, double);//takes all the heuristics and normalises them.
 	};
