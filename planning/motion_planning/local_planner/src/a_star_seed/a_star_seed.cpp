@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 //remove this
 #include "ros/package.h"
@@ -75,14 +76,28 @@ namespace navigation {
         
 
         // USE : for garanteed termination of planner
+        
+
         int no_of_iterations = 0;
 
         fusionMap = img;
         
         image = fusionMap - fusionMap;
 
+        struct timeval t,c;
+        gettimeofday(&t,NULL);
+
         distanceTransform();
+
+        gettimeofday(&c,NULL);
+        double td = t.tv_sec + t.tv_usec/1000000.0;
+        double cd = c.tv_sec + c.tv_usec/1000000.0;
+        std::cout<<"TIME:"<< (cd-td) <<std::endl;
         StateOfCar startState(start), targetState(goal);
+
+        std::cout<<"startState : "<<startState.x()<<" "<<startState.y()<<"\n";
+        std::cout<<"targetState : "<<targetState.x()<<" "<<targetState.y()<<"\n";
+        
 
         std::map<StateOfCar, open_map_element> openMap;
 

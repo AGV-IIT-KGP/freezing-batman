@@ -9,6 +9,7 @@
 
 
 #include "local_planner.hpp"
+#include <sys/time.h>
 
 namespace navigation    {
 
@@ -57,10 +58,16 @@ namespace navigation    {
         while (ros::ok()) {
      
             ros::spinOnce();
-            std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path = 
-                planner.findPathToTargetWithAstar(local_map ,my_bot_location, my_target_location);
+    struct timeval t,c;
+    gettimeofday(&t,NULL);
+            std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path =
+                    planner.findPathToTargetWithAstar(local_map, my_bot_location, my_target_location);
+    gettimeofday(&c,NULL);
+    double td = t.tv_sec + t.tv_usec/1000000.0;
+    double cd = c.tv_sec + c.tv_usec/1000000.0;
+    std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
+            planner.showPath(path.first, my_bot_location, my_target_location);
 
-            planner.showPath(path.first,my_bot_location, my_target_location);
             publishData(path);
             loop_rate.sleep();
         }
