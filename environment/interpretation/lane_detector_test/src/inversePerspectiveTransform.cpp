@@ -31,7 +31,6 @@ void loadVariable()
     status = status && fscanf(readFile, "d = %d", &d);
     status = status && fscanf(readFile, "w = %d", &w);
     status = status && fscanf(readFile, "h = %d", &h);
-    printf("%d %d %d %d %d\n",bot_x,bot_y,d,w,h);
     if(!status)
         printf("load in reading bot variable file\n");
 }

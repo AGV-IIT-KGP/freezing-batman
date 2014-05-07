@@ -1,0 +1,4 @@
+preprocessing = 1
+grass_removal = 1
+obstacle_removal = 1
+get_lan
