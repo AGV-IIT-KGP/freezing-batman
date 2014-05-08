@@ -41,7 +41,7 @@ int main (int argc, char *argv[]){
 		if(argv[i][0] != '-') {
 			break;
 		}
-		
+
 		if (++i>=argc) {
 			exit_with_help();
 		}
@@ -69,12 +69,12 @@ int main (int argc, char *argv[]){
 	std::string node_name, publisher_topic_name;
 	node_name = std::string("interpreter_lane_detector_") + node_id;
 	publisher_topic_name = std::string("/interpreter/lane_detector/") + node_id;
-	
+
 	ros::init(argc, argv, node_name.c_str());
 	//ros::NodeHandle nh;
 
 	LaneDetector lane_detector(publisher_topic_name, subscribe_topic_name, time_functions,debug_mode);
-	
+
 	ros::spin();
 return 0;
 }

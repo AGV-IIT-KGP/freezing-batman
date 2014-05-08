@@ -1,5 +1,31 @@
 #include "laneDetector.hpp"
 #include "ros/package.h"
+#include <stdio.h>
+#include <iostream>
+
+int do_preprocessing = 1;
+int do_grass_removal = 1;
+int do_obstacle_removal = 1;
+int do_get_lane_binary = 1;
+int do_inverse_perspective_transform = 1;
+
+void loadVariables(){
+
+    int status=1;
+    std::string path = ros::package::getPath("lane_detector_test")+"/select.txt";
+    FILE *readFile;
+    readFile = fopen(path.c_str(),"r");
+    status = status && fscanf(readFile, "preprocessing = %d", &do_preprocessing);
+    status = status && fscanf(readFile, "grass_removal = %d", &do_grass_removal);
+    status = status && fscanf(readFile, "obstacle_removal = %d", &do_obstacle_removal);
+    status = status && fscanf(readFile, "get_lane_binary = %d", &do_get_lane_binary);
+    status = status && fscanf(readFile, "inverse_perspective_transform = %d", &do_inverse_perspective_transform);
+    if(!status){
+        printf("in reading bot variable file ");
+        printf(path.c_str());
+    }
+        
+}
 
 LaneDetector::LaneDetector(std::string _pub_topic_name, std::string _sub_topic_name, int _timeFunctions, int _debugMode):it(nh_){
 	debug_mode = _debugMode;
@@ -25,11 +51,13 @@ void LaneDetector::interpret(){
 	cv::Mat result = Image;
 
 
-	/*
+	
 	if( timeFunctions == 2 ){
 		gettimeofday (&tvalBefore, NULL);
 	}
-	result = Preprocessing(result);
+    if(do_preprocessing){
+        result = Preprocessing(result);
+    }
 	if( timeFunctions == 2 ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
@@ -40,12 +68,14 @@ void LaneDetector::interpret(){
 		cv::namedWindow("Preprocessing Output");
 		cv::imshow("Preprocessing Output",result);
 	}
-	*/
+	
 
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
 	}
-	result = GrassRemoval(result);
+    if(do_grass_removal){
+        result = GrassRemoval(result);
+    }
 	if( timeFunctions ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
@@ -62,7 +92,9 @@ void LaneDetector::interpret(){
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
 	}
-	result = ObstacleRemoval(result);
+    if(do_obstacle_removal){
+        result = ObstacleRemoval(result);
+    }
 	if( timeFunctions ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
@@ -79,7 +111,9 @@ void LaneDetector::interpret(){
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
 	}
-	result = GetLaneBinary(result);
+    if(do_get_lane_binary){
+        result = GetLaneBinary(result);
+    }
 	if( timeFunctions ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
@@ -126,11 +160,13 @@ void LaneDetector::interpret(){
 	}
 	*/
 
-	/*
+	
 	if( timeFunctions == 2 ){
 		gettimeofday (&tvalBefore, NULL);
 	}
-	result = InversePerspectiveTransform(result);
+    if(do_inverse_perspective_transform){
+        result = InversePerspectiveTransform(result);
+    }
 	if( timeFunctions == 2 ){
 		gettimeofday (&tvalAfter, NULL);
 		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
@@ -143,7 +179,7 @@ void LaneDetector::interpret(){
 		cv::namedWindow("InversePerspectiveTransform Output");
 		cv::imshow("InversePerspectiveTransform Output", result);
 	}
-	*/
+
 	
 	if( timeFunctions ){
 		if( timeFunctions == 2 ) {
