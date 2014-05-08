@@ -11,6 +11,6 @@
 
 namespace navigation {
     bool AStarSeed::isOnTheObstacle(const State& state){
-        return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) != 0;
+        return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) >= 225;
     }
 }

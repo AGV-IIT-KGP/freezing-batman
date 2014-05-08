@@ -23,6 +23,9 @@
 #include "state_of_car.hpp"
 #include "seed.hpp"
 
+const int DT = 1;
+const int DEBUG = 1;
+
 namespace navigation {
 
     void addObstacles(cv::Mat& img, const int noOfObstacles);

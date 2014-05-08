@@ -8,17 +8,23 @@
 
 
 #include "a_star_seed/a_star_seed.hpp"
+
+//remove this
+#include "ros/ros.h"
 namespace navigation {
-    const int AStarSeed::MAX_ITERATIONS = 1000;
+    const int AStarSeed::MAX_ITERATIONS = 10000;
 
     std::pair<std::vector<StateOfCar>, Seed> AStarSeed::findPathToTargetWithAstar(const cv::Mat& img,const State&  start,const State&  goal) {
         // USE : for garanteed termination of planner
         int no_of_iterations = 0;
 
         fusionMap = img;
-        image = fusionMap - fusionMap;
-
-        distanceTransform();
+  
+        if(DT==1)
+            distanceTransform();
+        if (DEBUG)  {
+            image = fusionMap.clone();
+        }
         StateOfCar startState(start), targetState(goal);
 
         std::map<StateOfCar, open_map_element> openMap;
@@ -43,7 +49,7 @@ namespace navigation {
             return std::make_pair(std::vector<StateOfCar>(), Seed());
         }
 
-        while (!openSet.empty()) {
+        while (!openSet.empty() && ros::ok()) {
             // std::cout<<"openSet size : "<<openSet.size()<<"\n";
 
             if(no_of_iterations > MAX_ITERATIONS){
@@ -59,8 +65,15 @@ namespace navigation {
             
             currentState=openSet.top();
 
+            if (DEBUG)  {
+               std::cout<<"current x : "<<currentState.x()<<" current y : "<<currentState.y()<<std::endl;
+
+               plotPointInMap(currentState);
+               cv::imshow("[PLANNER] Map", image);
+               cvWaitKey(0);
+            }
             // TODO : use closeTo instead of onTarget
-            if (onTarget(currentState, targetState)) {
+            if (currentState.isCloseTo(targetState)) {
                std::cout<<"openSet size : "<<openSet.size()<<"\n";
 //                std::cout<<"Target Reached"<<std::endl;
                 return reconstructPath(currentState, came_from);
@@ -78,12 +91,19 @@ namespace navigation {
                 double tentativeGCostAlongFollowedPath = neighbor.gCost() + currentState.gCost();
                 double admissible = neighbor.distanceTo(targetState);
                 double consistent = admissible;
+                double intensity = fusionMap.at<uchar>(neighbor.y(), neighbor.x());
+                
+                double consistentAndIntensity = (neighbor.hCost()*neighbor.hCost()+2 + intensity*intensity)/(neighbor.hCost()+intensity+2);
+
                 
                 if (!((openMap.find(neighbor) != openMap.end()) &&
                       (openMap[neighbor].membership == OPEN))) {
                     came_from[neighbor] = currentState;
                     neighbor.gCost( tentativeGCostAlongFollowedPath) ;
-                    neighbor.hCost( consistent) ;
+                    if(DT==1)
+                        neighbor.hCost(consistentAndIntensity);
+                    else
+                        neighbor.hCost( consistent) ;
                     neighbor.updateTotalCost();
 
                     openSet.push(neighbor);
@@ -93,7 +113,7 @@ namespace navigation {
             }
             no_of_iterations++;
         }
-        // std::cerr<<"NO PATH FOUND"<<std::endl;
+        std::cerr<<"NO PATH FOUND"<<std::endl;
             return std::make_pair(std::vector<StateOfCar>(), Seed());
     }
 }
