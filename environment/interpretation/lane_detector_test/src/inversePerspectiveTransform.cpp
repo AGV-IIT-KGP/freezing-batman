@@ -7,19 +7,44 @@
 #include <stdio.h>
 #include "laneDetector.hpp"
 
+#include "ros/package.h"
+
 cv::Point2f src_vertices[4];
 
 int no_clicks = 0;
 
-const int bot_x = 500;
-const int bot_y = 900;
+int bot_x;
+int bot_y;
 
-const int d = 100;
-const int w = 100;
-const int h = 100;
+int d;
+int w;
+int h;
+
+void loadVariable()
+{
+    int status=1;
+    std::string path = ros::package::getPath("lane_detector_test")+"/data/botVariable.txt";
+
+    FILE *readFile;
+    readFile = fopen(path.c_str(),"r");
+    status = status && fscanf(readFile, "bot_x = %d\n", &bot_x);
+    status = status && fscanf(readFile, "bot_y = %d\n", &bot_y);
+    status = status && fscanf(readFile, "d = %d\n", &d);
+    status = status && fscanf(readFile, "w = %d\n", &w);
+    status = status && fscanf(readFile, "h = %d\n", &h);
+    printf("%d %d %d %d %d\n",bot_x,bot_y,d,w,h);
+    if(!status)
+        printf("load in reading bot variable file\n");
+}
 
 cv::Mat TransformImage(cv::Mat &image){
 
+    static bool file_opened = 0;
+    
+    if(!file_opened){
+        loadVariable();
+        file_opened = 1;
+    }
     cv::Point2f dst_vertices[4];
 
     dst_vertices[0] = cv::Point(bot_x - w/2, 900 - d - h);
@@ -69,11 +94,19 @@ cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
 
 
         // Write the parameters to file
-        FILE* ipt_data = fopen("data/ipt.dat", "w");
+        int status=1;
+        std::string path = ros::package::getPath("lane_detector_test") +
+            "/data/ipt.txt";
+        FILE* ipt_data = fopen(path.c_str(), "w");
 
         for(int i=0; i < 4; i++){
 
-            fprintf(ipt_data, "%f %f\n", src_vertices[i].x, src_vertices[i].y);
+            status = status && fprintf(ipt_data, "%f %f\n", src_vertices[i].x, src_vertices[i].y);
+        }
+
+        if(!status){
+            printf("Couldn't write to file ");
+            printf(path.c_str());
         }
 
         fclose(ipt_data);
@@ -87,16 +120,23 @@ cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
         if(!read_parameters){
             std::cout << "Reading Inverse Perspective Transform parameters from file" << std::endl;
 
-            std::string file_path = data_path + "/ipt.dat";
-            FILE* ipt_data = fopen(file_path.c_str(), "r");
+            int status=1;
+            std::string path = ros::package::getPath("lane_detector_test") +
+                "/data/ipt.txt";
+            FILE* ipt_data = fopen(path.c_str(), "r");
 
             for(int i=0; i < 4; i++){
-                fscanf(ipt_data, "%f %f", &src_vertices[i].x, &src_vertices[i].y);
+                status = status && fscanf(ipt_data, "%f %f", &src_vertices[i].x, &src_vertices[i].y);
                 std::cout << " x: " << src_vertices[i].x << " y: " << src_vertices[i].y << std::endl;
             }
 
             fclose(ipt_data);
             read_parameters = true;
+
+            if(!status){
+                printf("Couldn't read file ");
+                printf(path.c_str());
+            }
         }
 
         cv::Mat result = TransformImage(image);

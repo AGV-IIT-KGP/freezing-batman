@@ -24,6 +24,9 @@
 #include "seed.hpp"
 static const int PERMISSIBLE_INTENSITY=250;
 
+const int DT = 1;
+const int DEBUG = 1;
+
 namespace navigation {
 
     void addObstacles(cv::Mat& img, const int noOfObstacles);

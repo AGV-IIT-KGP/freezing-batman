@@ -1,19 +1,18 @@
 #include "laneDetector.hpp"
-#include "config.h"
-
+#include "ros/package.h"
 
 LaneDetector::LaneDetector(std::string _pub_topic_name, std::string _sub_topic_name, int _timeFunctions, int _debugMode):it(nh_){
 	debug_mode = _debugMode;
 	timeFunctions = _timeFunctions;
 	pub_topic_name = _pub_topic_name;
 	sub_topic_name = _sub_topic_name;
-    data_path = getDataPath();
 
 	// Grass Removal
 	kernel_size = 8;
 	svm = new SVM();
 	svm->init(kernel_size*kernel_size*3);
-	svm->loadModel("Samples.model");
+    std::string model_path = ros::package::getPath("lane_detector_test")+"/Samples.model";
+	svm->loadModel(model_path.c_str());
 	setUpCommunication();
 }
 
