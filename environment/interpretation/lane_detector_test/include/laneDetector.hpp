@@ -28,7 +28,7 @@ private:
 
 	int debug_mode;
 	int timeFunctions;
-	std::string sub_topic_name, pub_topic_name;
+	std::string sub_topic_name, pub_topic_name, train_file;
 	ros::NodeHandle nh_;
 
     std::string data_path;
@@ -64,7 +64,7 @@ private:
 	void setUpCommunication(); // Set up ros communication
 
 public:
-	LaneDetector(std::string _pub_topic_name, std::string _sub_topic_name, int _timeFunctions = 0, int _debugMode = 0);
+	LaneDetector(std::string _pub_topic_name, std::string _sub_topic_name, int _timeFunctions = 0, int _debugMode = 0, std::string _train_file="Sample");
 	~LaneDetector();
 	void interpret();
 };

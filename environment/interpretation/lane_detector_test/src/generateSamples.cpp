@@ -74,7 +74,17 @@ int main(int argc, char** argv) {
 		printf("Usage: <name> <image_file> <optional:= kernel_size>\n");
 		return -1;
 	}
-	commonFile.open("Samples",std::fstream::app);
+	int flag;
+	char str[256]; 
+	std::cout<<"Enter 1 to create new file\n"
+			 <<"Enter 2 to append existing file\n";
+	std::cin>>flag;
+	std::cout<<"Enter file name: <name_k_kernel_size>\n";
+	std::cin>>str;
+	if(flag==1)
+		commonFile.open(str,std::fstream::out);
+	else if(flag==2)
+		commonFile.open(str,std::fstream::app);
 	img=cv::imread(argv[1]);
 	
 	if( argc == 3 ){

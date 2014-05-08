@@ -1,4 +1,4 @@
-svm_type c_svc
+```																																					svm_type c_svc
 kernel_type polynomial
 degree 4
 gamma 0.00520833

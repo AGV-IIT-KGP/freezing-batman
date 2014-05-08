@@ -24,6 +24,7 @@ void exit_with_help(){
 	"-i  : Node Id\n"
 	"-s  : Subscriber topic name\n"
 	"-t  : Time functions\n"
+	"-f  : Train file\n"
 	"      1: Net FPS\n"
 	"      2: Indivisual functions\n"
 	;
@@ -33,7 +34,7 @@ void exit_with_help(){
 
 
 int main (int argc, char *argv[]){
-	std::string node_id="0", subscribe_topic_name="/camera/image";
+	std::string node_id="0", subscribe_topic_name="/camera/image", train_file="Samples";
 	int debug_mode = 0 ;
 	int time_functions=0;
 	// parse options
@@ -59,6 +60,9 @@ int main (int argc, char *argv[]){
 			case 't':
 				time_functions = atoi(argv[i]);
 				break;
+			case 'f':
+				train_file= std::string(argv[i]);
+				break;
             // case 'n':
             //     do_not_usek
 			default:
@@ -73,7 +77,7 @@ int main (int argc, char *argv[]){
 	ros::init(argc, argv, node_name.c_str());
 	//ros::NodeHandle nh;
 
-	LaneDetector lane_detector(publisher_topic_name, subscribe_topic_name, time_functions,debug_mode);
+	LaneDetector lane_detector(publisher_topic_name, subscribe_topic_name, time_functions,debug_mode,train_file);
 	
 	ros::spin();
 return 0;
