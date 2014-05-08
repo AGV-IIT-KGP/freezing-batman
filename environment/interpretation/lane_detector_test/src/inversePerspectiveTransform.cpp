@@ -24,13 +24,14 @@ void loadVariable()
 {
     int status=1;
     std::string path = ros::package::getPath("lane_detector_test")+"/data/botVariable.txt";
+
     FILE *readFile;
     readFile = fopen(path.c_str(),"r");
-    status = status && fscanf(readFile, "bot_x = %d", &bot_x);
-    status = status && fscanf(readFile, "bot_y = %d", &bot_y);
-    status = status && fscanf(readFile, "d = %d", &d);
-    status = status && fscanf(readFile, "w = %d", &w);
-    status = status && fscanf(readFile, "h = %d", &h);
+    status = status && fscanf(readFile, "bot_x = %d\n", &bot_x);
+    status = status && fscanf(readFile, "bot_y = %d\n", &bot_y);
+    status = status && fscanf(readFile, "d = %d\n", &d);
+    status = status && fscanf(readFile, "w = %d\n", &w);
+    status = status && fscanf(readFile, "h = %d\n", &h);
     printf("%d %d %d %d %d\n",bot_x,bot_y,d,w,h);
     if(!status)
         printf("load in reading bot variable file\n");
@@ -38,7 +39,12 @@ void loadVariable()
 
 cv::Mat TransformImage(cv::Mat &image){
 
-    loadVariable();
+    static bool file_opened = 0;
+    
+    if(!file_opened){
+        loadVariable();
+        file_opened = 1;
+    }
     cv::Point2f dst_vertices[4];
 
     dst_vertices[0] = cv::Point(bot_x - w/2, 900 - d - h);
