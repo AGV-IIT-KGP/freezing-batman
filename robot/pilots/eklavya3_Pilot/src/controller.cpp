@@ -1,6 +1,6 @@
 #include "eklavya3_Pilot/controller.hpp"
 
-void sendCommand(cons   local_planner::Seed temp) {
+void sendCommand(const   local_planner::Seed temp) {
         geometry_msgs::Twist cmdvel;
         local_planner::Seed seed = temp;
 
