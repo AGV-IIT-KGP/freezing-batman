@@ -13,7 +13,7 @@
   <depend package="std_msgs"/>
   <depend package="geometry_msgs"/>
   <depend package="sensor_msgs"/>
-  <depend package="global_planner"/>
+  <depend package="local_planner"/>
 
 </package>
 
