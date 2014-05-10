@@ -1,0 +1,16 @@
+<package>
+  <description brief="pub_sub">
+
+     pub_sub
+
+  </description>
+  <author>arna</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pub_sub</url>
+  <depend package="std_msgs"/>
+  <depend package="roscpp"/>
+
+</package>
+
+
