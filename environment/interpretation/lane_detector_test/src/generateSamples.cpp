@@ -71,7 +71,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 
 int main(int argc, char** argv) {
 	if(argc<2){
-		printf("Usage: <name> <image_file> <optional:= kernel_size>\n");
+		printf("Usage: <image_file> <optional:= kernel_size>\n");
 		return -1;
 	}
 	int flag;
