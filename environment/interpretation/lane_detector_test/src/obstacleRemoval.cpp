@@ -44,7 +44,7 @@ cv::Mat ObstacleRemovedBinary(cv::Mat &image){
 				rgb2hsv( h, s, v, (int)image.at<cv::Vec3b>(i,j)[2], (int)image.at<cv::Vec3b>(i,j)[1], (int)image.at<cv::Vec3b>(i,j)[0]);
 				
 				if( h < obstacle_removal_hue && s > obstacle_removal_saturation ) {
-					binary_after_HSV_thresholding.at<cv::Vec3b>(i,j)[0] = 255;
+					binary_after_HSV_thresholding.at<uchar>(i,j) = 255;
 				}
 				
 			}
