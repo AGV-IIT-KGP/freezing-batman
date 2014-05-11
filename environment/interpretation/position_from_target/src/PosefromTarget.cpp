@@ -3,40 +3,34 @@
 typedef long double precnum_t;
 
 void PosefromTarget::interpret() {
+	/*...... Taken from the url: https://github.com/jlblancoc/mrpt/blob/master/libs/topography/src/conversions.cpp ........*/	
 	
 	static const precnum_t a = 6378137L;		// Semi-major axis of the Earth (meters)
 	static const precnum_t b = 6356752.3142L;	// Semi-minor axis:
-
 	static const precnum_t ae = acos(b/a);  	// eccentricity:
 	static const precnum_t cos2_ae_earth =  (cos(ae))*(cos(ae)); // The cos^2 of the angular eccentricity of the Earth: // 0.993305619995739L;
 	static const precnum_t sin2_ae_earth = (sin(ae))*(sin(ae));  // The sin^2 of the angular eccentricity of the Earth: // 0.006694380004261L;
-
-	 precnum_t lon  = ( precnum_t(current.longitude)*22/7/180 );
-	 precnum_t lat  = ( precnum_t(current.latitude)*22/7/180 );
-
 	
-	 precnum_t N = a / std::sqrt( 1 - sin2_ae_earth*( sin(lat) )*( sin(lat) ) );
 
+	precnum_t lon  = ( precnum_t(current.longitude)*22/7/180 );
+	precnum_t lat  = ( precnum_t(current.latitude)*22/7/180 );
+	precnum_t N = a / std::sqrt( 1 - sin2_ae_earth*( sin(lat) )*( sin(lat) ) );
 	
 	pose.position.x = (N+current.altitude)*cos(lat)*cos(lon);
 	pose.position.y = (N+current.altitude)*cos(lat)*sin(lon);
 	pose.position.z = (cos2_ae_earth*N+current.altitude)*sin(lat);
-
-
-	 lon  = ( precnum_t(target.longitude)*22/7/180 );
-	 lat  = ( precnum_t(target.latitude) *22/7/180);
-
 	
-	 N = a / std::sqrt( 1 - sin2_ae_earth*( sin(lat) )*( sin(lat) ) );
-
+	lon  = ( precnum_t(target.longitude)*22/7/180 );
+	lat  = ( precnum_t(target.latitude) *22/7/180);
+	N = a / std::sqrt( 1 - sin2_ae_earth*( sin(lat) )*( sin(lat) ) );
 	
 	temp.position.x = (N+target.altitude)*cos(lat)*cos(lon);
 	temp.position.y = (N+target.altitude)*cos(lat)*sin(lon);
 	temp.position.z = (cos2_ae_earth*N+target.altitude)*sin(lat);
-
+	
 	const double clat = cos((current.latitude*22/7/180)), slat = sin((current.latitude*22/7/180));
 	const double clon = cos((current.longitude*22/7/180)), slon = sin((current.longitude*22/7/180));
-
+	
 	temp.position.x -= pose.position.x;
 	temp.position.y -= pose.position.y;
 	temp.position.z -= pose.position.z;
@@ -44,13 +38,12 @@ void PosefromTarget::interpret() {
 	pose.position.x = -slon*temp.position.x + clon*temp.position.y;
 	pose.position.y = -clon*slat*temp.position.x -slon*slat*temp.position.y + clat*temp.position.z;
 	pose.position.z = clon*clat*temp.position.x + slon*clat*temp.position.y +slat*temp.position.z;
-
-
-    posestamped.pose.position.x = pose.position.x;
+   	
+   	posestamped.pose.position.x = pose.position.x;
     posestamped.pose.position.y = pose.position.y;
     posestamped.pose.position.z = pose.position.z;
-
-publish_pose();
+	
+	publish_pose();
 }
 
 void PosefromTarget::publish_pose(){
