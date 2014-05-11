@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="eklavya_roboteq" type="server" name="server" respawn="true"/>
+	<node pkg="eklavya_roboteq" type="eklavya_controller_client" name="eklavya_controller_client"/>
+</launch>
