@@ -10,9 +10,6 @@
 #include <math.h>
 #include <string>
 
-#include <mrpt/topography.h>
-#include <mrpt/topography/data_types.h>
-
 class PosefromTarget : public environment::Interpreter {
 public:
     void interpret();
@@ -23,7 +20,7 @@ private:
 	int id;
 	sensor_msgs::NavSatFix target, current;
 	geometry_msgs::PoseStamped posestamped;
-	geometry_msgs::Pose pose;
+	geometry_msgs::Pose pose,temp;
 	std::string target_topic, gps_topic, pose_topic, posestamped_topic;
 	ros::NodeHandle nh;
 	ros::Subscriber gps_sub, target_sub;
