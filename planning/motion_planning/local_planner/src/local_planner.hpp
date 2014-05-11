@@ -32,6 +32,9 @@
 #include "local_planner/Seed.h"
 #include "a_star_seed/a_star_seed.hpp"
 #include "planning/planner.hpp"
+
+#include "quick_reflex/quick_reflex.hpp"
+
 static const int MAP_MAX = 800;
 static const int LOOP_RATE = 10;
 static const int WAIT_TIME = 100;
@@ -44,6 +47,7 @@ namespace navigation {
     public:
         LocalPlanner(ros::NodeHandle& nodehandle);
         void plan();
+        void planWithQuickReflex();
     private:
         ros::NodeHandle nh;
         

@@ -7,10 +7,10 @@
 //
 
 
-#include "a_star_seed/a_star_seed.hpp"
+#include "quick_reflex/quick_reflex.hpp"
 
 namespace navigation {
-    bool AStarSeed::isOnTheObstacle(const State& state){
+    bool quickReflex::isOnTheObstacle(const State& state){
         return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) >= 225;
     }
 }

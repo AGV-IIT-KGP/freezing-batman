@@ -29,8 +29,15 @@ rosbuild_genmsg()
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
-rosbuild_add_executable(${PROJECT_NAME} src/main.cpp src/local_planner.cpp src/a_star_seed/a_star_seed.cpp src/a_star_seed/state.cpp src/a_star_seed/state_of_car.cpp src/a_star_seed/seed.cpp src/a_star_seed/ss_priority_queue.cpp src/a_star_seed/add_obstacles.cpp src/a_star_seed/constructor.cpp src/a_star_seed/distance_transform.cpp src/a_star_seed/is_on_the_obstacles.cpp src/a_star_seed/is_walkable_with_seeds.cpp src/a_star_seed/load_given_seeds.cpp src/a_star_seed/neighbor_nodes_with_seeds.cpp src/a_star_seed/on_target.cpp src/a_star_seed/plot_point_in_map.cpp src/a_star_seed/reconstruct_path.cpp src/a_star_seed/show_path.cpp)
+
+rosbuild_add_executable(${PROJECT_NAME} src/main.cpp src/local_planner.cpp src/a_star_seed/a_star_seed.cpp src/a_star_seed/state.cpp src/a_star_seed/state_of_car.cpp src/a_star_seed/seed.cpp src/a_star_seed/ss_priority_queue.cpp src/a_star_seed/add_obstacles.cpp src/a_star_seed/constructor.cpp src/a_star_seed/distance_transform.cpp src/a_star_seed/is_on_the_obstacles.cpp src/a_star_seed/is_walkable_with_seeds.cpp src/a_star_seed/load_given_seeds.cpp src/a_star_seed/neighbor_nodes_with_seeds.cpp src/a_star_seed/on_target.cpp src/a_star_seed/plot_point_in_map.cpp src/a_star_seed/reconstruct_path.cpp src/a_star_seed/show_path.cpp
+
+src/quick_reflex/quick_reflex.cpp src/quick_reflex/constructor.cpp src/quick_reflex/load_given_seeds.cpp src/quick_reflex/is_on_the_obstacles.cpp src/quick_reflex/show_path.cpp)
+
+rosbuild_add_executable(seed_generator src/quick_reflex/generator.cpp)
+
 rosbuild_add_executable(local_planner_tester src/tester.cpp)
+
 target_link_libraries(${PROJECT_NAME} ${AGV_FRAMEWORK})
 
 #target_link_libraries(example ${PROJECT_NAME})

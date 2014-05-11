@@ -21,8 +21,7 @@ int main(int argc,char* argv[]) {
 
 
     local_planner_seed.plan();
-
-    
+    //local_planner_seed.planWithQuickReflex();
     // cvNamedWindow("[PLANNER] Map", 0);
 
     // navigation::State botLocation(500,100,90,0),targetLocation(900,900,90,0);

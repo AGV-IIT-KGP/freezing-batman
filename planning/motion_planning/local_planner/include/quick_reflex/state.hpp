@@ -22,7 +22,6 @@ namespace navigation    {
         int xCordinate_ , yCordinate_;
         int theta_, curvature_ ;
         
-        static const double inRange(const double theta_) ;
         
     public:
         inline int x()         const       { return xCordinate_;   }
@@ -32,6 +31,7 @@ namespace navigation    {
         
         //TODO : removue this
         inline State(){    }
+        
         inline State(int xCordinate, int yCordinate, int theta, int curvature ) : xCordinate_(xCordinate), yCordinate_(yCordinate), theta_(theta), curvature_(curvature)    {}
         
         inline double distanceSqTo(const State& b) const    {
@@ -69,6 +69,11 @@ namespace navigation    {
             return !(xCordinate_==b.x() && yCordinate_==b.y() && theta_==b.theta() && curvature_==curvature());
         }
         
+        inline bool isCloseTo(State const& givenLocation) const {
+            
+            return (distanceTo(givenLocation) < 100);
+        }
+
         const std::string toString() const;
         
 //        bool isOutsideOfMap()
