@@ -29,10 +29,10 @@ LaneDetector::LaneDetector(const LaneDetector& orig) {
 LaneDetector::~LaneDetector() {
 }
 
-IplImage* LaneDetector::colorBasedLaneDetection(IplImage *frame, int k) {
-    IplImage *frame_out = cvCreateImage(cvGetSize(frame), frame->depth, 1);
-    int height = gray_frame->height;
-    int width = gray_frame->width;
+cv::Mat LaneDetector::colorBasedLaneDetection(cv::Mat frame, int k) {
+    cv::Mat frame_out = cvCreateImage(cvGetSize(frame), frame->depth, 1);   //depth??
+    int height = gray_frame->rows;
+    int width = gray_frame->cols;
     uchar *data;
 
     cvGetRawData(gray_frame, (uchar**) & data);
@@ -41,31 +41,31 @@ IplImage* LaneDetector::colorBasedLaneDetection(IplImage *frame, int k) {
     double total = 0;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            total += data[i * gray_frame->width + j];
+            total += data[i * gray_frame->cols + j];
         }
     }
-    mean = (total / (height * width));
+    mean = (total / (rows * cols));
 
     //Calculate the standard deviation of the image
     double var = 0;
     for (int a = 0; a < height; a++) {
         for (int b = 0; b < width; b++) {
-            var += ((data[a * gray_frame->widthStep + b] - mean) * (data[a * gray_frame->widthStep + b] - mean));
+            var += ((data[a * gray_frame->widthStep + b] - mean) * (data[a * gray_frame->widthStep + b] - mean)); //widthstep
         }
     }
-    var /= (height * width);
+    var /= (rows * cols);
     std_dev = sqrt(var);
-    cvThreshold(gray_frame, frame_out, (mean + k / 100.0 * std_dev), 255, CV_THRESH_BINARY);
+    cv::threshold(gray_frame, frame_out, (mean + k / 100.0 * std_dev), 255, CV_THRESH_BINARY);
     return frame_out;
 }
 
-void LaneDetector::applyHoughTransform(IplImage* img, IplImage *dst, int vote, int length, int mrgh) {
-    CvSeq* lines;
+void LaneDetector::applyHoughTransform(cv::Mat img, cv::Mat dst, int vote, int length, int mrgh) {
+    std::vector<cv::Vec4i> lines;
     CvMemStorage* storage = cvCreateMemStorage(0);
     cvSetZero(dst);
     int i;
 
-    lines = cvHoughLines2(img, storage, CV_HOUGH_PROBABILISTIC, 1, CV_PI / 180, vote, length, mrgh);
+    cv::Houghlines(img, lines, CV_HOUGH_PROBABILISTIC, 1, CV_PI / 180, vote, length, mrgh);
     int n = lines->total;
     for (i = 0; i < n; i++) {
         CvPoint* line = (CvPoint*) cvGetSeqElem(lines, i);
@@ -75,10 +75,9 @@ void LaneDetector::applyHoughTransform(IplImage* img, IplImage *dst, int vote, i
     cvReleaseMemStorage(&storage);
 }
 
-CvSeq* LaneDetector::GetHoughLanes(IplImage* img, int vote, int length, int mrgha) {
-    CvSeq* lines;
-    CvMemStorage* storage = cvCreateMemStorage(0);
-    lines = cvHoughLines2(img, storage, CV_HOUGH_PROBABILISTIC, 1, CV_PI / 180, vote, length, mrgha);
+std::vector<cv::vec4i> LaneDetector::GetHoughLanes(cv::Mat img, int vote, int length, int mrgha) {
+    lines;
+    cv::Houghlines(img, lines, CV_HOUGH_PROBABILISTIC, 1, CV_PI / 180, vote, length, mrgha);
 
     return lines;
 }
