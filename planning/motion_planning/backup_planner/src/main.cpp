@@ -8,7 +8,7 @@ int main(int argc,char* argv[]) {
 
     ros::NodeHandle nh;
     
-    //navigation::LocalPlanner local_planner_seed(nh);
+    navigation::backupPlanner local_planner_seed(nh);
 
     //local_planner_seed.plan();
 

@@ -58,4 +58,4 @@ namespace navigation{
 	};
 }
 
-#endif /* defined(__LOCALPLANNER__LOCALPLANNER__) */
+#endif /* defined(__BACKUPPLANNER__BACKUPPLANNER__) */
