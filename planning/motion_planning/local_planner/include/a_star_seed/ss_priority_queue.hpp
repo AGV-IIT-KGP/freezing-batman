@@ -21,7 +21,7 @@ namespace SS {
     {
     public:
         
-        PriorityQueue() : std::priority_queue<T>()    {}
+        // PriorityQueue() : std::priority_queue<T>()    {}
         
         //        PriorityQueue(std::initializer_list<T> t) : PriorityQueue()   {
         //
