@@ -15,7 +15,7 @@ int main()
 	FILE *seedOutput;
 	
 	std::string SEEDS_FILE;
-	SEEDS_FILE = ros::package::getPath("backup_planner")+"/seeds/seeds.txt";
+	SEEDS_FILE = ros::package::getPath("local_planner")+"/seeds/seeds.txt";
 	
 	seedOutput=fopen(SEEDS_FILE.c_str(),"w");
 	
