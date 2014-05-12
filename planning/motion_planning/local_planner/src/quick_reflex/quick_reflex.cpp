@@ -25,6 +25,8 @@ namespace navigation {
             return std::make_pair(std::vector<State>(), Seed());
         }
 
+        distanceTransform();
+        
         Seed* resultSeed = NULL;
         double minCost = INFINITE;
 

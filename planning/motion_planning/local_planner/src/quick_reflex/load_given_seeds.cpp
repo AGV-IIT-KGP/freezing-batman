@@ -56,10 +56,10 @@ namespace navigation {
                     exit(1);
                 }
                 
-                cost += point.distanceTo(goal);              
+                cost += point.distanceTo(goal) + fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate);              
                 s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
             }
-            s.costOfseed = cost / n_seed_points;
+            s.costOfseed = (cost / n_seed_points);
             givenSeeds.push_back(s);
         }
     }
