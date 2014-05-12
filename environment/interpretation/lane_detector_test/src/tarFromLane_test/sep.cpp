@@ -24,15 +24,17 @@ void lanesep(cv::Mat img)
    }
   cv::imshow("Original",img);
   cv::waitKey(0);
- for(int i=0;i<lines.size(); i++) 
+ for(int i=0;i<lines.size(); i++)
   {
     cv::Vec4i p=lines[i];
     center_point.x += (p[0]+p[2])/2;
     center_point.y += (p[1]+p[3])/2;
     // center_angle+= std::atan2((p[0] - p[3]), (p[1] - p[3]));
-    double r=std::atan2((p[0] - p[3]), (p[1] - p[3]));
+    if((p[1]-p[3])!=0){
+    double r=std::atan2((p[1] - p[3]), (p[0] - p[2]));
     // std::cout<<r<<"  "<<std::endl;
-    center_angle-=fabs(r);
+    center_angle-= fabs(r);
+    if(fabs(r)<1)std::cout<<fabs(r)<<std::endl;}
   }
   std::cout<<center_angle<<std::endl;
   center_point.x= center_point.x/lines.size();
@@ -81,12 +83,14 @@ void lanesep(cv::Mat img)
         target.x= proj.x + cos(center_angle)* step_move;
         target.y= proj.y + sin(center_angle)* step_move;
         cv::Point point2;
-        //point2.x= target.x + 100/m;
-        //point2.y= target.y + m*100;
+        point2.x= center_point.x - 100;
+        point2.y= center_point.y - m*100;
         // std::cout<<m<<std::endl;
         std::cout<<target.x<<" "<<target.y<<std::endl;
         std::cout<<proj.x<<" "<<proj.y<<std::endl;
-        cv::line(img,proj, target, cv::Scalar(255,255,255),2,8);
+
+        cv::line(img,proj, target, cv::Scalar(150),2,8);
+        cv::line(img, center_point,point2, cv::Scalar(255), 2, 8);
         cv::namedWindow("Center_path", cv::WINDOW_AUTOSIZE);
         cv::imshow("Center_path", img);
         cv::waitKey(0);
