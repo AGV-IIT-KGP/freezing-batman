@@ -6,10 +6,11 @@ namespace navigation {
 
     std::pair<std::vector<State>, Seed> quickReflex::findPathToTarget(const cv::Mat& img, const State& start, const State& goal) {
 
+        fusionMap = img;
+        distanceTransform();
+
         givenSeeds.clear();
         loadGivenSeeds(start, goal);
-
-        fusionMap = img;
 
         if (start.isCloseTo(goal)) {
             printf("Bot is On Target\n");
@@ -24,8 +25,6 @@ namespace navigation {
             printf("Target is on the Obstacle Map\n");
             return std::make_pair(std::vector<State>(), Seed());
         }
-
-        distanceTransform();
         
         Seed* resultSeed = NULL;
         double minCost = INFINITE;

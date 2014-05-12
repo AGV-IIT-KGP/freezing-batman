@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+const int DT_CONSTANT = 2;
+
 namespace navigation {
 
     void quickReflex:: loadGivenSeeds(const State& start, const State& goal) {
@@ -56,7 +58,7 @@ namespace navigation {
                     exit(1);
                 }
                 
-                cost += point.distanceTo(goal) + fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate);              
+                cost += point.distanceTo(goal) + DT_CONSTANT * fusionMap.at<uchar>(fusionMap.rows - (start.x() + tempYvalue) -1, start.y() + tempXvalue);              
                 s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
             }
             s.costOfseed = (cost / n_seed_points);
