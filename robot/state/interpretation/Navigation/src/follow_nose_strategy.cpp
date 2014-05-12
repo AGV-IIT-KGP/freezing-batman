@@ -32,7 +32,7 @@ namespace navigation_space {
             }
         }
 
-        alpha *= 3.14 / 180.0;
+        alpha *= M_PI / 180.0;
 
         double map_height = 0.875 * MAP_MAX;
         double beta = atan(0.4 * (double)MAP_MAX / (double) map_height);
