@@ -1,11 +1,3 @@
-//
-//  a_star_seed.cpp
-//  AStarSeed
-//
-//  Created by Satya Prakash on 06/09/13.
-//  Copyright (c) 2013 Satya Prakash. All rights reserved.
-//
-
 
 #include "quick_reflex/quick_reflex.hpp"
 

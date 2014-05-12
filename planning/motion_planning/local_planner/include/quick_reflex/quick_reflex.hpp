@@ -11,25 +11,8 @@
 
 #include "seed.hpp"
 #include "state.hpp"
-// static const int PERMISSIBLE_INTENSITY=250;
-
-// const int DT = 1;
-// const int DEBUG = 1;
 
 namespace navigation {
-
-    // void addObstacles(cv::Mat& img, const int noOfObstacles);
-    
-    
-    // enum MEMBERSHIP {
-    //     OPEN =1, CLOSED =2, UNASSIGNED=3
-    // };
-    
-    // class open_map_element {
-    // public:
-    //     char membership;
-    //     double cost;
-    // };
 
     struct comparatorMapState_   {
 
@@ -72,13 +55,9 @@ namespace navigation {
         bool isOnTheObstacle(const State& state);
         void loadGivenSeeds(const State& start, const State& goal);
         void plotPointInMap(const State& pos_) ;
-        std::vector<State> neighborNodesWithSeeds(State const& currentState_)  ;
+        std::vector<Seed> neighborNodesWithSeeds(const State&  start,const State&  goal)  ;
         bool onTarget(State const& currentState_, const State& targetState)  ;
-        bool isWalkableWithSeeds(State const& startState_, State const& nextState_) ;
-        std::pair<std::vector<State>, Seed> reconstructPath(State const& currentState_,  std::map<State,State, comparatorMapState_>& came_from) ;
-        void plotGrid(const State& pos_);
-
-        
+        bool isWalkableWithSeeds(State const& startState_, State const& nextState_, Seed targetSeed) ;
 
     };
 }

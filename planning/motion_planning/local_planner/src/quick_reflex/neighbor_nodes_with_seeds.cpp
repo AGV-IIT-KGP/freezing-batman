@@ -1,3 +1,4 @@
+
 #include "quick_reflex/quick_reflex.hpp"
 
 namespace navigation {
@@ -7,11 +8,12 @@ namespace navigation {
         
         for ( int i = 0; i < givenSeeds.size(); i++) {
             
-            if ( !isWalkableWithSeeds(start, goal, givenSeeds[i])) {
-                continue;
+            if ( isWalkableWithSeeds(start, goal, givenSeeds[i])) {
+                neighbours.push_back(givenSeeds[i]);
             }
-            neighbours.push_back(givenSeeds[i]);
+
         }
+        
         return neighbours;
     }
 }

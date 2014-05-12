@@ -31,7 +31,6 @@ namespace navigation {
             return_status = fscanf(textFileOFSeeds, "%lf %lf %lf %lf\n", &s.velocityRatio, &x, &y, &z);
             if (return_status == 0) {
                 //                ROS_ERROR("[PLANNER] Incorrect seed file format");
-                //                Planner::finBot();
                 exit(1);
             }
             
