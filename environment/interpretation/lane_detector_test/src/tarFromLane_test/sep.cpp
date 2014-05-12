@@ -24,7 +24,7 @@ void lanesep(cv::Mat img)
    }
   cv::imshow("Original",img);
   cv::waitKey(0);
- for(int i=0;i<lines.size(); i++)
+ for(int i=0;i<lines.size(); i++) 
   {
     cv::Vec4i p=lines[i];
     center_point.x += (p[0]+p[2])/2;
@@ -96,7 +96,7 @@ void lanesep(cv::Mat img)
 int main()
 {
   cv::Mat img;
-  img=cv::imread("./road_image.png",0);
+  img=cv::imread("./GetLaneBinary.jpg",0);
   lanesep(img);
   return 0;
 }
