@@ -59,10 +59,8 @@ namespace navigation {
 
             StateOfCar currentState=openSet.top();
 
-            if (openMap.find(currentState)!=openMap.end()) {
-                if (openMap[currentState].membership == CLOSED) {
-                    openSet.pop();
-                }
+            if (openMap.find(currentState)!=openMap.end() && openMap[currentState].membership == CLOSED) {
+                openSet.pop();
             }
             
             currentState=openSet.top();
@@ -108,7 +106,7 @@ namespace navigation {
                         neighbor.hCost( consistent) ;
                     neighbor.updateTotalCost();
 
-                    openSet.push(StateOfCar(neighbor));
+                    openSet.push(neighbor);
                     openMap[neighbor].membership = OPEN;
                     openMap[neighbor].cost = neighbor.gCost();
                 }
@@ -116,6 +114,6 @@ namespace navigation {
             no_of_iterations++;
         }
         std::cerr<<"NO PATH FOUND"<<std::endl;
-        return std::make_pair(std::vector<StateOfCar>(), Seed());
+            return std::make_pair(std::vector<StateOfCar>(), Seed());
     }
 }
