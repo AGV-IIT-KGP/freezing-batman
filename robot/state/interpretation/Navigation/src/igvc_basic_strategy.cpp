@@ -3,7 +3,7 @@
 namespace navigation_space {
 
     Triplet navigation_space::IGVCBasicStrategy::getTargetLocation(double x1, double y1, double heading) {
-        heading *= (3.142 / 180.0);
+        heading *= (M_PI / 180.0);
 
         double alpha = -heading;
         double x2 = x1 * cos(alpha) + y1 * sin(alpha);
