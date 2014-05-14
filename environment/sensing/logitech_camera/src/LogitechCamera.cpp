@@ -66,17 +66,11 @@ void LogitechCamera::publish(int frame_id) {
     publisher.publish(message.toImageMsg());
 }
 
-void LogitechCamera::initializeParameters() {
-    camera_id = 0;
-    node_name = std::string("camera");
-    topic_name = std::string("sensors/camera");
-    message_queue_size = 10;
-}
 
 void LogitechCamera::initializeParameters(int argc, char** argv) {
     camera_id = std::atoi(argv[1]);
-    node_name = std::string("sensors_camera_") + std::string(argv[1]);
-    topic_name = std::string("sensors/camera/") + std::string(argv[1]);
+    node_name = std::string("camera");
+    topic_name = std::string("camera/0/image");
     message_queue_size = 10;
 }
 
@@ -94,7 +88,7 @@ int main(int argc, char** argv) {
 
     LogitechCamera *logitech_camera = new LogitechCamera(argc, argv);
     logitech_camera->connect();
-    ROS_INFO("Camera succesfully connected. \n");
+   
 
     ros::Rate rate_enforcer(loop_rate);
 
@@ -102,7 +96,6 @@ int main(int argc, char** argv) {
         logitech_camera->fetch();
         logitech_camera->publish(frame_id);
         ros::spinOnce();
-        ROS_INFO("New frame acquired. \n");
         rate_enforcer.sleep();
     }
     logitech_camera->disconnect();
