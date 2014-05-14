@@ -1,4 +1,4 @@
-#include "laneDetector.hpp"
+g#include "laneDetector.hpp"
 #include "ros/package.h"
 
 LaneDetector::LaneDetector(std::string _pub_topic_name, std::string _sub_topic_name, int _timeFunctions, int _debugMode, std::string _train_file):it(nh_){

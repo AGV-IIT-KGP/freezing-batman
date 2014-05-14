@@ -61,7 +61,7 @@ private:
     cv::Mat lane;
     cv::Mat warp_img;
     cv::Mat img;
-    IplConvKernel *ker1;
+    IplConvKernel *ker1;     //???
     CvPoint offset;
     uchar** ImageData;
     uchar* data;
