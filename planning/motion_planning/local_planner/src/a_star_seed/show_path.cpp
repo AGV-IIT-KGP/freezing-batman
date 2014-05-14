@@ -28,6 +28,6 @@ namespace navigation {
         }
 
         cv::imshow("[PLANNER] Map", image);
-        cvWaitKey(0);
+        cvWaitKey(1);
     }
 }
