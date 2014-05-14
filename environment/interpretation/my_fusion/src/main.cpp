@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	
 	std::string first_sub_topic_name, second_sub_topic_name, node_id, node_name, publisher_topic_name;
 	
-	first_sub_topic_name = std::string("/interpreter/obstacleMap/0");
+	first_sub_topic_name = std::string("/obstacle_detector/obstacles");
 	second_sub_topic_name = std::string("/interpreter/lane_detector/0");
 	node_id = std::string("0");
 	node_name = std::string("interpreter_fusion_");

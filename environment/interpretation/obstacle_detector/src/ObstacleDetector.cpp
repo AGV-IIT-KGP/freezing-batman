@@ -51,7 +51,7 @@ publishData();
 }
 
 void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
-    ROS_INFO("Scan callback called");
+   // ROS_INFO("Scan callback called");
 	size_t size = scan.ranges.size();
     float angle = scan.angle_min;
     float maxRangeForContainer = scan.range_max - 0.1f;
@@ -83,7 +83,7 @@ void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
 
 ObstacleDetector::ObstacleDetector(int argc, char *argv[], ros::NodeHandle &node_handle):nh(node_handle) {
 
-	topic_name = std::string("interpreter/obstacleMap/0");
+	topic_name = std::string("/obstacle_detector/obstacles");
 	sub_topic_name = std::string("/scan");
     min_dist = 0;
 	max_dist = 400;
@@ -143,12 +143,12 @@ int main(int argc, char** argv) {
     ObstacleDetector obstacle_detector(argc, argv, nh);
 
     ros::Rate loop_rate(LOOP_RATE);
-    ROS_INFO("Obstacle Detector Thread Started...");
+ //   ROS_INFO("Obstacle Detector Thread Started...");
     while (ros::ok()) {
         ros::spinOnce();
         loop_rate.sleep();
     }
 
-    ROS_INFO("Obstacle code exiting");
+   // ROS_INFO("Obstacle code exiting");
     return 0;
 }
