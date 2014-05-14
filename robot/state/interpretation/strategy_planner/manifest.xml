@@ -1,0 +1,19 @@
+<package>
+  <description brief="strategy_planner">
+
+     strategy_planner
+
+  </description>
+  <author>Abinash Meher</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/strategy_planner</url>
+  <depend package="roscpp"/>
+  <depend package="geometry_msgs"/>
+  <depend package="opencv2"/>
+  <depend package="std_msgs"/>
+  <depend package="sensor_msgs"/>
+
+</package>
+
+
