@@ -31,7 +31,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(example ${PROJECT_NAME})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-configure_file( config.h.in ${PROJECT_SOURCE_DIR}/include/config.h)
+#configure_file( config.h.in ${PROJECT_SOURCE_DIR}/include/config.h)
 
 
 #############################################################################################################################################

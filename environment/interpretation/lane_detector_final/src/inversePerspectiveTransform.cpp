@@ -1,3 +1,4 @@
+
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/core.hpp>
@@ -23,7 +24,7 @@ int h;
 void loadVariable()
 {
     int status=1;
-    std::string path = ros::package::getPath("lane_detector_test")+"/data/botVariable.txt";
+    std::string path = ros::package::getPath("lane_detector_final")+"/data/botVariable.txt";
 
     FILE *readFile;
     readFile = fopen(path.c_str(),"r");
@@ -95,7 +96,7 @@ cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
 
         // Write the parameters to file
         int status=1;
-        std::string path = ros::package::getPath("lane_detector_test") +
+        std::string path = ros::package::getPath("lane_detector_final") +
             "/data/ipt.txt";
         FILE* ipt_data = fopen(path.c_str(), "w");
 
@@ -121,7 +122,7 @@ cv::Mat LaneDetector::InversePerspectiveTransform(cv::Mat &image){
             std::cout << "Reading Inverse Perspective Transform parameters from file" << std::endl;
 
             int status=1;
-            std::string path = ros::package::getPath("lane_detector_test") +
+            std::string path = ros::package::getPath("lane_detector_final") +
                 "/data/ipt.txt";
             FILE* ipt_data = fopen(path.c_str(), "r");
 
