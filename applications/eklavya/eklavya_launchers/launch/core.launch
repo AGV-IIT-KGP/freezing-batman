@@ -1,12 +1,19 @@
 <?xml version="1.0"?>
 
 <launch>
-  <node pkg="obstacle_detector" type="obstacle_detector" name="obstacle_detector" args="-s /sensors/hokuyo_nodes/0" output="screen" cwd="node" />
-  <node pkg="lane_detector_test" type="laneDetectorNode" name="lane_detector_test" args="-s /camera/image" output="screen" cwd="node" />
-  <node pkg="my_fusion" type="Fusion" name="my_fusion" args="-f /interpreter/lane_detector/0 -s /interpreter/obstacleMap/0" output="screen" cwd="node" />
+<!--  <node pkg="obstacle_detector" type="obstacle_detector" name="obstacle_detector" args="-s /sensors/hokuyo_nodes/0" output="screen" cwd="node" /> -->
+  <node pkg="lane_detector_final" type="laneDetectorNode" name="lane_detector_final" output="screen" cwd="node" >
+    <param name="node_id" type="str" value="0"/>
+    <param name="debug_mode" type="int" value="5"/>
+    <param name="time_functions" type="int" value="0"/>
+    <param name="subscribe_topic_name" type="str" value="/camera/image"/>
+    <param name="train_file" type="str" value="../Samples"/>
+  </node>
+<!--  <node pkg="my_fusion" type="Fusion" name="my_fusion" args="-f /interpreter/lane_detector/0 -s /interpreter/obstacleMap/0" output="screen" cwd="node" />
   <node pkg="local_planner" type="local_planner" name="local_planner" output="screen" cwd="node" />
   <node pkg="eklavya3_Pilot" type="controller" name="eklavya3_Pilot" output="screen" cwd="node"/>
   <node pkg="image_view" type="image_view" name="image_view1" args="image:=/interpreter/obstacleMap/0" output="screen" cwd="node"/>
   <node pkg="image_view" type="image_view" name="image_view2" args="image:=/interpreter/lane_detector/0" output="screen" cwd="node"/>
+-->
 
 </launch>

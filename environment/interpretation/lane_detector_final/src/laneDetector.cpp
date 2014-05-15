@@ -12,7 +12,7 @@ LaneDetector::LaneDetector(std::string _pub_topic_name, std::string _sub_topic_n
 	kernel_size = 8;
 	svm = new SVM();
 	svm->init(kernel_size*kernel_size*3);
-    std::string model_path = ros::package::getPath("lane_detector_test")+"/"+ train_file +".model";
+    std::string model_path = train_file +".model";
 	svm->loadModel(model_path.c_str());
 	setUpCommunication();
 }
@@ -24,7 +24,9 @@ void LaneDetector::interpret(){
 	
 	totalTimeElapsed = 0;
 	cv::Mat result = Image;
-
+	cv::namedWindow("win",1);
+	cv::imshow("win",result);
+	
 
 	/*
 	if( timeFunctions == 2 ){
@@ -59,6 +61,25 @@ void LaneDetector::interpret(){
 		cv::namedWindow("GrassRemoval Output");
 		cv::imshow("GrassRemoval Output",result);
 	}
+
+	if( timeFunctions == 2 ){
+		gettimeofday (&tvalBefore, NULL);
+	}
+	result = InversePerspectiveTransform(result);
+	if( timeFunctions == 2 ){
+		gettimeofday (&tvalAfter, NULL);
+		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
+		totalTimeElapsed += timeElapsed;
+		if( timeFunctions == 2 ) {
+			std::cout << "InversePerspectiveTransform FPS : "<< 1./timeElapsed << std::endl;
+		}
+	}
+	if(debug_mode) {
+		cv::namedWindow("InversePerspectiveTransform Output");
+		cv::imshow("InversePerspectiveTransform Output", result);
+	}
+	
+	
 
 	if( timeFunctions ){
 		gettimeofday (&tvalBefore, NULL);
@@ -127,24 +148,8 @@ void LaneDetector::interpret(){
 	}
 	*/
 
-	/*
-	if( timeFunctions == 2 ){
-		gettimeofday (&tvalBefore, NULL);
-	}
-	result = InversePerspectiveTransform(result);
-	if( timeFunctions == 2 ){
-		gettimeofday (&tvalAfter, NULL);
-		timeElapsed = tvalAfter.tv_sec+(tvalAfter.tv_usec/1000000.0) - (tvalBefore.tv_sec+(tvalBefore.tv_usec/1000000.0));
-		totalTimeElapsed += timeElapsed;
-		if( timeFunctions == 2 ) {
-			std::cout << "InversePerspectiveTransform FPS : "<< 1./timeElapsed << std::endl;
-		}
-	}
-	if(debug_mode) {
-		cv::namedWindow("InversePerspectiveTransform Output");
-		cv::imshow("InversePerspectiveTransform Output", result);
-	}
-	*/
+	
+	
 	
 	if( timeFunctions ){
 		if( timeFunctions == 2 ) {
@@ -174,6 +179,11 @@ void LaneDetector::setUpCommunication(){
 void LaneDetector::SubscribeImage(const sensor_msgs::ImageConstPtr& msg) {
     try {
         Image = bridge.imgMsgToCv(msg, "bgr8");
+        ros::NodeHandle nh;
+	nh.getParam("/lane_detector_final/subscribe_topic_name",sub_topic_name);
+	nh.getParam("/lane_detector_final/train_file",train_file);
+	nh.getParam("/lane_detector_final/debug_mode",debug_mode);
+	nh.getParam("/lane_detector_final/time_functions",timeFunctions);
         cv::waitKey(WAIT_TIME);
     }
     catch (sensor_msgs::CvBridgeException& e) {

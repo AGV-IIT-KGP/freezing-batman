@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node pkg="lane_detector_final" type="laneDetectorNode" name="laneDetectorNode" args="6" output="screen" cwd="ROS_HOME">
+<rosparam>
+  node_id: 0
+  subscribe_topic_name: "/camera/image"
+  train_file: "Samples"
+  debug_mode: 5
+  time_functions: 0
+</rosparam>	
+  </node>
+</launch>
