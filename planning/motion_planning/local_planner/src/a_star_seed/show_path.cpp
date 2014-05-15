@@ -17,11 +17,9 @@ namespace navigation {
         cv::circle(fusionMap, cvPoint(startState.x(),fusionMap.rows-1-startState.y()), 5, cvScalar(128),-1);
         cv::line(fusionMap, cvPoint(startState.x(),fusionMap.rows-1-startState.y()), cvPoint(startState.x()+15*cos((startState.theta()*M_PI)/180),fusionMap.rows-1-startState.y()-15*sin((startState.theta()*M_PI)/180)),cvScalar(128),1,8,0);
         std::cout<<"Showing A Path\n";
-        for(int i = 0; i< fusionMap.rows; i++){
-            for(int j = 0; j< fusionMap.cols; j++){
-                image.at<uchar>(i,j)= fusionMap.at<uchar>(i,j);
-            }
-        }
+        
+        if(!DEBUG)
+            image = fusionMap.clone();
 
         std::cout<<"Path size in showPath is : " <<(int)path.size()<<" \n";
         for (std::vector<StateOfCar>::iterator stateIt = path.begin(); stateIt != path.end() ; ++stateIt) {
@@ -30,6 +28,6 @@ namespace navigation {
         }
 
         cv::imshow("[PLANNER] Map", image);
-        cvWaitKey(0);
+        cvWaitKey(1);
     }
 }

@@ -17,7 +17,7 @@
 namespace navigation {
     
     
-    static const int MAP_MAX = 800;
+    static const int MAP_MAX = 600;
     
     class StateOfCar : public State
     {
@@ -102,7 +102,7 @@ namespace navigation {
         
         inline bool isCloseTo(StateOfCar const& givenLocation){
             
-            return (distanceTo(givenLocation) < 250);
+            return (distanceTo(givenLocation) < 100);
         }
         bool isSameAs(StateOfCar const& givenLocation){
 

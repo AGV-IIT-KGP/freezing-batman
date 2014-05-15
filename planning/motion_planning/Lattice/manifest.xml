@@ -1,0 +1,14 @@
+<package>
+  <description brief="Lattice">
+
+     Lattice
+
+  </description>
+  <author>Abinash Meher</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/Lattice</url>
+
+</package>
+
+

@@ -7,6 +7,7 @@
 //
 
 #include "local_planner.hpp"
+#include <sys/time.h>
 
 namespace navigation {
 
@@ -49,12 +50,53 @@ namespace navigation {
 
         while (ros::ok()) {
             ros::spinOnce();
+
+    struct timeval t,c;
+    gettimeofday(&t,NULL);
             std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path =
                     planner.findPathToTargetWithAstar(local_map, my_bot_location, my_target_location);
-
+    gettimeofday(&c,NULL);
+    double td = t.tv_sec + t.tv_usec/1000000.0;
+    double cd = c.tv_sec + c.tv_usec/1000000.0;
+    std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
             planner.showPath(path.first, my_bot_location, my_target_location);
+
             publishData(path);
             loop_rate.sleep();
+        }
+    }
+
+    void LocalPlanner::planWithQuickReflex() {
+        ros::Rate loop_rate(LOOP_RATE);
+        navigation::quickReflex planner;
+
+        while (ros::ok()) {
+            ros::spinOnce();
+
+        struct timeval t,c;
+        gettimeofday(&t,NULL);
+            std::pair<std::vector<navigation::State>, navigation::Seed> path =
+                    planner.findPathToTarget(local_map, my_bot_location, my_target_location);
+        gettimeofday(&c,NULL);
+        double td = t.tv_sec + t.tv_usec/1000000.0;
+        double cd = c.tv_sec + c.tv_usec/1000000.0;
+        std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
+        planner.showPath(path.first, my_bot_location, my_target_location);
+        //publishData(path);
+        local_planner::Seed seed;
+
+        seed.x = path.second.finalState.x();
+        seed.y = path.second.finalState.y();
+        seed.theta = path.second.finalState.theta();
+        seed.costOfseed = path.second.costOfseed;
+        seed.velocityRatio = path.second.velocityRatio;
+        seed.leftVelocity = path.second.leftVelocity;
+        seed.rightVelocity = path.second.rightVelocity;
+        seed.curvature = path.second.finalState.curvature();
+
+        pub_path.publish(seed);
+
+        loop_rate.sleep();
         }
     }
 

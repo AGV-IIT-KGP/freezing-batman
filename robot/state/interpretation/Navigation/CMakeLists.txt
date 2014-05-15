@@ -16,10 +16,10 @@ rosbuild_init()
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-set(STATE libState.so)
+#set(STATE libState.so)
 
 #uncomment if you have defined messages
-rosbuild_genmsg()
+#rosbuild_genmsg()
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
@@ -27,7 +27,8 @@ rosbuild_genmsg()
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
-rosbuild_add_executable(Navigator src/main.cpp src/follow_nose_strategy src/Navigation.cpp)
+rosbuild_add_executable(Navigator src/main.cpp src/follow_nose_strategy src/Navigation.cpp src/track_waypoint_strategy.cpp src/lane_follow_strategy.cpp src/state.cpp src/GPS_waypoints.txt )
+rosbuild_add_executable(PosefromTarget src/PosefromTarget.cpp)
 #rosbuild_link_boost(Navigator signals)
 #target_link_libraries(example ${PROJECT_NAME})
-target_link_libraries(Navigator ${STATE})
+#target_link_libraries(Navigator ${STATE})

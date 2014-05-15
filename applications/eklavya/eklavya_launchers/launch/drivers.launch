@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="Hokuyo" value="1" />
+  <arg name="VectorNav" value="1" />
+  <arg name="Sparkfun" value="1" />
+  <arg name="Logitech" value="1" />
+  <arg name="Roboteq" value="0" />
+
+  <node if="$(arg Hokuyo)" pkg="hokuyo_node" type="hokuyo_node" name="hokuyo_node" >
+    <param name="port" value="/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A700ewWv-if00-port0" />
+  </node>
+
+  <node if="$(arg VectorNav)" pkg="vectorNav" type="vectorNav" name="vectorNav" /> 
+
+  <node if="$(arg Sparkfun)" pkg="eklavya_imu_sparkfun" type="sparkfun_imu_node.py" name="eklavya_imu_sparkfun" />
+  
+  <node if="$(arg Logitech)" pkg="logitech_camera" type="logitech_camera" args="1" name="logitech_camera" />
+
+
+  
+  <node if="$(arg Roboteq)" pkg="eklavya_roboteq" type="server" name="server" respawn="true"/>
+  
+  <node if="$(arg Roboteq)" pkg="eklavya_roboteq" type="eklavya_controller_client" name="eklavya_controller_client" />
+</launch>

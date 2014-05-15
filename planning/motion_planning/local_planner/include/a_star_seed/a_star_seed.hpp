@@ -22,6 +22,10 @@
 #include "ss_priority_queue.hpp"
 #include "state_of_car.hpp"
 #include "seed.hpp"
+static const int PERMISSIBLE_INTENSITY=250;
+
+const int DT = 1;
+const int DEBUG = 0;
 
 namespace navigation {
 

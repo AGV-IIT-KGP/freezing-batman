@@ -32,7 +32,7 @@ namespace navigation {
             
             if (((intermediateXcordinate >= 0) && (intermediateXcordinate < MAP_MAX)) && (( intermediateYcordinate >= 0) && (intermediateYcordinate < MAP_MAX))) {
 
-                fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate) < 128 ? NoObstacle *= 1 : NoObstacle *= 0;
+                fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate) < 250 ? NoObstacle *= 1 : NoObstacle *= 0;
     
 
             } else {
@@ -40,7 +40,7 @@ namespace navigation {
             }
         }
         
-        if(fusionMap.at<uchar>(fusionMap.rows - targetState.y() -1, targetState.x()) != 0)
+        if(fusionMap.at<uchar>(fusionMap.rows - targetState.y() -1, targetState.x()) >= 250)
             return false;
         return NoObstacle == true;
     }

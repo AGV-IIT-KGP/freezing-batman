@@ -25,23 +25,23 @@ int main(int argc, char **argv)
     int height=600,width=600;
     int minradius=20,maxradius=60;
     int minobs=2,maxobs=9;
-    int upper_margin_zone=50;
-    int lower_margin_zone=50;
+    int upper_margin_zone=100;
+    int lower_margin_zone=100;
 
     ros::Rate loop_rate(10);
 
     while (ros::ok()) 
     {
         geometry_msgs::Pose bot_pose;
-        bot_pose.position.x = rand()%width;
-        bot_pose.position.y = rand()%lower_margin_zone;
-        bot_pose.position.z = rand()%360;
+        bot_pose.position.x = height/2;
+        bot_pose.position.y = 50;
+        bot_pose.position.z = 90;
 
         pub_bot_pose.publish(bot_pose);
 
         geometry_msgs::Pose target_pose;
         target_pose.position.x = rand()%width;
-        target_pose.position.y = (height-rand()%upper_margin_zone);
+        target_pose.position.y = (height-rand()%50);
         target_pose.position.z = rand()%360;
 
         pub_target_pose.publish(target_pose);
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
       
         for (unsigned int i=0;i<numberofobs;i++)
         {
-          cv::circle(image, cvPoint(rand()%height,rand()%width), minradius+rand()%(maxradius-minradius), cvScalar(255),-1);
+          cv::circle(image, cvPoint(rand()%width, 100 + rand()%(height -200)), minradius+rand()%(maxradius-minradius), cvScalar(255),-1);
         }
 
 
