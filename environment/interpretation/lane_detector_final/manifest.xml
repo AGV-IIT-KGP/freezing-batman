@@ -1,0 +1,21 @@
+<package>
+    <description brief="lane_detector_final">
+
+        lane_detector_final
+
+    </description>
+    <author>jashan</author>
+    <license>BSD</license>
+    <review status="unreviewed" notes=""/>
+    <url>http://ros.org/wiki/lane_detector_test</url>
+    <depend package="roscpp"/>
+    <depend package="agv_framework"/>
+    <depend package="rospy"/>
+    <depend package="image_transport"/>
+    <depend package="cv_bridge"/>
+    <depend package="opencv2"/>
+    <depend package="roslib"/>
+
+</package>
+
+

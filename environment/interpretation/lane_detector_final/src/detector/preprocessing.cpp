@@ -1,23 +1,23 @@
+#include <cassert>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <cassert>
-#include "laneDetector.hpp"
+#include <laneDetector.hpp>
 
-cv::Mat HistogramEqualizationColorImage(cv::Mat src);
-cv::Mat RemoveChannel(cv::Mat src, const int channel_id);
+cv::Mat histogramEqualizationColorImage(cv::Mat src);
+cv::Mat removeChannel(cv::Mat src, const int channel_id);
 
-cv::Mat LaneDetector::Preprocessing(cv::Mat &image) {
+cv::Mat LaneDetector::preprocessing(cv::Mat &image) {
     cv::Mat result;
 
-    GaussianBlur(image, result, cv::Size(5, 5), 15, 15);
+    cv::GaussianBlur(image, result, cv::Size(5, 5), 15, 15);
 
     // Histogram equalization
-    return HistogramEqualizationColorImage(image);
+    return histogramEqualizationColorImage(image);
 }
 
-
 // Accessory Functions
-cv::Mat HistogramEqualizationColorImage(cv::Mat src){
+
+cv::Mat histogramEqualizationColorImage(cv::Mat src) {
     cv::Mat channel[3];
     cv::split(src, channel);
 
@@ -30,7 +30,7 @@ cv::Mat HistogramEqualizationColorImage(cv::Mat src){
     return src;
 }
 
-cv::Mat RemoveChannel(cv::Mat src, const int channel_id){
+cv::Mat removeChannel(cv::Mat src, const int channel_id) {
     cv::Mat channel[3];
     cv::split(src, channel);
 
@@ -40,5 +40,4 @@ cv::Mat RemoveChannel(cv::Mat src, const int channel_id){
     cv::merge(channel, 3, src);
 
     return src;
-
 }
