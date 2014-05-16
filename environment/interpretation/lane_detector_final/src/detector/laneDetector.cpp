@@ -171,13 +171,14 @@ void LaneDetector::loadParams(ros::NodeHandle& node_handle) {
     wait_time = 10;
     warp_matrix_file = std::string("../data/warp_matrix0.dat");
     
-    node_handle.getParam("debug_mode", debug_mode);
-    node_handle.getParam("ipt_offsets_file", ipt_offsets_file);
-    node_handle.getParam("map_size", map_size);
-    node_handle.getParam("published_topic_name", published_topic_name);
-    node_handle.getParam("subscribed_topic_name", subscribed_topic_name);
-    node_handle.getParam("time_functions", time_functions);
-    node_handle.getParam("training_data_file", training_data_file);
-    node_handle.getParam("wait_time", wait_time);
-    node_handle.getParam("warp_matrix_file", warp_matrix_file);
+    std::string node_name = std::string("/") + ros::this_node::getName();
+    node_handle.getParam(node_name + "/debug_mode", debug_mode);
+    node_handle.getParam(node_name + "/ipt_offsets_file", ipt_offsets_file);
+    node_handle.getParam(node_name + "/map_size", map_size);
+    node_handle.getParam(node_name + "/published_topic_name", published_topic_name);
+    node_handle.getParam(node_name + "/subscribed_topic_name", subscribed_topic_name);
+    node_handle.getParam(node_name + "/time_functions", time_functions);
+    node_handle.getParam(node_name + "/training_data_file", training_data_file);
+    node_handle.getParam(node_name + "/wait_time", wait_time);
+    node_handle.getParam(node_name + "/warp_matrix_file", warp_matrix_file);
 }
