@@ -14,18 +14,21 @@
 #include "state.hpp"
 
 namespace navigation {
-    
-    
-    class Seed{
+
+    class Seed {
     public:
         State finalState;
-        double costOfseed,velocityRatio,leftVelocity,rightVelocity;
+        double costOfseed, velocityRatio, leftVelocity, rightVelocity;
         std::vector<State> intermediatePoints;
-    	Seed(){}
-    	Seed(const Seed& that) : finalState(that.finalState), costOfseed(that.costOfseed), velocityRatio(that.velocityRatio), leftVelocity(that.leftVelocity),  rightVelocity(that.rightVelocity), intermediatePoints(that.intermediatePoints){}
+
+        Seed() {
+        }
+
+        Seed(const Seed& that) : finalState(that.finalState), costOfseed(that.costOfseed), velocityRatio(that.velocityRatio), leftVelocity(that.leftVelocity), rightVelocity(that.rightVelocity), intermediatePoints(that.intermediatePoints) {
+        }
 
     };
-    
-    
+
+
 }
 #endif /* defined(__AStarSeed__Seed__) */

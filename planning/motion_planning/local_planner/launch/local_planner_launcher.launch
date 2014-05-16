@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="local_planner" type="local_planner_tester" name="local_planner_tester" output="screen" cwd="node">
+	</node>
+	<node pkg="local_planner" type="local_planner" name="local_planner" output="screen" cwd="node">
+		<param name="debug_current_state" type="int" value="0"/>
+		<param name="distance_transform" type="int" value="1"/>
+		<param name="seed_file2" type="str" value="/seeds/seeds2.txt"/>
+		<param name="seed_file8" type="str" value="/seeds/seeds8.txt"/>
+	</node>
+	<node pkg="showpath_debugger" type="debugger" name="debugger" output="screen" cwd="node">
+	</node>
+</launch>
+
