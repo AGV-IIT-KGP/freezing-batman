@@ -12,12 +12,12 @@
 int main(int argc, char* argv[]) {
 
     const std::string node_name = "local_planner";
-    int confidence = 0;
+    int confidence ;
 
     ros::init(argc, argv, node_name.c_str());
 
     ros::NodeHandle nh;
-
+    nh.getParam("local_planner/confidence", confidence);
     navigation::LocalPlanner local_planner_seed(nh);
 
     if (confidence == 0) {

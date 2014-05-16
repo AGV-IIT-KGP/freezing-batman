@@ -7,6 +7,7 @@
 		<param name="distance_transform" type="int" value="1"/>
 		<param name="seed_file2" type="str" value="/seeds/seeds2.txt"/>
 		<param name="seed_file8" type="str" value="/seeds/seeds8.txt"/>
+		<param name="confidence" type="int" value="1"/>
 	</node>
 	<node pkg="showpath_debugger" type="debugger" name="debugger" output="screen" cwd="node">
 	</node>
