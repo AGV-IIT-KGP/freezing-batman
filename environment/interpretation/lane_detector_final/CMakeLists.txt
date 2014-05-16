@@ -31,34 +31,33 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #target_link_libraries(example ${PROJECT_NAME})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-configure_file( config.h.in ${PROJECT_SOURCE_DIR}/include/config.h)
-
+#configure_file(config.h.in ${PROJECT_SOURCE_DIR}/include/config.h)
 
 #############################################################################################################################################
 #SVM start
-set(svm_SRC  ${PROJECT_SOURCE_DIR}/src/libsvm/svmWrapper.cpp ${PROJECT_SOURCE_DIR}/src/libsvm/svm.cpp)
+
+set(svm_SRC ${PROJECT_SOURCE_DIR}/src/learner/libsvm/svmWrapper.cpp ${PROJECT_SOURCE_DIR}/src/learner/libsvm/svm.cpp)
 set_source_files_properties(${svm_SRC} PROPERTIES COMPILE_FLAGS "-O3 -fPIC" )
 add_library(svm ${svm_SRC})
+#set(lib_SVM ${PROJECT_SOURCE_DIR}/libsvmWrapper.so ${PROJECT_SOURCE_DIR}/libsvm.so)
+set(lib_SVM ${PROJECT_SOURCE_DIR}/lib/libsvm.a)
+
+rosbuild_add_executable(generateSamples src/learner/generateSamples.cpp)
+
+rosbuild_add_executable(svmTrain src/learner/svmTrain.cpp)
+target_link_libraries(svmTrain ${lib_SVM})
+
 #SVM end
 #############################################################################################################################################
 
-#set(lib_SVM  ${PROJECT_SOURCE_DIR}/libsvmWrapper.so ${PROJECT_SOURCE_DIR}/libsvm.so)
-set(lib_SVM  ${PROJECT_SOURCE_DIR}/lib/libsvm.a)
-
-rosbuild_add_executable(generateSamples src/generateSamples.cpp)
-
-rosbuild_add_executable(svmTrain src/svmTrain.cpp)
-target_link_libraries(svmTrain ${lib_SVM})
-
-
 rosbuild_add_library(laneDetector
-    src/laneDetector.cpp
-    src/obstacleRemoval.cpp
-    src/preprocessing.cpp
-    src/getLaneBinary.cpp
-    src/grassRemoval.cpp
-#    src/seperateLanes.cpp
-    src/inversePerspectiveTransform.cpp)
+                     src/detector/getLaneBinary.cpp
+                     src/detector/grassRemoval.cpp
+                     src/detector/inversePerspectiveTransform.cpp
+                     src/detector/laneDetector.cpp
+                     src/detector/obstacleRemoval.cpp
+                     src/detector/preprocessing.cpp)
 target_link_libraries(laneDetector svm)
+
 rosbuild_add_executable(laneDetectorNode src/laneDetectorNode.cpp)
 target_link_libraries(laneDetectorNode laneDetector libagv_framework.so m)
