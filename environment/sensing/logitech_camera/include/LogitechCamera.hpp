@@ -8,12 +8,13 @@
 #ifndef LOGITECHCAMERA_HPP
 #define	LOGITECHCAMERA_HPP
 
-#include <environment/Sensor.hpp>
-#include <ros/ros.h>
+#include <string>
 #include <opencv2/opencv.hpp>
-#include <image_transport/image_transport.h>
+#include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
 #include <sensor_msgs/image_encodings.h>
+#include <environment/Sensor.hpp>
 
 class LogitechCamera : public environment::Sensor {
 public:
@@ -34,14 +35,12 @@ private:
     int message_queue_size;
 
     cv::VideoCapture capture;
-    ros::NodeHandle node_handle;
     image_transport::Publisher publisher;
     int frame_id;
     cv::Mat frame;
 
-    void initializeParameters();
-    void initializeParameters(int argc, char** argv);
-    void setupCommunications();
+    void loadParams(ros::NodeHandle& node_handle);
+    void setupComms(ros::NodeHandle& node_handle);
 };
 
 #endif	/* LOGITECHCAMERA_HPP */

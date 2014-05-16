@@ -5,7 +5,7 @@
  * Created on December 12, 2013, 8:49 PM
  */
 
- /*
+/*
 DOCUMENTATION:
 
 Logitech Camera
@@ -23,18 +23,18 @@ Description of Options
 ------------------------------------------------------
 If options mentioned in usage
 {
-    camera_id = 0;
-    node_name = std::string("camera");
-    topic_name = std::string("sensors/camera");
-    message_queue_size = 10;
+   camera_id = 0;
+   node_name = std::string("camera");
+   topic_name = std::string("sensors/camera");
+   message_queue_size = 10;
 }
 
 Else
 {
-    camera_id = std::atoi(argv[1]);
-    node_name = std::string("sensors_camera_") + std::string(argv[1]);
-    topic_name = std::string("sensors/camera/") + std::string(argv[1]);
-    message_queue_size = 10;
+   camera_id = std::atoi(argv[1]);
+   node_name = std::string("sensors_camera_") + std::string(argv[1]);
+   topic_name = std::string("sensors/camera/") + std::string(argv[1]);
+   message_queue_size = 10;
 }
 
 Publisher Data Type
@@ -47,33 +47,18 @@ Data Type: cv_bridge::CvImage message;
 Other Relevant Information
 -------------------------------------------------------
 ros::Rate rate_enforcer(10)
-*/
+ */
 
-
-#include "LogitechCamera.hpp"
-#include "LifeCycle.hpp"
-
-// LogitechCamera::LogitechCamera() {
-//     initializeParameters();
-// 
-//     int argc;
-//     char** argv;
-//     ros::init(argc, argv, node_name.c_str());
-// 
-//     setupCommunications();
-// }
+#include <sstream>
+#include <LifeCycle.hpp>
+#include <LogitechCamera.hpp>
 
 LogitechCamera::LogitechCamera(int argc, char** argv) : Sensor(argc, argv) {
-    initializeParameters(argc, argv);
-
     ros::init(argc, argv, node_name.c_str());
-
-    setupCommunications();
+    ros::NodeHandle node_handle;
+    loadParams(node_handle);
+    setupComms(node_handle);
 }
-
-// LogitechCamera::LogitechCamera(const LogitechCamera& orig) :Sensor( ) {
-//     ROS_INFO("q@QW%1ros::init has been called");
-// }
 
 LogitechCamera::~LogitechCamera() {
 }
@@ -98,6 +83,7 @@ bool LogitechCamera::disconnect() {
 
 bool LogitechCamera::fetch() {
     capture >> frame;
+    return true;
 }
 
 void LogitechCamera::publish(int frame_id) {
@@ -107,19 +93,19 @@ void LogitechCamera::publish(int frame_id) {
     message.header.stamp = ros::Time::now();
     message.encoding = sensor_msgs::image_encodings::BGR8;
     message.image = frame;
-
     publisher.publish(message.toImageMsg());
 }
 
-
-void LogitechCamera::initializeParameters(int argc, char** argv) {
-    camera_id = std::atoi(argv[1]);
-    node_name = std::string("camera");
-    topic_name = std::string("camera/0/image");
-    message_queue_size = 10;
+void LogitechCamera::loadParams(ros::NodeHandle& node_handle) {
+    node_handle.getParam("/logitech_camera/camera_id", camera_id);
+    node_handle.getParam("/logitech_camera/node_name", node_name);
+    node_handle.getParam("/logitech_camera/publisher_queue_size", message_queue_size);
+    std::ostringstream convert;
+    convert << camera_id;
+    topic_name = node_name + std::string("/") +  convert.str() + std::string("/image");
 }
 
-void LogitechCamera::setupCommunications() {
+void LogitechCamera::setupComms(ros::NodeHandle& node_handle) {
     image_transport::ImageTransport image_transporter(node_handle);
     publisher = image_transporter.advertise(topic_name.c_str(), message_queue_size);
 }
@@ -131,18 +117,18 @@ int main(int argc, char** argv) {
     loop_rate = 10;
     frame_id = 0;
 
-    LogitechCamera *logitech_camera = new LogitechCamera(argc, argv);
-    logitech_camera->connect();
-   
+    LogitechCamera logitech_camera(argc, argv);
+    logitech_camera.connect();
 
     ros::Rate rate_enforcer(loop_rate);
-
     while (ros::ok()) {
-        logitech_camera->fetch();
-        logitech_camera->publish(frame_id);
+        logitech_camera.fetch();
+        logitech_camera.publish(frame_id);
+        frame_id++;
         ros::spinOnce();
         rate_enforcer.sleep();
     }
-    logitech_camera->disconnect();
-return 0;
+
+    logitech_camera.disconnect();
+    return 0;
 }
