@@ -9,9 +9,9 @@
 
 #include "a_star_seed/a_star_seed.hpp"
 namespace navigation {
-    void AStarSeed::plotPointInMap(const State & pos)
-    {
-        cv::circle(image, cv::Point(pos.x(), image.rows- pos.y() - 1), 3, cv::Scalar(255), -1);
-        
+
+    void AStarSeed::plotPointInMap(const State & pos) {
+        cv::circle(image, cv::Point(pos.x(), image.rows - pos.y() - 1), 3, cv::Scalar(255), -1);
+
     }
 }

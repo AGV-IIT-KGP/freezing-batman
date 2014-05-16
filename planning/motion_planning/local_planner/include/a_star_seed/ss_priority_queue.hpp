@@ -14,22 +14,23 @@
 #include <iterator>
 
 namespace SS {
-    
-    
-    template < typename T,typename Sequence = std::vector<T> , typename CompareFunction = std::less<typename Sequence::value_type> >
-    class PriorityQueue : public std::priority_queue<T,Sequence, CompareFunction>
-    {
+
+    template < typename T, typename Sequence = std::vector<T>, typename CompareFunction = std::less<typename Sequence::value_type> >
+    class PriorityQueue : public std::priority_queue<T, Sequence, CompareFunction> {
     public:
-        
-        PriorityQueue() : std::priority_queue<T>()    {}
-        
+
+        PriorityQueue() : std::priority_queue<T>() {
+        }
+
         //        PriorityQueue(std::initializer_list<T> t) : PriorityQueue()   {
         //
         //            this->c = {t};
         //        }
-        
-        inline void clear(){   this->c.clear();    }
-        
+
+        inline void clear() {
+            this->c.clear();
+        }
+
         //        void updateElement(const T& oldElement,const T& newElement)
         //        {
         //            for ( auto& i : this->c ) {
@@ -40,8 +41,8 @@ namespace SS {
         //            }
         //            return;
         //        }
-        
-        
+
+
         //        T find(const T& value)
         //        {
         //            T first = this->c.begin();
@@ -53,8 +54,8 @@ namespace SS {
         //            }
         //            return last;
         //        }
-        
-        
+
+
     };
 }
 
