@@ -20,15 +20,16 @@ namespace navigation {
         sub_target_pose = nh.subscribe("/target_pose", 10, &LocalPlanner::updateTargetPose, this);
 
         pub_path = nh.advertise<local_planner::Seed>("/path", 1000); //Publisher for Path
+        // it = new image_transport::ImageTransport(nh);
+        // pub_path_image= it->advertise("/pathImage", 1); //Publisher for final path image
 
-        // my_bot_location = navigation::State(500, 100, 90, 0);
-        // my_target_location = navigation::State(500, 900, 90, 0);
+        pub_nav_msgs = nh.advertise<nav_msgs::Path>("/path_nav_msgs", 10); //nav_msgs for path
 
         local_map = cv::Mat::zeros(MAP_MAX, MAP_MAX, CV_8UC1);
 
-        // navigation::addObstacles(local_map, 5);
         ROS_INFO("Local Planner(AStarSeed) started.... ");
         ROS_INFO("Publisher : \"/path\" .... ");
+        // ROS_INFO("Publisher : \"/pathImage\" .... ");
         ROS_INFO("Subscriber : \"interpreter/fusion/world_map\", \"/bot_pose\", \"/target_pose\" .... ");
     }
 
@@ -38,7 +39,7 @@ namespace navigation {
         try {
             cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::MONO8);
             local_map = cv_ptr->image;
-        }        catch (cv_bridge::Exception& e) {
+        } catch (cv_bridge::Exception& e) {
             ROS_ERROR("cv_bridge exception: %s", e.what());
             return;
         }
@@ -46,57 +47,45 @@ namespace navigation {
 
     void LocalPlanner::plan() {
         ros::Rate loop_rate(LOOP_RATE);
-        navigation::AStarSeed planner(std::string(""));
+        navigation::AStarSeed planner(nh);
 
         while (ros::ok()) {
             ros::spinOnce();
 
-    struct timeval t,c;
-    gettimeofday(&t,NULL);
+            struct timeval t, c;
+            gettimeofday(&t, NULL);
             std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path =
-                    planner.findPathToTargetWithAstar(local_map, my_bot_location, my_target_location);
-    gettimeofday(&c,NULL);
-    double td = t.tv_sec + t.tv_usec/1000000.0;
-    double cd = c.tv_sec + c.tv_usec/1000000.0;
-    std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
-            planner.showPath(path.first, my_bot_location, my_target_location);
+                    planner.findPathToTargetWithAstar(local_map, my_bot_location, my_target_location, planner.distance_transform, planner.debug_current_state);
+
+            // cv::Mat image = planner.showPath(path.first, my_bot_location, my_target_location);
+            gettimeofday(&c, NULL);
+            double td = t.tv_sec + t.tv_usec / 1000000.0;
+            double cd = c.tv_sec + c.tv_usec / 1000000.0;
 
             publishData(path);
+            // publishImage(image);
             loop_rate.sleep();
         }
     }
 
     void LocalPlanner::planWithQuickReflex() {
         ros::Rate loop_rate(LOOP_RATE);
-        navigation::quickReflex planner;
+        navigation::quickReflex planner_quickReflex(nh);
 
         while (ros::ok()) {
             ros::spinOnce();
 
-        struct timeval t,c;
-        gettimeofday(&t,NULL);
+            struct timeval t, c;
+            gettimeofday(&t, NULL);
             std::pair<std::vector<navigation::State>, navigation::Seed> path =
-                    planner.findPathToTarget(local_map, my_bot_location, my_target_location);
-        gettimeofday(&c,NULL);
-        double td = t.tv_sec + t.tv_usec/1000000.0;
-        double cd = c.tv_sec + c.tv_usec/1000000.0;
-        std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
-        planner.showPath(path.first, my_bot_location, my_target_location);
-        //publishData(path);
-        local_planner::Seed seed;
-
-        seed.x = path.second.finalState.x();
-        seed.y = path.second.finalState.y();
-        seed.theta = path.second.finalState.theta();
-        seed.costOfseed = path.second.costOfseed;
-        seed.velocityRatio = path.second.velocityRatio;
-        seed.leftVelocity = path.second.leftVelocity;
-        seed.rightVelocity = path.second.rightVelocity;
-        seed.curvature = path.second.finalState.curvature();
-
-        pub_path.publish(seed);
-
-        loop_rate.sleep();
+                    planner_quickReflex.findPathToTarget(local_map, my_bot_location, my_target_location);
+            gettimeofday(&c, NULL);
+            double td = t.tv_sec + t.tv_usec / 1000000.0;
+            double cd = c.tv_sec + c.tv_usec / 1000000.0;
+            // std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
+            // planner_quickReflex.showPath(path.first , my_bot_location, my_target_location);
+            publishData(path);
+            loop_rate.sleep();
         }
     }
 
@@ -113,5 +102,45 @@ namespace navigation {
         seed.curvature = path.second.finalState.curvature();
 
         pub_path.publish(seed);
+
+        nav_msgs::Path path_msg;
+        path_msg.poses.resize(path.first.size());
+        for (unsigned int i = 0; i < path_msg.poses.size(); i++) {
+            path_msg.poses[i].pose.position.x = path.first[i].x();
+            path_msg.poses[i].pose.position.y = path.first[i].y();
+        }
+        pub_nav_msgs.publish(path_msg);
     }
+
+    void LocalPlanner::publishData(std::pair<std::vector<navigation::State>, navigation::Seed>& path) {
+        local_planner::Seed seed;
+
+        seed.x = path.second.finalState.x();
+        seed.y = path.second.finalState.y();
+        seed.theta = path.second.finalState.theta();
+        seed.costOfseed = path.second.costOfseed;
+        seed.velocityRatio = path.second.velocityRatio;
+        seed.leftVelocity = path.second.leftVelocity;
+        seed.rightVelocity = path.second.rightVelocity;
+        seed.curvature = path.second.finalState.curvature();
+
+        pub_path.publish(seed);
+
+        nav_msgs::Path path_msg;
+        path_msg.poses.resize(path.first.size());
+        for (unsigned int i = 0; i < path_msg.poses.size(); i++) {
+            path_msg.poses[i].pose.position.x = my_bot_location.x() + path.first[i].x();
+            path_msg.poses[i].pose.position.y = my_bot_location.y() + path.first[i].y();
+        }
+        pub_nav_msgs.publish(path_msg);
+    }
+
+    void LocalPlanner::publishImage(cv::Mat image) {
+        cv_bridge::CvImage out_msg;
+        out_msg.encoding = sensor_msgs::image_encodings::TYPE_8UC1;
+        out_msg.image = image;
+        pub_path_image.publish(out_msg.toImageMsg());
+
+    }
+
 }
