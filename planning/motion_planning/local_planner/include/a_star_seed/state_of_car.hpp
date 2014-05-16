@@ -17,7 +17,7 @@
 namespace navigation {
     
     
-    static const int MAP_MAX = 600;
+    // static const int MAP_MAX = 600;
     
     class StateOfCar : public State
     {
@@ -109,14 +109,14 @@ namespace navigation {
             return (distanceTo(givenLocation) < 35);
         }
         
-        bool isOutsideOfMap()
-        {
-            if (!(((x() >= 0) && (x() < MAP_MAX)) &&
-                  ((y() >= 0) && (y() < MAP_MAX))))
-                return true;
-            else
-                return false;
-        }
+        // bool isOutsideOfMap(MAP_MAX)
+        // {
+        //     if (!(((x() >= 0) && (x() < MAP_MAX_COLS)) &&
+        //           ((y() >= 0) && (y() < MAP_MAX_ROWS))))
+        //         return true;
+        //     else
+        //         return false;
+        // }
         
         
     };

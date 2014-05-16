@@ -13,8 +13,6 @@ namespace navigation {
         cv::Mat binaryImg, transformedImg;
         int i,j;
          threshold(fusionMap, binaryImg, 100, 255, CV_THRESH_BINARY);
-        // int type= fusionMap.type();
-        // cvtColor(fusionMap, binaryImg, CV_BGR2GRAY);
         
         binaryImg = 255 - binaryImg;
         cv::distanceTransform(binaryImg,transformedImg,CV_DIST_L2,3);
@@ -28,11 +26,8 @@ namespace navigation {
         minMaxLoc(transformedImg,&minVal,&maxVal);
         binaryImg.convertTo(binaryImg,CV_8U, 255.0/(maxVal-minVal), -minVal*255.0/(maxVal- minVal));
         transformedImg.convertTo(binaryImg,CV_8U, 255.0/(maxVal-minVal), -minVal*255.0/(maxVal- minVal));
-        // cv::threshold(transformedImg, transformedImg, .5, 1., CV_THRESH_BINARY);
-        // transformedImg.convertTo(binaryImg, CV_8U);
+       
         binaryImg = 255 - binaryImg;
-        // type=binaryImg.type();
-        fusionMap=binaryImg;
-        // type=fusionMap.type();
+        fusionMap = binaryImg;
    }
 }

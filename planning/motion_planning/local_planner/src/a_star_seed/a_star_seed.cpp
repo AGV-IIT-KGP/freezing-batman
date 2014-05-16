@@ -19,7 +19,8 @@ namespace navigation {
         int no_of_iterations = 0;
 
         fusionMap = img;
-  
+        MAP_MAX_ROWS = img.rows;
+        MAP_MAX_COLS = img.cols;
         if(DT==1)
             distanceTransform();
         if (DEBUG)  {
