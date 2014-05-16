@@ -25,20 +25,20 @@ void Strategy_Planner::setFinalTarget(geometry_msgs::Pose2D set_target_) {
     final_target = set_target_;
 }
 
-void Strategy_Planner::setWhichPlanner(std::string planner_) {
-    which_planner_ = planner_;
+void Strategy_Planner::setWhichPlanner(std::string planner) {
+    which_planner_ = planner;
 }
 
 void Strategy_Planner::setNavigator(int navigator_) {
-    Navigators = navigator_; //see enum for int values
+    navigators = navigator_; //see enum for int values
 }
 
-void Strategy_Planner::setPlanner(int planner_) {
-    Planners = planner_; //see enum for int values
+void Strategy_Planner::setPlanner(int planner) {
+    planners = planner; //see enum for int values
 }
 
 void Strategy_Planner::checkifTargetReached() {
-    if (high_priority_status == std::string("TARGET FOUND")) {
+    if (high_priority_status == std::string("BOT ON TARGET")) {
         has_target_reached = true;
     } else has_target_reached = false;
 }
@@ -49,29 +49,29 @@ std_msgs::Bool Strategy_Planner::hasTargetReached() {
     return pub_bool;
 }
 
-void Strategy_Planner::strategise() {
+void Strategy_Planner::plan() {
     checkifTargetReached();
     if (!is_high_priority) {
-        switch (Navigators) {
-            case Dummy_Navigator:
+        switch (navigators) {
+            case dummy_navigator:
                 Strategy_Planner::setFinalTarget(dummy_target_);
                 break;
-            case Nose_Navigator:
+            case nose_navigator:
                 Strategy_Planner::setFinalTarget(nose_target_);
                 break;
-            case Waypoint_Navigator:
+            case waypoint_navigator:
                 Strategy_Planner::setFinalTarget(waypoint_target_);
                 break;
-            case Lane_Navigator:
+            case lane_navigator:
                 Strategy_Planner::setFinalTarget(lane_target_);
                 break;
         }
 
-        switch (Planners) {
-            case A_Star_Seed:
+        switch (planners) {
+            case a_star_seed:
                 setWhichPlanner("A_Star_Seed");
                 break;
-            case Quick_Response:
+            case quick_response:
                 setWhichPlanner("Quick_Response");
                 break;
         }

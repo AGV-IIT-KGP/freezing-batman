@@ -10,19 +10,19 @@
 #include <std_msgs/String.h>
 #include <iosfwd>
 
-static const int BUFFER_SIZE = 10;
-static const int LOOP_RATE = 10;
+static const int buffer_size = 10;
+static const int loop_rate_hz = 10;
 
 enum Navigators {
-    Dummy_Navigator = 0,
-    Nose_Navigator = 1,
-    Waypoint_Navigator = 2,
-    Lane_Navigator = 3,
+    dummy_navigator = 0,
+    nose_navigator = 1,
+    waypoint_navigator = 2,
+    lane_navigator = 3,
 };
 
 enum Planners {
-    A_Star_Seed = 0,
-    Quick_Response = 1,
+    a_star_seed = 0,
+    quick_response = 1,
 };
 
 class Strategy_Planner {
@@ -32,20 +32,20 @@ class Strategy_Planner {
     bool has_target_reached;
     std::string high_priority_status;
     std::string which_planner_;
-    int Navigators, Planners;
+    int navigators, planners;
 
 public:
-    void strategise();
+    void plan();
     void setHighPriority(std_msgs::String status);
     void setFinalTarget(geometry_msgs::Pose2D set_target_);
-    void setWhichPlanner(std::string planner_);
+    void setWhichPlanner(std::string planner);
 
     void setDummyTarget(geometry_msgs::Pose2D proposed_dummy_target_);
     void setNoseTarget(geometry_msgs::Pose2D proposed_nose_target_);
     void setWaypointTarget(geometry_msgs::Pose2D proposed_waypoint_target_);
     void setLaneTarget(geometry_msgs::Pose2D proposed_lane_target_);
     void setNavigator(int navigator_);
-    void setPlanner(int planner_);
+    void setPlanner(int planner);
     void checkifTargetReached();
     std_msgs::Bool hasTargetReached();
 
