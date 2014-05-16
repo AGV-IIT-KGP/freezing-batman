@@ -66,7 +66,7 @@ PosefromTarget::PosefromTarget(int argc, char* argv[]) {
 	pose_pub=nh.advertise<geometry_msgs::Pose>(pose_topic.c_str(),buffer);
 	poseStamped_pub=nh.advertise<geometry_msgs::PoseStamped>(posestamped_topic.c_str(),buffer);
 	
-}
+}	
 
 PosefromTarget::PosefromTarget(const PosefromTarget& orig) {
 }
