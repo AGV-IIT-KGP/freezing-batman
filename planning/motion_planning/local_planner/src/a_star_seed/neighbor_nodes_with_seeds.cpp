@@ -25,7 +25,7 @@ namespace navigation {
             const StateOfCar neighbour(x,y,theta,0,givenSeeds[i].costOfseed,0,i);
             
      
-            if ( !isWalkableWithSeeds(currentState, neighbour)) {
+            if ( !isWalkableWithSeeds(currentState, neighbour, MAP_MAX_COLS, MAP_MAX_ROWS)) {
                 continue;
             }
             neighbours.push_back(neighbour);

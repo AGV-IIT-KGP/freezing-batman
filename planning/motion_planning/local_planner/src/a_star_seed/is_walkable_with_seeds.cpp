@@ -13,7 +13,7 @@ namespace navigation {
  isWalkable ()
  output, input should be correct */
     
-    bool AStarSeed::isWalkableWithSeeds(StateOfCar const& startState, StateOfCar const& targetState) {
+    bool AStarSeed::isWalkableWithSeeds(StateOfCar const& startState, StateOfCar const& targetState, int MAP_MAX_COLS, int MAP_MAX_ROWS) {
         
         bool NoObstacle = true;
 
@@ -30,7 +30,7 @@ namespace navigation {
             
             int intermediateYcordinate = (int) (-x * cos(alpha * (CV_PI / 180)) + y * sin(alpha * (CV_PI / 180)) + startState.y());
             
-            if (((intermediateXcordinate >= 0) && (intermediateXcordinate < MAP_MAX)) && (( intermediateYcordinate >= 0) && (intermediateYcordinate < MAP_MAX))) {
+            if (((intermediateXcordinate >= 0) && (intermediateXcordinate < MAP_MAX_COLS)) && (( intermediateYcordinate >= 0) && (intermediateYcordinate < MAP_MAX_ROWS))) {
 
                 fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate) < 250 ? NoObstacle *= 1 : NoObstacle *= 0;
     
