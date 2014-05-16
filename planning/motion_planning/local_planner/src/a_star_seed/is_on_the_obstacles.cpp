@@ -9,8 +9,12 @@
 
 #include "a_star_seed/a_star_seed.hpp"
 
+
 namespace navigation {
     bool AStarSeed::isOnTheObstacle(const State& state){
+        return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) >= 225;
+    }
+    bool quickReflex::isOnTheObstacle(const State& state){
         return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) >= 225;
     }
 }
