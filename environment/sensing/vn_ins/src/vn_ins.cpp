@@ -1,4 +1,4 @@
-#include "vectorNav.hpp"
+#include "vn_ins.hpp"
 #include "LifeCycle.hpp"
 
 vectorNav::vectorNav(int argc, char** argv) : Sensor(argc, argv) {
@@ -43,29 +43,7 @@ bool vectorNav::fetch() {
     
 	vn200_getGpsSolution(&vn200, &gpsTime, &gpsWeek, &gpsFix, &numberOfSatellites, &latitudeLognitudeAltitude, &nedVelocity, &positionAccuracy, &speedAccuracy, &timeAccuracy);
     ROS_INFO("Triangulating from %d satellites",numberOfSatellites);
-   /*
-    * the following code was used to publish imu and twist msg types.. We no longer want it.. 
-    * IMU_Sparkfun will handle it
- 
-    vn200_getInsSolution(&vn200, &gpsTime, &gpsWeek, &status, &ypr, &latitudeLognitudeAltitude, &nedVelocity, &attitudeUncertainty, &positionUncertainty, &velocityUncertainty);
-    vn200_getCalibratedSensorMeasurements(&vn200, &magnetic, &acceleration, &angularRate, &temperature, &pressure);
-   
-    tf_angles.setEuler(ypr.c0, ypr.c1, ypr.c2);
-    
-    _imu.orientation.x = tf_angles.x();
-    _imu.orientation.y = tf_angles.y();
-    _imu.orientation.z = tf_angles.z();
-    _imu.orientation.w = tf_angles.w();
-    _imu.angular_velocity.x = angularRate.c0;
-    _imu.angular_velocity.y = angularRate.c1;
-	_imu.angular_velocity.z = angularRate.c2;
-	
-	_twist.linear.x = nedVelocity.c0;
-	_twist.linear.y = nedVelocity.c1;
-	_twist.linear.z = nedVelocity.c2;
-	_twist.angular.x = angularRate.c0;
-	_twist.angular.y = angularRate.c1;
-	_twist.angular.z = angularRate.c2;*/
+  
 	
 
     _gps.latitude = latitudeLognitudeAltitude.c0;
@@ -78,8 +56,7 @@ bool vectorNav::fetch() {
 }
 
 void vectorNav::publish(int frame_id) {
-    /*imu_pub.publish(_imu);
-    twist_pub.publish(_twist);*/
+  
     gps_pub.publish(_gps);
     yaw_pub.publish(_yaw);
 }
@@ -87,8 +64,7 @@ void vectorNav::publish(int frame_id) {
 void vectorNav::initializeParameters() {
     node_name = std::string("sensors_vectorNav_0");
     gps_topic_name=std::string("sensors/gps/0");
-    /*imu_topic_name=std::string("sensors/imu/0");
-    twist_topic_name=std::string("sensors/twist/0");*/
+  
     yaw_topic_name=std::string("sensors/yaw/0");
     message_queue_size = 10;
     COM_PORT_vn200 = std::string("/dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FTUTUVO5-if00-port0");
@@ -99,8 +75,7 @@ void vectorNav::initializeParameters() {
 void vectorNav::initializeParameters(int argc, char** argv) {
 	node_name = std::string("sensors_vectorNav_") + std::string(argv[1]);
     gps_topic_name=std::string("sensors/gps/") + std::string(argv[1]);
-    /*imu_topic_name=std::string("sensors/imu/") + std::string(argv[1]);
-    twist_topic_name=std::string("sensors/twist/") + std::string(argv[1]);*/
+  
     yaw_topic_name=std::string("sensors/yaw/") + std::string(argv[1]);
     COM_PORT_vn200 = std::string(argv[2]);
     COM_PORT_vn100 = std::string(argv[3]);
@@ -110,8 +85,7 @@ void vectorNav::initializeParameters(int argc, char** argv) {
 
 void vectorNav::setupCommunications() {
 	gps_pub = node_handle->advertise<sensor_msgs::NavSatFix>(gps_topic_name.c_str(), message_queue_size);
-	/*imu_pub = node_handle->advertise<sensor_msgs::Imu>(imu_topic_name.c_str(), message_queue_size);
-    twist_pub = node_handle->advertise<geometry_msgs::Twist>(twist_topic_name.c_str(), message_queue_size);*/
+	
     yaw_pub = node_handle->advertise<geometry_msgs::Twist>(yaw_topic_name.c_str(), message_queue_size);
 }
 
