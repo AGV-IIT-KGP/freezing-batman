@@ -33,6 +33,6 @@ include_directories ("${PROJECT_SOURCE_DIR}/include/vectorNav")
 set(vectorNav_src ${PROJECT_SOURCE_DIR}/src/vectorNav)
 set(AGV_FRAMEWORK libagv_framework.so)
 
-rosbuild_add_executable(${PROJECT_NAME} src/vectorNav.cpp ${vectorNav_src}/vn200.c ${vectorNav_src}/vncp_services.c)
+rosbuild_add_executable(${PROJECT_NAME} src/vectorNav.cpp ${vectorNav_src}/vn200.c ${vectorNav_src}/vn100.c ${vectorNav_src}/vncp_services.c)
 target_link_libraries(${PROJECT_NAME} m ${AGV_FRAMEWORK})
 
