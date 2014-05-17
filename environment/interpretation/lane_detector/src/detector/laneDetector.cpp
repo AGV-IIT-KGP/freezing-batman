@@ -162,10 +162,10 @@ void LaneDetector::publishLanes(cv::Mat &image) {
 
 void LaneDetector::loadParams(ros::NodeHandle& node_handle) {
     debug_mode = 5;
-    ipt_offsets_file = std::string("../data/ipt_offsets0.dat");
+    ipt_offsets_file = std::string("../data/ipt_offsets0.txt");
     map_size = 1000;
     published_topic_name = std::string("/lane_detector0/lanes");
-    subscribed_topic_name = std::string("/camera0/image");
+    subscribed_topic_name = std::string("/camera/image");
     time_functions = 0;
     training_data_file = std::string("../data/Samples");
     wait_time = 10;
