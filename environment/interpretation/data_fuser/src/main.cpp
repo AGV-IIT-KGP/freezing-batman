@@ -1,4 +1,4 @@
-#include "my_fusion/fusion.h"
+#include "data_fuser/fusion.h"
 
 using namespace sensor_msgs;
 using namespace message_filters;
@@ -20,22 +20,22 @@ void exit_with_help(){
 
 int main(int argc, char** argv)
 {
-	int fFlag = 0, sFlag = 0, debugFlag = 0;
+	int fFlag = 1, sFlag = 1, debugFlag = 0;
 	
 	std::string first_sub_topic_name, second_sub_topic_name, node_id, node_name, publisher_topic_name;
 	
 	first_sub_topic_name = std::string("/obstacle_detector/obstacles");
-	second_sub_topic_name = std::string("/interpreter/lane_detector/0");
+	second_sub_topic_name = std::string("/lane_detector0/lanes");
 	node_id = std::string("0");
 	node_name = std::string("interpreter_fusion_");
 	for(int i=1;i<argc;i++) {
 		if(argv[i][0] != '-') {
 			break;
 		}
-		
+		/*
 		if (++i>=argc) {
 			exit_with_help();
-		}
+		}*/
 		
 		switch(argv[i-1][1]) {
 			case 'd':
@@ -58,10 +58,10 @@ int main(int argc, char** argv)
 		}
 	}
 	
-	if( !fFlag && !sFlag ) {
+	/*if( !fFlag && !sFlag ) {
 		printf("No subscriber mentioned\n");
 		exit_with_help();
-	}
+	}*/
 	
 	if( debugFlag ) {
 		if( fFlag ) {
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 		}
 	}
 	
-	publisher_topic_name = std::string("interpreter/fusion/world_map/") + node_id;
+	publisher_topic_name = std::string("/map") ;
 	
 	node_name = node_name + node_id;
 	
@@ -90,6 +90,7 @@ int main(int argc, char** argv)
 	
 	if( fFlag && sFlag ) {
 		first_sub.subscribe(nh, first_sub_topic_name.c_str() , 1);
+		
 		second_sub.subscribe(nh, second_sub_topic_name.c_str(), 1);
 		sync       = new TimeSynchronizer<Image, Image>(first_sub, second_sub, 10);
 		sync->registerCallback(boost::bind(&callback, _1, _2));
@@ -104,3 +105,4 @@ int main(int argc, char** argv)
 	ros::spin();
 return 0;
 }
+
