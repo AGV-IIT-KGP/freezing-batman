@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b lane_detector_test 
+\b lane_detector 
 
 <!-- 
 Provide an overview of your package.
