@@ -29,6 +29,7 @@ enum Strategies {
     IGVCBasic =6,
     LaneFollowingOnly=7,
     switch_lane_GPS=8,
+    DummyNavigator=9,
 };
 
 namespace navigation_space {
@@ -42,6 +43,12 @@ namespace navigation_space {
         static navigation::State getTargetLocation(double);
         static navigation::State getBotLocation();
     };
+
+	class DummyNavigator{
+	public:
+		static navigation::State getBotLocation();
+		static navigation::State getTargetLocation();
+	};
 
     class TrackWaypointStrategy {
         static geometry_msgs::Pose target_pose;
