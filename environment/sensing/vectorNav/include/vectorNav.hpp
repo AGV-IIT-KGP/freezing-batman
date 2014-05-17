@@ -39,11 +39,13 @@ private:
 	std::string COM_PORT_vn200;
 	ros::NodeHandle *node_handle;
 	std::string node_name;
-	std::string gps_topic_name, imu_topic_name, twist_topic_name, yaw_topic_name;
-	ros::Publisher gps_pub, imu_pub, twist_pub,yaw_pub;
+	std::string gps_topic_name, yaw_topic_name;
+	//std::string imu_topic_name, twist_topic_name
+	ros::Publisher gps_pub, yaw_pub;
+	//ros::Publisher imu_pub, twist_pub;
 	sensor_msgs::NavSatFix _gps;
-    sensor_msgs::Imu _imu;
-    geometry_msgs::Twist _twist;
+    /*sensor_msgs::Imu _imu;
+    geometry_msgs::Twist _twist;*/
     std_msgs::Float64 _yaw;
     btQuaternion tf_angles;
 	int message_queue_size;
