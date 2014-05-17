@@ -30,7 +30,7 @@
 #include "geometry_msgs/Pose.h"
 
 
-#include "/home/yash/fuerte_workspace/sandbox/freezing-batman/planning/motion_planning/local_planner/include/a_star_seed/a_star_seed.hpp"
+#include "a_star_seed/a_star_seed.hpp"
 #include "planning/planner.hpp"
 static const int MAP_MAX = 800;
 static const int LOOP_RATE = 10;

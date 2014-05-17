@@ -49,7 +49,7 @@ namespace navigation {
         void plan();
         void planWithQuickReflex();
     private:
-        ros::NodeHandle nh;
+        ros::NodeHandle node_handle;
 
         ros::Subscriber sub_world_map;
         ros::Subscriber sub_bot_pose;

@@ -6,24 +6,24 @@
 //  Copyright (c) 2014 Satya Prakash. All rights reserved.
 //
 
-#include "local_planner.hpp"
 #include <sys/time.h>
+#include <local_planner.hpp>
 
 namespace navigation {
 
-    LocalPlanner::LocalPlanner(ros::NodeHandle& nodeHandle) : nh(nodeHandle) {
+    LocalPlanner::LocalPlanner(ros::NodeHandle& nodeHandle) : node_handle(nodeHandle) {
         //Subscriber for World Map
-        sub_world_map = nh.subscribe("interpreter/fusion/world_map", 10, &LocalPlanner::updateWorldMap, this);
+        sub_world_map = node_handle.subscribe("interpreter/fusion/world_map", 10, &LocalPlanner::updateWorldMap, this);
         // topic should same with data published by GPS
-        sub_bot_pose = nh.subscribe("/bot_pose", 10, &LocalPlanner::updateBotPose, this);
+        sub_bot_pose = node_handle.subscribe("/bot_pose", 10, &LocalPlanner::updateBotPose, this);
         // topic published from GPS
-        sub_target_pose = nh.subscribe("/target_pose", 10, &LocalPlanner::updateTargetPose, this);
+        sub_target_pose = node_handle.subscribe("/target_pose", 10, &LocalPlanner::updateTargetPose, this);
 
-        pub_path = nh.advertise<local_planner::Seed>("/path", 1000); //Publisher for Path
+        pub_path = node_handle.advertise<local_planner::Seed>("/path", 1000); //Publisher for Path
         // it = new image_transport::ImageTransport(nh);
         // pub_path_image= it->advertise("/pathImage", 1); //Publisher for final path image
 
-        pub_nav_msgs = nh.advertise<nav_msgs::Path>("/path_nav_msgs", 10); //nav_msgs for path
+        pub_nav_msgs = node_handle.advertise<nav_msgs::Path>("/path_nav_msgs", 10); //nav_msgs for path
 
         local_map = cv::Mat::zeros(MAP_MAX, MAP_MAX, CV_8UC1);
 
@@ -47,7 +47,7 @@ namespace navigation {
 
     void LocalPlanner::plan() {
         ros::Rate loop_rate(LOOP_RATE);
-        navigation::AStarSeed planner(nh);
+        navigation::AStarSeed planner(node_handle);
 
         while (ros::ok()) {
             ros::spinOnce();
@@ -70,7 +70,7 @@ namespace navigation {
 
     void LocalPlanner::planWithQuickReflex() {
         ros::Rate loop_rate(LOOP_RATE);
-        navigation::quickReflex planner_quickReflex(nh);
+        navigation::quickReflex quick_reflex_planner(node_handle);
 
         while (ros::ok()) {
             ros::spinOnce();
@@ -78,7 +78,7 @@ namespace navigation {
             struct timeval t, c;
             gettimeofday(&t, NULL);
             std::pair<std::vector<navigation::State>, navigation::Seed> path =
-                    planner_quickReflex.findPathToTarget(local_map, my_bot_location, my_target_location);
+                    quick_reflex_planner.findPathToTarget(local_map, my_bot_location, my_target_location);
             gettimeofday(&c, NULL);
             double td = t.tv_sec + t.tv_usec / 1000000.0;
             double cd = c.tv_sec + c.tv_usec / 1000000.0;
@@ -140,7 +140,5 @@ namespace navigation {
         out_msg.encoding = sensor_msgs::image_encodings::TYPE_8UC1;
         out_msg.image = image;
         pub_path_image.publish(out_msg.toImageMsg());
-
     }
-
 }

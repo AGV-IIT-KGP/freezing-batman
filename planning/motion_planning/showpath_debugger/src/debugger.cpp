@@ -33,12 +33,10 @@ namespace navigation {
         ROS_INFO("Subscriber : \"interpreter/fusion/world_map\", \"/bot_pose\", \"/target_pose\" .... ");
     }
 
-    void Debugger::showStatus(const std_msgs::String::ConstPtr& msg)
-    {
+    void Debugger::showStatus(const std_msgs::String::ConstPtr& msg) {
         ROS_INFO("Current Status: [%s]", msg->data.c_str());
         printf("%s", msg->data.c_str());
     }
-    
 
     void Debugger::updateNavMsg(const nav_msgs::Path& msg) {
         int i;
@@ -72,11 +70,11 @@ namespace navigation {
         std::cout << "Showing A Path\n";
         for (std::vector<Pose>::iterator poseIt = path.begin(); poseIt != path.end(); ++poseIt) {
             const Pose pos = *poseIt;
-            cv::circle(local_map, cv::Point( pos.x, local_map.rows - pos.y - 1), 3, cv::Scalar(255), -1);
+            cv::circle(local_map, cv::Point(pos.x, local_map.rows - pos.y - 1), 3, cv::Scalar(255), -1);
             // cv::circle(local_map, cv::Point(my_bot_location.x() + pos.x, local_map.rows - (my_bot_location.y() + pos.y) - 1), 3, cv::Scalar(255), -1);
 
         }
-        
+
     }
 
     // void Debugger::publishImage() {
@@ -98,21 +96,20 @@ namespace navigation {
 
 }
 
-int main(int argc, char* argv[])
-{
-        const std::string node_name = "debugger";
-        ros::init(argc, argv, node_name.c_str());
-        navigation::Debugger debugger;
-        ros::NodeHandle nh;
-        debugger.nh = nh;
-        ros::Rate loop_rate(LOOP_RATE);
-        
-        while (ros::ok()) {
-            ros::spinOnce();
-            debugger.makeMap();
-            
-            debugger.showPath();
-            loop_rate.sleep();
-        }
+int main(int argc, char* argv[]) {
+    const std::string node_name = "debugger";
+    ros::init(argc, argv, node_name.c_str());
+    navigation::Debugger debugger;
+    ros::NodeHandle nh;
+    debugger.nh = nh;
+    ros::Rate loop_rate(LOOP_RATE);
+
+    while (ros::ok()) {
+        ros::spinOnce();
+        debugger.makeMap();
+
+        debugger.showPath();
+        loop_rate.sleep();
+    }
 
 }
