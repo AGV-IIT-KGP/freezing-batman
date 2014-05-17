@@ -1,0 +1,18 @@
+<package>
+  <description brief="dummy_navigator">
+
+     dummy_navigator
+
+  </description>
+  <author>Rohan Sur</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/dummy_navigator</url>
+  <depend package="std_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+
+</package>
+
+
