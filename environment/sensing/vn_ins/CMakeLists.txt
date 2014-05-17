@@ -29,10 +29,10 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 include_directories ("${PROJECT_SOURCE_DIR}/include/")
-include_directories ("${PROJECT_SOURCE_DIR}/include/vectorNav")
-set(vectorNav_src ${PROJECT_SOURCE_DIR}/src/vectorNav)
+include_directories ("${PROJECT_SOURCE_DIR}/include/vn_ins")
+set(vn_ins_src ${PROJECT_SOURCE_DIR}/src/vn_ins)
 set(AGV_FRAMEWORK libagv_framework.so)
 
-rosbuild_add_executable(${PROJECT_NAME} src/vectorNav.cpp ${vectorNav_src}/vn200.c ${vectorNav_src}/vncp_services.c)
+rosbuild_add_executable(${PROJECT_NAME} src/vn_ins.cpp ${vn_ins_src}/vn200.c ${vn_ins_src}/vn100.c ${vn_ins_src}/vncp_services.c)
 target_link_libraries(${PROJECT_NAME} m ${AGV_FRAMEWORK})
 
