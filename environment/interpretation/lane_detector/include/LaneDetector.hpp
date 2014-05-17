@@ -32,10 +32,10 @@
 #define SCALE_X 10
 #define MAP_MAX 1000
 
-extern IplImage *show_img1;
-extern IplImage *show_img2;
-extern IplImage *show_img3;
-extern IplImage *show_img4;
+extern cv::Mat show_img1;
+extern cv::Mat show_img2;
+extern cv::Mat show_img3;
+extern cv::Mat show_img4;
 
 class LaneDetector : public environment::Interpreter {
 public:
@@ -44,38 +44,38 @@ public:
     LaneDetector(const LaneDetector& orig);
     virtual ~LaneDetector();
     void getLanes(const sensor_msgs::ImageConstPtr& image);
-    IplImage* colorBasedLaneDetection(IplImage* frame_in, int k);
-    void applyHoughTransform(IplImage* img, IplImage *dst, int vote, int length, int merge);
-    IplImage* joinResult(IplImage* color_gray, IplImage* hough_gray);
+    cv::Mat colorBasedLaneDetection(cv::Mat frame_in, int k);
+    void applyHoughTransform(cv::Mat img, cv::Mat dst, int vote, int length, int merge);
+    cv::Mat joinResult(cv::Mat color_gray, cv::Mat hough_gray);
     void initializeLaneVariables(int argc, char** argv, ros::NodeHandle nh);
-    CvSeq* GetHoughLanes(IplImage* img, int vote, int length, int mrgha);
-    IplImage *getLaneLines(IplImage* src);
+    std::vector<cv::Vec4i> GetHoughLanes(cv::Mat img, int vote, int length, int mrgha);
+    cv::Mat getLaneLines(cv::Mat src);
     image_transport::ImageTransport *getLaneNode();
 private:
     CvSize size;
     int depth;
-    IplImage *kernel_frame;
-    IplImage *edge_frame;
-    IplImage *gray_hough_frame;
-    IplImage *gray_frame;
-    IplImage *lane;
-    IplImage *warp_img;
-    IplImage* img;
-    IplConvKernel *ker1;
+    cv::Mat kernel_frame;
+    cv::Mat edge_frame;
+    cv::Mat gray_hough_frame;
+    cv::Mat gray_frame;
+    cv::Mat lane;
+    cv::Mat warp_img;
+    cv::Mat img;
+    IplConvKernel *ker1;     //???
     CvPoint offset;
     uchar** ImageData;
     uchar* data;
     double mean, std_dev;
     int i;
-    int height, width;
+    int rows, cols;
     sensor_msgs::CvBridge bridge;
     CvPoint2D32f srcQuad[4], dstQuad[4];
     int canny_kernel, high_threshold, low_threshold, vote, length, mrg;
     int k;
-    CvMat* warp_matrix;
+    cv::Mat* warp_matrix;
     int mouseParam;
     image_transport::ImageTransport *it;
-    void publishLanes(IplImage* final_img);
+    void publishLanes(cv::Mat final_img);
 
 };
 
