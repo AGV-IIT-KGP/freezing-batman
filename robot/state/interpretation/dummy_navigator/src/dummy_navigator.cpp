@@ -1,24 +1,25 @@
-#include "dummy_navigator/dummy_navigator.h"
+#include <ros/ros.h>
+#include <geometry_msgs/Pose2D.h>
 
-namespace navigation_space {
+int main(int argc, char* argv[]) {
+    ros::init(argc, argv, "dummy_navigator");
+    ros::NodeHandle node_handle;
+
+    ros::Publisher target_publisher = node_handle.advertise<geometry_msgs::Pose2D>("dummy_navigator/target", 10);
     
-    navigation::State navigation_space::DummyNavigator::getBotLocation() {
-        navigation::State bot_location;
-        int x,y,z;
-        x = 0.5 * MAP_MAX;
-        y = 0.1 * MAP_MAX;
-        z = 90;
-        bot_location = navigation::State(x,y,z,0);
-        return bot_location;
+    geometry_msgs::Pose2D target;
+    target.x = 10.;
+    target.y = 0.;
+    target.theta = M_PI / 2;
+    
+    ros::Rate loop_rate(10);
+    while (ros::ok()) {
+        node_handle.getParam("dummy_navigator/target_x", target.x);
+        node_handle.getParam("dummy_navigator/target_y", target.y);
+        node_handle.getParam("dummy_navigator/target_theta", target.theta);
+        target_publisher.publish(target);
+        loop_rate.sleep();
     }
 
-    navigation::State navigation_space::DummyNavigator::getTargetLocation(){
-    	navigation::State target_location;
-    	int x,y,z;
-    	x=0.5 * MAP_MAX;
-    	y=0.975 * MAP_MAX;
-    	z=90;
-    	target_location = navigation::State(x,y,z,0);
-    	return target_location;
-    }
+    return 0;
 }

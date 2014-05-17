@@ -27,8 +27,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
-rosbuild_add_executable(DummyNavigator src/main.cpp src/dummy_navigator.cpp)
-
+rosbuild_add_executable(dummy_navigator src/dummy_navigator.cpp)
 
 #rosbuild_link_boost(Navigator signals)
 #target_link_libraries(example ${PROJECT_NAME})

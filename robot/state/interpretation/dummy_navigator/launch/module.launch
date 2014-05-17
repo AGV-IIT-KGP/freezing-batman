@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="dummy_navigator" type="dummy_navigator" name="dummy_navigator">
+        <param name="target_x" type="double" value="10."/>
+        <param name="target_y" type="double" value="0."/>
+        <param name="target_theta" type="double" value="1.57079632679"/>
+    </node>
+</launch>
+    
