@@ -15,7 +15,7 @@
 
 static const int loop_rate_hz = 10;
 static const int buffer_size = 10;
-static int proximity;
+static double proximity;
 
 enum Strategy {
     greedy_selector = 0,
