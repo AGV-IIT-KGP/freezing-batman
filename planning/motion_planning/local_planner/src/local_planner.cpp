@@ -12,25 +12,21 @@
 namespace navigation {
 
     LocalPlanner::LocalPlanner(ros::NodeHandle& nodeHandle) : nh(nodeHandle) {
-        //Subscriber for World Map
-        sub_world_map = nh.subscribe("interpreter/fusion/world_map", 10, &LocalPlanner::updateWorldMap, this);
-        // topic should same with data published by GPS
-        sub_bot_pose = nh.subscribe("/bot_pose", 10, &LocalPlanner::updateBotPose, this);
-        // topic published from GPS
-        sub_target_pose = nh.subscribe("/target_pose", 10, &LocalPlanner::updateTargetPose, this);
+    loadParams(nh);
+        int MAP_MAX_COLS, MAP_MAX_ROWS;
+        nh.getParam("local_planner/map_max_rows", MAP_MAX_ROWS);
+        nh.getParam("local_planner/map_max_cols", MAP_MAX_COLS);
 
-        pub_path = nh.advertise<local_planner::Seed>("/path", 1000); //Publisher for Path
-        // it = new image_transport::ImageTransport(nh);
-        // pub_path_image= it->advertise("/pathImage", 1); //Publisher for final path image
+        sub_world_map = nh.subscribe("data_fuser/map", 10, &LocalPlanner::updateWorldMap, this);
+        sub_target_pose = nh.subscribe("strategy_planner/target", 10, &LocalPlanner::updateTargetPose, this);
 
-        pub_nav_msgs = nh.advertise<nav_msgs::Path>("/path_nav_msgs", 10); //nav_msgs for path
+        pub_seed = nh.advertise<local_planner::Seed>("local_planner/seed", 1000);
+        pub_status = nh.advertise<std_msgs::String>("local_planner/status", 1000);
+        pub_nav_msgs = nh.advertise<nav_msgs::Path>("local_planner/path", 10);
 
-        local_map = cv::Mat::zeros(MAP_MAX, MAP_MAX, CV_8UC1);
+        local_map = cv::Mat::zeros(MAP_MAX_ROWS, MAP_MAX_COLS, CV_8UC1);
+        my_bot_location = navigation::State(MAP_MAX_COLS/2, MAP_MAX_ROWS/10, 90, 0);
 
-        ROS_INFO("Local Planner(AStarSeed) started.... ");
-        ROS_INFO("Publisher : \"/path\" .... ");
-        // ROS_INFO("Publisher : \"/pathImage\" .... ");
-        ROS_INFO("Subscriber : \"interpreter/fusion/world_map\", \"/bot_pose\", \"/target_pose\" .... ");
     }
 
     void LocalPlanner::updateWorldMap(const sensor_msgs::ImageConstPtr& world_map) {
@@ -45,46 +41,52 @@ namespace navigation {
         }
     }
 
-    void LocalPlanner::plan() {
+    void LocalPlanner::planWithAstarSeed() {
+        
+        int LOOP_RATE;
+        nh.getParam("local_planner/loop_rate", LOOP_RATE);
         ros::Rate loop_rate(LOOP_RATE);
-        navigation::AStarSeed planner(nh);
+        navigation::AStarSeed planner_AStarSeed(nh);
 
         while (ros::ok()) {
             ros::spinOnce();
 
-            struct timeval t, c;
-            gettimeofday(&t, NULL);
+            // struct timeval t, c;
+            // gettimeofday(&t, NULL);
             std::pair<std::vector<navigation::StateOfCar>, navigation::Seed> path =
-                    planner.findPathToTargetWithAstar(local_map, my_bot_location, my_target_location, planner.distance_transform, planner.debug_current_state);
-
-            // cv::Mat image = planner.showPath(path.first, my_bot_location, my_target_location);
-            gettimeofday(&c, NULL);
-            double td = t.tv_sec + t.tv_usec / 1000000.0;
-            double cd = c.tv_sec + c.tv_usec / 1000000.0;
+                    planner_AStarSeed.findPathToTarget(local_map, my_bot_location, my_target_location, planner_AStarSeed.distance_transform, planner_AStarSeed.debug_current_state, planner_AStarSeed.status);
+            // gettimeofday(&c, NULL);
+            // double td = t.tv_sec + t.tv_usec / 1000000.0;
+            // double cd = c.tv_sec + c.tv_usec / 1000000.0;
 
             publishData(path);
+            publishStatusAStarSeed(planner_AStarSeed.status);
             // publishImage(image);
             loop_rate.sleep();
         }
     }
 
     void LocalPlanner::planWithQuickReflex() {
+        int LOOP_RATE;
+        nh.getParam("local_planner/loop_rate", LOOP_RATE);
         ros::Rate loop_rate(LOOP_RATE);
         navigation::quickReflex planner_quickReflex(nh);
 
         while (ros::ok()) {
             ros::spinOnce();
 
-            struct timeval t, c;
-            gettimeofday(&t, NULL);
+            // struct timeval t, c;
+            // gettimeofday(&t, NULL);
             std::pair<std::vector<navigation::State>, navigation::Seed> path =
-                    planner_quickReflex.findPathToTarget(local_map, my_bot_location, my_target_location);
-            gettimeofday(&c, NULL);
-            double td = t.tv_sec + t.tv_usec / 1000000.0;
-            double cd = c.tv_sec + c.tv_usec / 1000000.0;
+                    planner_quickReflex.findPathToTarget(local_map, my_bot_location, my_target_location, planner_quickReflex.status);
+            // gettimeofday(&c, NULL);
+            // double td = t.tv_sec + t.tv_usec / 1000000.0;
+            // double cd = c.tv_sec + c.tv_usec / 1000000.0;
             // std::cout<<"FPS:"<< 1/(cd-td) <<std::endl;
             // planner_quickReflex.showPath(path.first , my_bot_location, my_target_location);
             publishData(path);
+            publishStatusQuickReflex(planner_quickReflex.status);
+            // publishImage(image);
             loop_rate.sleep();
         }
     }
@@ -101,7 +103,7 @@ namespace navigation {
         seed.rightVelocity = path.second.rightVelocity;
         seed.curvature = path.second.finalState.curvature();
 
-        pub_path.publish(seed);
+        pub_seed.publish(seed);
 
         nav_msgs::Path path_msg;
         path_msg.poses.resize(path.first.size());
@@ -124,7 +126,7 @@ namespace navigation {
         seed.rightVelocity = path.second.rightVelocity;
         seed.curvature = path.second.finalState.curvature();
 
-        pub_path.publish(seed);
+        pub_seed.publish(seed);
 
         nav_msgs::Path path_msg;
         path_msg.poses.resize(path.first.size());
@@ -142,5 +144,54 @@ namespace navigation {
         pub_path_image.publish(out_msg.toImageMsg());
 
     }
+
+    void LocalPlanner::publishStatusQuickReflex(int status){
+        std_msgs::String msg;
+
+        std::stringstream ss;
+
+        if(status == 0){
+            ss << "NO PATH FOUND";
+        }
+        else if(status == 1){
+            ss << "BOT ON TARGET";
+        }
+        else {
+            ss << "A PATH IS FOUND";
+        }
+
+        msg.data = ss.str();
+        pub_status.publish(msg);
+    }
+
+    void LocalPlanner::publishStatusAStarSeed(int status) {
+        
+        std_msgs::String msg;
+
+        std::stringstream ss;
+        if (status == 0) {
+            ss << "NO PATH FOUND";
+        } 
+        else if (status == 1) {
+            ss << "BOT ON TARGET";
+        }
+        else if (status == 2) {
+            ss << "PATH FOUND";
+        }
+        else {
+            ss << "OVERFLOW : OPEN LIST SIZE " << status;
+        }
+
+        msg.data = ss.str();
+
+        pub_status.publish(msg);
+    }
+
+    void LocalPlanner::loadParams(ros::NodeHandle& nh) {
+    planning_strategy = 0;
+    std::string node_name = std::string("/") + ros::this_node::getName();
+    nh.getParam(node_name + "/planning_strategy", planning_strategy);
+    
+}
 
 }

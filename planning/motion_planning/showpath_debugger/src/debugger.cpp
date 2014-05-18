@@ -11,34 +11,26 @@
 namespace navigation {
 
     Debugger::Debugger() {
-        //Subscriber for World Map
-        sub_world_map = nh.subscribe("interpreter/fusion/world_map", 10, &Debugger::updateWorldMap, this);
-        // topic should same with data published by GPS
-        sub_bot_pose = nh.subscribe("/bot_pose", 10, &Debugger::updateBotPose, this);
-        // topic published from GPS
-        sub_target_pose = nh.subscribe("/target_pose", 10, &Debugger::updateTargetPose, this);
+        int MAP_MAX_COLS, MAP_MAX_ROWS;
+        sub_world_map = nh.subscribe("data_fuser/map", 10, &Debugger::updateWorldMap, this);
 
-        sub_nav_msgs = nh.subscribe("/path_nav_msgs", 10, &Debugger::updateNavMsg, this);
-        sub_status_msg = nh.subscribe("localplanner/status", 10, &Debugger::showStatus, this);
+        sub_target_pose = nh.subscribe("strategy_planner/target", 10, &Debugger::updateTargetPose, this);
 
-        // it = new image_transport::ImageTransport(nh);
-        // pub_path_image = it->advertise("/pathImage", 1); //Publisher for final path image 
+        sub_nav_msgs = nh.subscribe("local_planner/path", 10, &Debugger::updateNavMsg, this);
+        sub_status_msg = nh.subscribe("local_planner/status", 10, &Debugger::showStatus, this);
 
+        nh.getParam("debugger/map_max_rows", MAP_MAX_ROWS);
+        nh.getParam("debugger/map_max_cols", MAP_MAX_COLS);
 
+        my_bot_location = navigation::State(MAP_MAX_COLS/2, MAP_MAX_ROWS/10, 90, 0);
+        
+        local_map = cv::Mat::zeros(MAP_MAX_ROWS, MAP_MAX_COLS, CV_8UC1);
 
-        local_map = cv::Mat::zeros(MAP_MAX, MAP_MAX, CV_8UC1);
-
-        ROS_INFO("Local Planner(AStarSeed) started.... ");
-        ROS_INFO("Publisher : \"/pathImage\" .... ");
-        ROS_INFO("Subscriber : \"interpreter/fusion/world_map\", \"/bot_pose\", \"/target_pose\" .... ");
     }
 
-    void Debugger::showStatus(const std_msgs::String::ConstPtr& msg)
-    {
-        ROS_INFO("Current Status: [%s]", msg->data.c_str());
-        printf("%s", msg->data.c_str());
+    void Debugger::showStatus(const std_msgs::String::ConstPtr& msg) {
+        ROS_INFO("Current Status: %s", msg->data.c_str());
     }
-    
 
     void Debugger::updateNavMsg(const nav_msgs::Path& msg) {
         int i;
@@ -69,25 +61,13 @@ namespace navigation {
         cv::line(local_map, cvPoint(my_target_location.x(), local_map.rows - 1 - my_target_location.y()), cvPoint(my_target_location.x() + 15 * cos((my_target_location.theta() * M_PI) / 180), local_map.rows - 1 - my_target_location.y() - 15 * sin((my_target_location.theta() * M_PI) / 180)), cvScalar(128), 1, 8, 0);
         cv::circle(local_map, cvPoint(my_bot_location.x(), local_map.rows - 1 - my_bot_location.y()), 5, cvScalar(128), -1);
         cv::line(local_map, cvPoint(my_bot_location.x(), local_map.rows - 1 - my_bot_location.y()), cvPoint(my_bot_location.x() + 15 * cos((my_bot_location.theta() * M_PI) / 180), local_map.rows - 1 - my_bot_location.y() - 15 * sin((my_bot_location.theta() * M_PI) / 180)), cvScalar(128), 1, 8, 0);
-        std::cout << "Showing A Path\n";
         for (std::vector<Pose>::iterator poseIt = path.begin(); poseIt != path.end(); ++poseIt) {
             const Pose pos = *poseIt;
-            cv::circle(local_map, cv::Point( pos.x, local_map.rows - pos.y - 1), 3, cv::Scalar(255), -1);
-            // cv::circle(local_map, cv::Point(my_bot_location.x() + pos.x, local_map.rows - (my_bot_location.y() + pos.y) - 1), 3, cv::Scalar(255), -1);
+            cv::circle(local_map, cv::Point(pos.x, local_map.rows - pos.y - 1), 3, cv::Scalar(255), -1);
 
         }
-        
+
     }
-
-    // void Debugger::publishImage() {
-    //     cv_bridge::CvImage out_msg;
-    //     out_msg.encoding = sensor_msgs::image_encodings::TYPE_8UC1;
-    //     out_msg.image = local_map;
-    //     pub_path_image.publish(out_msg.toImageMsg());
-    //     cv::imshow("view", local_map);
-    //     cvWaitKey(10);
-
-    // }
 
     void Debugger::showPath() {
         cv::imshow("view", local_map);
@@ -98,21 +78,21 @@ namespace navigation {
 
 }
 
-int main(int argc, char* argv[])
-{
-        const std::string node_name = "debugger";
-        ros::init(argc, argv, node_name.c_str());
-        navigation::Debugger debugger;
-        ros::NodeHandle nh;
-        debugger.nh = nh;
-        ros::Rate loop_rate(LOOP_RATE);
-        
-        while (ros::ok()) {
-            ros::spinOnce();
-            debugger.makeMap();
-            
-            debugger.showPath();
-            loop_rate.sleep();
-        }
+int main(int argc, char* argv[]) {
+    const std::string node_name = "debugger";
+    int LOOP_RATE;
+    ros::init(argc, argv, node_name.c_str());
+    navigation::Debugger debugger;
+    ros::NodeHandle nh;
+    debugger.nh = nh;
+    nh.getParam("debugger/loop_rate", LOOP_RATE);
+    ros::Rate loop_rate(LOOP_RATE);
+
+    while (ros::ok()) {
+        ros::spinOnce();
+        debugger.makeMap();
+        debugger.showPath();
+        loop_rate.sleep();
+    }
 
 }

@@ -9,19 +9,20 @@
 
 #include "local_planner.hpp"
 
+
 int main(int argc, char* argv[]) {
 
     const std::string node_name = "local_planner";
-    int confidence ;
+    int planning_strategy ;
 
     ros::init(argc, argv, node_name.c_str());
 
     ros::NodeHandle nh;
-    nh.getParam("local_planner/confidence", confidence);
+    nh.getParam("local_planner/planning_strategy", planning_strategy);
     navigation::LocalPlanner local_planner_seed(nh);
 
-    if (confidence == 0) {
-        local_planner_seed.plan();
+    if (planning_strategy == 0) {
+        local_planner_seed.planWithAstarSeed();
     } else {
         local_planner_seed.planWithQuickReflex();
     }
