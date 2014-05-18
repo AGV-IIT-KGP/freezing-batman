@@ -13,7 +13,7 @@ tags
 build
 lib
 bin
-data
+nbproject
 *.orig*
 .DS_Store
 

@@ -1,0 +1,24 @@
+<package>
+    <description brief="showpath_debugger">
+
+        showpath_debugger
+
+    </description>
+    <author>Yash</author>
+    <license>BSD</license>
+    <review status="unreviewed" notes=""/>
+    <url>http://ros.org/wiki/showpath_debugger</url>
+    <depend package="roscpp"/>
+    <depend package="opencv2"/>
+    <depend package="agv_framework"/>
+    <depend package="nav_msgs"/>
+    <depend package="sensor_msgs"/>  
+    <depend package="geometry_msgs"/>
+    <depend package="std_msgs"/>
+    <depend package="image_transport"/> 
+    <depend package="cv_bridge"/>
+    <depend package="local_planner"/>
+
+</package>
+
+

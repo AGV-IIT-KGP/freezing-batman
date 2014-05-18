@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="obstacle_detector" type="obstacle_detector" name="obstacle_detector" cwd="node" output="screen">
+        <param name="center_x" type="int" value="500"/>
+        <param name="center_y" type="int" value="100"/>
+        <param name="debug_mode" type="int" value="0"/>
+        <param name="hokuyo_scale" type="int" value="100"/>
+        <param name="lidar_y_shift" type="int" value="30"/>
+        <param name="map_size" type="int" value="1000"/>
+        <param name="max_dist" type="int" value="400"/>
+        <param name="min_dist" type="int" value="0"/>
+        <param name="obstacle_expansion" type="int" value="30"/>
+        <param name="wait_time" type="int" value="100"/>
+    </node>
+</launch>
+    

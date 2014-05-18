@@ -9,20 +9,23 @@
 
 #include "local_planner.hpp"
 
-int main(int argc,char* argv[]) {
+int main(int argc, char* argv[]) {
+    const std::string node_name = "local_planner";
+    int confidence;
 
-    const std::string ndoe_name = "local_planner";
-
-    ros::init(argc, argv, ndoe_name.c_str());
+    ros::init(argc, argv, node_name.c_str());
 
     ros::NodeHandle nh;
-    
+    nh.getParam("local_planner/confidence", confidence);
     navigation::LocalPlanner local_planner_seed(nh);
 
+    if (confidence == 0) {
+        local_planner_seed.plan();
+    } else {
+        local_planner_seed.planWithQuickReflex();
+    }
 
-    local_planner_seed.plan();
 
-    
     // cvNamedWindow("[PLANNER] Map", 0);
 
     // navigation::State botLocation(500,100,90,0),targetLocation(900,900,90,0);
@@ -40,7 +43,7 @@ int main(int argc,char* argv[]) {
     //     double td = t.tv_sec + t.tv_usec/1000000.0;
     //     double cd = c.tv_sec + c.tv_usec/1000000.0; // time in seconds for thousand iterations
 
-    
+
     //     std::cout<<"FPS:"<< 100/(cd-td) <<std::endl;
 
 
