@@ -5,19 +5,19 @@
  * Created on 18 May, 2014, 7:38 AM
  */
 
-#include "waypoint_navigator/waypoint_navigator.hpp"
+#include <waypoint_navigator.hpp>
 
 typedef long double precnum_t;
 
-void Waypoint_Navigator::setCurrentGPS(sensor_msgs::NavSatFix current) {
+void WaypointNavigator::setCurrentGPS(sensor_msgs::NavSatFix current) {
     current_gps_ = current;
 }
 
-void Waypoint_Navigator::setTargetGPS(sensor_msgs::NavSatFix target) {
+void WaypointNavigator::setTargetGPS(sensor_msgs::NavSatFix target) {
     target_gps_ = target;
 }
 
-geometry_msgs::Pose2D Waypoint_Navigator::interpret() {
+geometry_msgs::Pose2D WaypointNavigator::interpret() {
     geometry_msgs::Pose pose, temp;
     geometry_msgs::Pose2D target_relative_pose;
 
