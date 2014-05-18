@@ -5,10 +5,11 @@
  * Created on 18 September, 2012, 6:56 PM
  */
 //#include "../../eklavya2.h"
+
 #include <opencv2/core/types_c.h>
 #include "sensor_msgs/LaserScan.h"
 #include <fstream>
- #include <iostream>
+#include <iostream>
 #include <stdexcept>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -21,8 +22,6 @@
 #include <sensor_msgs/image_encodings.h>
 #include <environment/Interpreter.hpp>
 
-
-
 using namespace std;
 
 #ifndef LIDARDATA_H
@@ -30,18 +29,16 @@ using namespace std;
 
 class LidarData {
 public:
-     cv::Mat img;
-	 image_transport::Publisher obstacle_publisher;
-     LidarData();
-     void update_map(const sensor_msgs::LaserScan&);
-     void publishData(cv::Mat img);
-     static void writeVal(int val);
+    cv::Mat img;
+    image_transport::Publisher obstacle_publisher;
+    LidarData();
+    void updateMap(const sensor_msgs::LaserScan&);
+    void publishData(cv::Mat img);
+    static void writeVal(int val);
     virtual ~LidarData();
-     
 
 private:
     static void createCircle(int x, int y);
-	
 };
 
 #endif	/* LIDARDATA_H */
