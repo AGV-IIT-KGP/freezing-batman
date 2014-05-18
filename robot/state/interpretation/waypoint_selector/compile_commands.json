@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/robot/state/interpretation/waypoint_selector",
+  "command": "/usr/bin/g++    -O2 -g -I/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/robot/state/interpretation/waypoint_selector/include -I/opt/ros/fuerte/include -I/opt/ros/fuerte/include/opencv    -DROS_PACKAGE_NAME='\"waypoint_selector\"' -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/waypoint_selector.dir/src/main.o -c /home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/robot/state/interpretation/waypoint_selector/src/main.cpp",
+  "file": "/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/robot/state/interpretation/waypoint_selector/src/main.cpp"
+},
+{
+  "directory": "/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/robot/state/interpretation/waypoint_selector",
+  "command": "/usr/bin/g++    -O2 -g -I/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/robot/state/interpretation/waypoint_selector/include -I/opt/ros/fuerte/include -I/opt/ros/fuerte/include/opencv    -DROS_PACKAGE_NAME='\"waypoint_selector\"' -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/waypoint_selector.dir/src/waypoint_selector.o -c /home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/robot/state/interpretation/waypoint_selector/src/waypoint_selector.cpp",
+  "file": "/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/robot/state/interpretation/waypoint_selector/src/waypoint_selector.cpp"
+}
+]
