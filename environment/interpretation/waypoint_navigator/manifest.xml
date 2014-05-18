@@ -1,0 +1,19 @@
+<package>
+  <description brief="waypoint_navigator">
+
+     waypoint_navigator
+
+  </description>
+  <author>Abinash Meher</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/waypoint_navigator</url>
+  <depend package="roscpp"/>
+  <depend package="sensor_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="std_msgs"/>
+  <depend package="opencv2"/>
+
+</package>
+
+

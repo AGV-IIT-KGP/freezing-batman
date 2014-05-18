@@ -1,0 +1,19 @@
+<package>
+  <description brief="waypoint_selector">
+
+     waypoint_selector
+
+  </description>
+  <author>Abinash Meher</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/waypoint_selector</url>
+  <depend package="roscpp"/>
+  <depend package="geometry_msgs"/>
+  <depend package="sensor_msgs"/>
+  <depend package="opencv2"/>
+  <depend package="std_msgs"/>
+
+</package>
+
+

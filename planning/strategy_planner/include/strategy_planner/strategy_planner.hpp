@@ -29,7 +29,7 @@ class Strategy_Planner {
     geometry_msgs::Pose2D dummy_target_, nose_target_, waypoint_target_, lane_target_;
     geometry_msgs::Pose2D final_target;
     bool is_high_priority;
-    bool has_target_reached;
+//    bool has_target_reached;
     std::string high_priority_status;
     std::string which_planner_;
     int navigators, planners;
@@ -46,8 +46,8 @@ public:
     void setLaneTarget(geometry_msgs::Pose2D proposed_lane_target_);
     void setNavigator(int navigator_);
     void setPlanner(int planner);
-    void checkifTargetReached();
-    std_msgs::Bool hasTargetReached();
+//    void setifTargetReached();
+//    std_msgs::Bool hasTargetReached();
 
     inline geometry_msgs::Pose2D getDummyTarget() const {
         return dummy_target_;

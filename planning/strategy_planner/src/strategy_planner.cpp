@@ -37,20 +37,20 @@ void Strategy_Planner::setPlanner(int planner) {
     planners = planner; //see enum for int values
 }
 
-void Strategy_Planner::checkifTargetReached() {
-    if (high_priority_status == std::string("BOT ON TARGET")) {
-        has_target_reached = true;
-    } else has_target_reached = false;
-}
+//void Strategy_Planner::setifTargetReached() {
+//    if (high_priority_status == std::string("BOT ON TARGET")) {
+//        has_target_reached = true;
+//    } else has_target_reached = false;
+//}
 
-std_msgs::Bool Strategy_Planner::hasTargetReached() {
-    std_msgs::Bool pub_bool;
-    pub_bool.data = has_target_reached;
-    return pub_bool;
-}
+//std_msgs::Bool Strategy_Planner::hasTargetReached() {
+//    std_msgs::Bool pub_bool;
+//    pub_bool.data = has_target_reached;
+//    return pub_bool;
+//}
 
 void Strategy_Planner::plan() {
-    checkifTargetReached();
+    setifTargetReached();
     if (!is_high_priority) {
         switch (navigators) {
             case dummy_navigator:
