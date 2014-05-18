@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <node pkg="eklavya_imu_sparkfun" type="sparkfun_imu_node.py" name="node" output="screen">
+  <node pkg="sparkfun_ahrs" type="sparkfun_imu_node.py" name="node" output="screen">
         <!-- <param name="port" value="/dev/ttyUSB0" /> -->
         <param name="port" value="/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A700ewWv-if00-port0" /> 
 		<param name="baudrate" value="57600" />
