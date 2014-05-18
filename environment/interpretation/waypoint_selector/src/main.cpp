@@ -8,9 +8,10 @@ int main(int argc, char* argv[]) {
     std_msgs::Bool std_nml;
     std::string node_name = "waypoint_selector"; //launchfile-> <node .... name="waypoint_selector" />
 
+    ros::init(argc, argv, std::string("waypoint_selector"));
+    
     ros::NodeHandle nh;
 
-    ros::init(argc, argv, std::string("waypoint_selector"));
     nh.getParam(std::string("/") + node_name + std::string("/proximity"), proximity);
     nh.getParam(std::string("/") + node_name + std::string("/filename"), filename);
     nh.getParam(std::string("/") + node_name + std::string("/strategy"), strategy);
