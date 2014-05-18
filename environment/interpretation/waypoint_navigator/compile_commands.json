@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/environment/interpretation/waypoint_navigator",
+  "command": "/usr/bin/g++    -O2 -g -I/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/environment/interpretation/waypoint_navigator/include -I/opt/ros/fuerte/include -I/opt/ros/fuerte/include/opencv    -DROS_PACKAGE_NAME='\"waypoint_navigator\"' -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/waypoint_navigator.dir/src/main.o -c /home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/environment/interpretation/waypoint_navigator/src/main.cpp",
+  "file": "/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/environment/interpretation/waypoint_navigator/src/main.cpp"
+},
+{
+  "directory": "/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/environment/interpretation/waypoint_navigator",
+  "command": "/usr/bin/g++    -O2 -g -I/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/environment/interpretation/waypoint_navigator/include -I/opt/ros/fuerte/include -I/opt/ros/fuerte/include/opencv    -DROS_PACKAGE_NAME='\"waypoint_navigator\"' -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/waypoint_navigator.dir/src/waypoint_navigator.o -c /home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/environment/interpretation/waypoint_navigator/src/waypoint_navigator.cpp",
+  "file": "/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/environment/interpretation/waypoint_navigator/src/waypoint_navigator.cpp"
+}
+]
