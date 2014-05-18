@@ -91,7 +91,9 @@ std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator Waypoint_Selecto
             }
         }
     }
-    if (flag == -1)return gps_waypoints_.end();
+    if (flag == -1) {
+        return gps_waypoints_.end();
+    }
 
     return gps_waypoints_.begin() + flag;
 }
@@ -114,7 +116,9 @@ std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator Waypoint_Selecto
             flag = index;
         }
     }
-    if (flag == -1)return gps_waypoints_.end();
+    if (flag == -1) {
+        return gps_waypoints_.end();
+    }
 
     return gps_waypoints_.begin() + flag;
 }
@@ -124,8 +128,11 @@ bool Waypoint_Selector::seeifReached(std::vector<std::pair<sensor_msgs::NavSatFi
         target_ptr->second = true;
         last_waypoint_ = target_ptr;
         no_visited_waypoints_++;
-        if (no_visited_waypoints_ == gps_waypoints_.size()) is_nml_ = false;
-        else is_nml_ = true;
+        if (no_visited_waypoints_ == gps_waypoints_.size()) {
+            is_nml_ = false;
+        } else {
+            is_nml_ = true;
+        }
         return true;
     }
     return false;
