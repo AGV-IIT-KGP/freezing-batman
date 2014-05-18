@@ -6,25 +6,33 @@
 //  Copyright (c) 2013 Satya Prakash. All rights reserved.
 //
 
-
 #include "local_planner.hpp"
 
 int main(int argc, char* argv[]) {
     const std::string node_name = "local_planner";
-    int confidence;
+    int planning_strategy;
 
     ros::init(argc, argv, node_name.c_str());
+    ros::NodeHandle node_handle;
+    navigation::LocalPlanner local_planner(node_handle);
 
-    ros::NodeHandle nh;
-    nh.getParam("local_planner/confidence", confidence);
-    navigation::LocalPlanner local_planner_seed(nh);
+    int loop_rate_hz;
+    node_handle.getParam("local_planner/loop_rate", loop_rate_hz);
+    ros::Rate loop_rate(loop_rate_hz);
+    navigation::quickReflex quick_reflex_planner(node_handle);
+    navigation::AStarSeed astar_seed_planner(node_handle);
 
-    if (confidence == 0) {
-        local_planner_seed.plan();
-    } else {
-        local_planner_seed.planWithQuickReflex();
+    while (ros::ok()) {
+        node_handle.getParam("local_planner/planning_strategy", planning_strategy);
+        if (planning_strategy == 0) {
+            local_planner.planWithAstarSeed(astar_seed_planner);
+        } else {
+            local_planner.planWithQuickReflex(quick_reflex_planner);
+        }
+
+        ros::spinOnce();
+        loop_rate.sleep();
     }
-
 
     // cvNamedWindow("[PLANNER] Map", 0);
 

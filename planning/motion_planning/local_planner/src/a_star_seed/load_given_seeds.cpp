@@ -11,17 +11,21 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-const int DT_CONSTANT = 2;
 
 namespace navigation {
 
     void AStarSeed::loadGivenSeeds() {
-        const int VMAX = 70;
-        const int MAX_ITER = 10000;
-        const int MIN_RAD = 70;
+        int VMAX;
+        int MAX_ITER;
+        int MIN_RAD;
         int numberOfSeeds;
         int return_status;
         double x, y, z;
+
+        nh.getParam("local_planner/vmax", VMAX);
+        nh.getParam("local_planner/max_iterations_load_given_seeds", MAX_ITER);
+        nh.getParam("local_planner/min_rad", MIN_RAD);
+
 
         //work TODO change to c++
         FILE *textFileOFSeeds = fopen(SEEDS_FILE.c_str(), "r");
@@ -74,11 +78,13 @@ namespace navigation {
     }
 
     void quickReflex::loadGivenSeeds(const State& start, const State& goal) {
-        const int VMAX = 70;
+        int VMAX;
         int numberOfSeeds;
         int return_status;
         double x, y, z;
-
+        int DT_CONSTANT;
+        nh.getParam("local_planner/distance_transform_constant", DT_CONSTANT);
+        nh.getParam("local_planner/vmax", VMAX);
         FILE *textFileOFSeeds = fopen(SEEDS_FILE.c_str(), "r");
 
         if (!textFileOFSeeds) {

@@ -73,19 +73,18 @@ namespace navigation {
     class AStarSeed {
     public:
         AStarSeed( ros::NodeHandle& nodehandle);
-        std::pair<std::vector<StateOfCar>, Seed> findPathToTargetWithAstar(const cv::Mat& fusionMap, const State& start, const State& goal, int , int);
-        // cv::Mat showPath(std::vector<StateOfCar>& path, const State& start, const State& goal);
+        std::pair<std::vector<StateOfCar>, Seed> findPathToTarget(const cv::Mat& fusionMap, const State& start, const State& goal, int , int, int&);
         int distance_transform, debug_current_state;
-        void publishStatus(ros::NodeHandle& nodeHandle , int status);
         std::string getSeedFileNameAStarSeed(ros::NodeHandle& nodeHandle);
         ros::NodeHandle nh;
+        int status;
+
 
     private:
         static const int MAX_ITERATIONS;
         std::string SEEDS_FILE;
         int MAP_MAX_COLS;
         int MAP_MAX_ROWS;
-        int status;
         std::vector<Seed> givenSeeds;
         cv::Mat fusionMap;
         cv::Mat image;
@@ -111,17 +110,16 @@ namespace navigation {
         quickReflex(const State& start, const State& goal){
             loadGivenSeeds(start, goal);
         };
-        std::pair<std::vector<State>, Seed> findPathToTarget(const cv::Mat& fusionMap, const State& start, const State& goal);
+        std::pair<std::vector<State>, Seed> findPathToTarget(const cv::Mat& fusionMap, const State& start, const State& goal, int&);
         void showPath(std::vector<State>& path, const State& start, const State& goal);
-        void publishStatus(ros::NodeHandle& nodeHandle , int status);
         std::string getSeedFileNameQuickReflex(ros::NodeHandle& nodeHandle);
         ros::NodeHandle nh;
+        int status;
 
     private:
         cv::Mat fusionMap;
         cv::Mat image;
         std::string SEEDS_FILE;
-        int status;
 
         void distanceTransform();
         void loadGivenSeeds(const State& start, const State& goal);

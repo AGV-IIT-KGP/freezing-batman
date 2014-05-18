@@ -8,19 +8,18 @@
 #include <cmath>
 #include <cstdlib>
 #include <sensor_msgs/image_encodings.h>
-#include "geometry_msgs/Pose.h"
+#include "geometry_msgs/Pose2D.h"
 
 int main(int argc, char **argv) {
     ros::init(argc, argv, "dummy_tester");
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
-    image_transport::Publisher pub_world_map = it.advertise("interpreter/fusion/world_map", 10);
-    ros::Publisher pub_target_pose = nh.advertise<geometry_msgs::Pose>("/target_pose", 10);
-    ros::Publisher pub_bot_pose = nh.advertise<geometry_msgs::Pose>("/bot_pose", 10);
+    image_transport::Publisher pub_world_map = it.advertise("data_fuser/map", 10);
+    ros::Publisher pub_target_pose = nh.advertise<geometry_msgs::Pose2D>("strategy_planner/target", 10);
 
     srand((unsigned int) time(NULL));
 
-    int height = 600, width = 600;
+    int height = 1000, width = 1000;
     int minradius = 20, maxradius = 60;
     int minobs = 2, maxobs = 9;
     int upper_margin_zone = 100;
@@ -29,17 +28,12 @@ int main(int argc, char **argv) {
     ros::Rate loop_rate(10);
 
     while (ros::ok()) {
-        geometry_msgs::Pose bot_pose;
-        bot_pose.position.x = height / 2;
-        bot_pose.position.y = 50;
-        bot_pose.position.z = 90;
 
-        pub_bot_pose.publish(bot_pose);
-
-        geometry_msgs::Pose target_pose;
-        target_pose.position.x = rand() % width;
-        target_pose.position.y = (height - rand() % 50);
-        target_pose.position.z = rand() % 360;
+        geometry_msgs::Pose2D target_pose;
+        
+        target_pose.x = rand() % width;
+        target_pose.y = (height - rand() % 50);
+        target_pose.theta = (rand() % (360))*(2*M_PI)/360;
 
         pub_target_pose.publish(target_pose);
 

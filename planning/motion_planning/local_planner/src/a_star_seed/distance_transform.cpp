@@ -14,6 +14,9 @@ namespace navigation {
     void AStarSeed::distanceTransform() {
         cv::Mat binaryImg, transformedImg;
         int i, j;
+        
+
+        
         threshold(fusionMap, binaryImg, 100, 255, CV_THRESH_BINARY);
 
         binaryImg = 255 - binaryImg;
@@ -36,6 +39,9 @@ namespace navigation {
     void quickReflex::distanceTransform() {
         cv::Mat binaryImg, transformedImg;
         int i, j;
+        int BINARY_MIN_THRESHOLD, BINARY_MAX_THRESHOLD;
+        nh.getParam("local_planner/max_threshold", BINARY_MAX_THRESHOLD);
+        nh.getParam("local_planner/min_threshold", BINARY_MIN_THRESHOLD);
         threshold(fusionMap, binaryImg, 100, 255, CV_THRESH_BINARY);
 
         binaryImg = 255 - binaryImg;
