@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-  <include file="$(find eklavya_imu_sparkfun)/launch/imu.launch"/>
-	
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find eklavya_imu_sparkfun)/rviz/rviz.vcg" />
-</launch>
