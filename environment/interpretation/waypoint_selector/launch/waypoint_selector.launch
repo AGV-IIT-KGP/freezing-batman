@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="waypoint_selector" type="waypoint_selector" name="waypoint_selector" args="3" output="screen" cwd="node">
+        <param name="proximity" type="double" value="2.0"/>
+        <param name="filename" type="str" value="../data/GPS_waypoints.txt"/>                
+        <param name="strategy" type="int" value="1"/>        
+    </node>
+</launch>
