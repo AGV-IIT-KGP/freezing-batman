@@ -70,14 +70,14 @@ namespace navigation {
 
     void LocalPlanner::publishData(std::pair<std::vector<navigation::StateOfCar>, navigation::Seed>& path) {
         local_planner::Seed seed;
-        seed.x = path.second.finalState.x();
-        seed.y = path.second.finalState.y();
-        seed.theta = path.second.finalState.theta();
+        seed.x = path.second.final_state.x();
+        seed.y = path.second.final_state.y();
+        seed.theta = path.second.final_state.theta();
         seed.costOfseed = path.second.costOfseed;
         seed.velocityRatio = path.second.velocityRatio;
         seed.leftVelocity = path.second.leftVelocity;
         seed.rightVelocity = path.second.rightVelocity;
-        seed.curvature = path.second.finalState.curvature();
+        seed.curvature = path.second.final_state.curvature();
         seed_publisher.publish(seed);
 
         nav_msgs::Path path_msg;
@@ -91,14 +91,14 @@ namespace navigation {
 
     void LocalPlanner::publishData(std::pair<std::vector<navigation::State>, navigation::Seed>& path) {
         local_planner::Seed seed;
-        seed.x = path.second.finalState.x();
-        seed.y = path.second.finalState.y();
-        seed.theta = path.second.finalState.theta();
+        seed.x = path.second.final_state.x();
+        seed.y = path.second.final_state.y();
+        seed.theta = path.second.final_state.theta();
         seed.costOfseed = path.second.costOfseed;
         seed.velocityRatio = path.second.velocityRatio;
         seed.leftVelocity = path.second.leftVelocity;
         seed.rightVelocity = path.second.rightVelocity;
-        seed.curvature = path.second.finalState.curvature();
+        seed.curvature = path.second.final_state.curvature();
         seed_publisher.publish(seed);
 
         nav_msgs::Path path_msg;

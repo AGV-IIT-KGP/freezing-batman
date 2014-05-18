@@ -21,7 +21,7 @@ namespace navigation {
         for (unsigned int i = 0; i < givenSeeds.size(); i++) {
             for (unsigned int j = 0; j < givenSeeds[i].intermediatePoints.size(); j++) {
                 const double sx = givenSeeds[i].intermediatePoints[j].x();
-                const double sy = givenSeeds[i].finalState.x();
+                const double sy = givenSeeds[i].final_state.x();
                 //double sz = givenSeeds[i].destination.getXcordinate();
 
                 const int x((int) (currentState.x() + sx * sin(currentState.theta() * (CV_PI / 180)) + sy * cos(currentState.theta() * (CV_PI / 180))));

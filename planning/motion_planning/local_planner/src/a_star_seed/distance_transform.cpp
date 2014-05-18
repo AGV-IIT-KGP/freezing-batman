@@ -6,58 +6,55 @@
 //  Copyright (c) 2013 Satya Prakash. All rights reserved.
 //
 
-
-#include "a_star_seed/a_star_seed.hpp"
+#include <a_star_seed/a_star_seed.hpp>
 
 namespace navigation {
 
     void AStarSeed::distanceTransform() {
-        cv::Mat binaryImg, transformedImg;
+        cv::Mat binary_img, transformed_img;
         int i, j;
-        
 
-        
-        threshold(fusionMap, binaryImg, 100, 255, CV_THRESH_BINARY);
+        cv::threshold(fusion_map, binary_img, 100, 255, CV_THRESH_BINARY);
 
-        binaryImg = 255 - binaryImg;
-        cv::distanceTransform(binaryImg, transformedImg, CV_DIST_L2, 3);
-        float DtThresh = 100;
-        for (i = 0; i < fusionMap.rows; i++)
-            for (j = 0; j < fusionMap.cols; j++)
-                if (transformedImg.at<float>(i, j) > DtThresh)
-                    transformedImg.at<float>(i, j) = DtThresh;
-        cv::normalize(transformedImg, transformedImg, 0, 1, cv::NORM_MINMAX);
-        double minVal, maxVal;
-        minMaxLoc(transformedImg, &minVal, &maxVal);
-        binaryImg.convertTo(binaryImg, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
-        transformedImg.convertTo(binaryImg, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
+        binary_img = 255 - binary_img;
+        cv::distanceTransform(binary_img, transformed_img, CV_DIST_L2, 3);
+        float dt_threshold = 100;
+        for (i = 0; i < fusion_map.rows; i++)
+            for (j = 0; j < fusion_map.cols; j++)
+                if (transformed_img.at<float>(i, j) > dt_threshold)
+                    transformed_img.at<float>(i, j) = dt_threshold;
+        cv::normalize(transformed_img, transformed_img, 0, 1, cv::NORM_MINMAX);
+        double min_val, max_val;
+        minMaxLoc(transformed_img, &min_val, &max_val);
+        binary_img.convertTo(binary_img, CV_8U, 255.0 / (max_val - min_val), -min_val * 255.0 / (max_val - min_val));
+        transformed_img.convertTo(binary_img, CV_8U, 255.0 / (max_val - min_val), -min_val * 255.0 / (max_val - min_val));
 
-        binaryImg = 255 - binaryImg;
-        fusionMap = binaryImg;
+        binary_img = 255 - binary_img;
+        fusion_map = binary_img;
     }
 
     void quickReflex::distanceTransform() {
-        cv::Mat binaryImg, transformedImg;
+        cv::Mat binary_img, transformed_img;
         int i, j;
-        int BINARY_MIN_THRESHOLD, BINARY_MAX_THRESHOLD;
-        nh.getParam("local_planner/max_threshold", BINARY_MAX_THRESHOLD);
-        nh.getParam("local_planner/min_threshold", BINARY_MIN_THRESHOLD);
-        threshold(fusionMap, binaryImg, 100, 255, CV_THRESH_BINARY);
+        int binary_min_threshold, binary_max_threshold;
+        node_handle.getParam("local_planner/max_threshold", binary_max_threshold);
+        node_handle.getParam("local_planner/min_threshold", binary_min_threshold);
+        cv::threshold(fusion_map, binary_img, 100, 255, CV_THRESH_BINARY);
 
-        binaryImg = 255 - binaryImg;
-        cv::distanceTransform(binaryImg, transformedImg, CV_DIST_L2, 3);
+        binary_img = 255 - binary_img;
+        cv::distanceTransform(binary_img, transformed_img, CV_DIST_L2, 3);
         float DtThresh = 100;
-        for (i = 0; i < fusionMap.rows; i++)
-            for (j = 0; j < fusionMap.cols; j++)
-                if (transformedImg.at<float>(i, j) > DtThresh)
-                    transformedImg.at<float>(i, j) = DtThresh;
-        cv::normalize(transformedImg, transformedImg, 0, 1, cv::NORM_MINMAX);
+        for (i = 0; i < fusion_map.rows; i++)
+            for (j = 0; j < fusion_map.cols; j++)
+                if (transformed_img.at<float>(i, j) > DtThresh)
+                    transformed_img.at<float>(i, j) = DtThresh;
+        cv::normalize(transformed_img, transformed_img, 0, 1, cv::NORM_MINMAX);
         double minVal, maxVal;
-        minMaxLoc(transformedImg, &minVal, &maxVal);
-        binaryImg.convertTo(binaryImg, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
-        transformedImg.convertTo(binaryImg, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
+        minMaxLoc(transformed_img, &minVal, &maxVal);
+        binary_img.convertTo(binary_img, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
+        transformed_img.convertTo(binary_img, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
 
-        binaryImg = 255 - binaryImg;
-        fusionMap = binaryImg;
+        binary_img = 255 - binary_img;
+        fusion_map = binary_img;
     }
 }

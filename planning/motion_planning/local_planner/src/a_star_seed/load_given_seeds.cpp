@@ -6,11 +6,10 @@
 //  Copyright (c) 2013 Satya Prakash. All rights reserved.
 //
 
-
-#include "a_star_seed/a_star_seed.hpp"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <a_star_seed/a_star_seed.hpp>
 
 namespace navigation {
 
@@ -22,10 +21,9 @@ namespace navigation {
         int return_status;
         double x, y, z;
 
-        nh.getParam("local_planner/vmax", VMAX);
-        nh.getParam("local_planner/max_iterations_load_given_seeds", MAX_ITER);
-        nh.getParam("local_planner/min_rad", MIN_RAD);
-
+        node_handle.getParam("local_planner/vmax", VMAX);
+        node_handle.getParam("local_planner/max_iterations_load_given_seeds", MAX_ITER);
+        node_handle.getParam("local_planner/min_rad", MIN_RAD);
 
         //work TODO change to c++
         FILE *textFileOFSeeds = fopen(SEEDS_FILE.c_str(), "r");
@@ -52,7 +50,7 @@ namespace navigation {
             s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
             s.rightVelocity = VMAX / (1 + s.velocityRatio);
 
-            s.finalState = State((int) x, (int) y, z, 0);
+            s.final_state = State((int) x, (int) y, z, 0);
 
             int n_seed_points;
             return_status = fscanf(textFileOFSeeds, "%d\n", &n_seed_points);
@@ -83,12 +81,12 @@ namespace navigation {
         int return_status;
         double x, y, z;
         int DT_CONSTANT;
-        nh.getParam("local_planner/distance_transform_constant", DT_CONSTANT);
-        nh.getParam("local_planner/vmax", VMAX);
-        FILE *textFileOFSeeds = fopen(SEEDS_FILE.c_str(), "r");
+        node_handle.getParam("local_planner/distance_transform_constant", DT_CONSTANT);
+        node_handle.getParam("local_planner/vmax", VMAX);
+        FILE *textFileOFSeeds = fopen(seeds_file.c_str(), "r");
 
         if (!textFileOFSeeds) {
-            std::cout << "load in opening seed file : " << SEEDS_FILE << std::endl;
+            std::cout << "load in opening seed file : " << seeds_file << std::endl;
         }
 
         return_status = fscanf(textFileOFSeeds, "%d\n", &numberOfSeeds);
@@ -111,7 +109,7 @@ namespace navigation {
             s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
             s.rightVelocity = VMAX / (1 + s.velocityRatio);
 
-            s.finalState = State((int) x, (int) y, z, 0);
+            s.final_state = State((int) x, (int) y, z, 0);
 
             int n_seed_points;
             return_status = fscanf(textFileOFSeeds, "%d\n", &n_seed_points);
@@ -130,7 +128,7 @@ namespace navigation {
                     exit(1);
                 }
 
-                cost += point.distanceTo(goal) + DT_CONSTANT * fusionMap.at<uchar>(fusionMap.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
+                cost += point.distanceTo(goal) + DT_CONSTANT * fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
                 s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
             }
             s.costOfseed = (cost / n_seed_points);

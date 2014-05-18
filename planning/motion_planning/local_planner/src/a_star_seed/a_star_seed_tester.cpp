@@ -6,40 +6,32 @@
 //  Copyright (c) 2014 Satya Prakash. All rights reserved.
 //
 
-
 #include <iostream>
 #include <sys/time.h>
-#include "a_star_seed/a_star_seed.hpp"
+#include <a_star_seed/a_star_seed.hpp>
 
 int main() {
-
     navigation::State botLocation(rand() % 100, rand() % 100, 90, 0), targetLocation(900, 900, 90, 0);
 
     srand((unsigned int) time(NULL));
-
     struct timeval t, c;
     gettimeofday(&t, NULL);
 
     int iterations;
-    int MAP_MAX_ROWS, MAP_MAX_COLS;
-    ros::NodeHandle nh;
-    nh.getParam("local_planner_tester/iterations", iterations);
-    nh.getParam("local_planner_tester/map_max_rows", MAP_MAX_ROWS);
-    nh.getParam("local_planner_tester/map_max_cols", MAP_MAX_COLS);
-
+    int map_max_rows, map_max_cols;
+    ros::NodeHandle node_handle;
+    node_handle.getParam("local_planner_tester/iterations", iterations);
+    node_handle.getParam("local_planner_tester/map_max_rows", map_max_rows);
+    node_handle.getParam("local_planner_tester/map_max_cols", map_max_cols);
 
     navigation::AStarSeed planner;
 
-
     while (iterations--) {
-
-
-        cv::Mat img = cv::Mat::zeros(MAP_MAX_ROWS, MAP_MAX_COLS, CV_8UC1);
+        cv::Mat map = cv::Mat::zeros(map_max_rows, map_max_cols, CV_8UC1);
         // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
+        navigation::addObstacles(map, 5);
 
-        navigation::addObstacles(img, 5);
-
-        std::vector<navigation::StateOfCar> path = planner.findPathToTargetWithAstar(img, botLocation, targetLocation);
+        std::vector<navigation::StateOfCar> path = planner.findPathToTargetWithAstar(map, botLocation, targetLocation);
 
         // std::chrono::steady_clock::time_point endC=std::chrono::steady_clock::now();
 
@@ -48,13 +40,10 @@ int main() {
         // std::cout<<"Taken time: "<<takenTime<<std::endl;
 
         // std::cout<<"FPS : "<<(1000000.0)/takenTime<<std::endl;
-
     }
-
 
     gettimeofday(&c, NULL);
     double td = t.tv_sec + t.tv_usec / 1000000.0;
     double cd = c.tv_sec + c.tv_usec / 1000000.0;
     std::cout << "FPS:" << 1000.0 / (cd - td) << std::endl;
-
 }

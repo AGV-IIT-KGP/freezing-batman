@@ -6,15 +6,15 @@
 //  Copyright (c) 2013 Satya Prakash. All rights reserved.
 //
 
-
-#include "a_star_seed/a_star_seed.hpp"
-
+#include <a_star_seed/a_star_seed.hpp>
 
 namespace navigation {
-    bool AStarSeed::isOnTheObstacle(const State& state){
-        return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) >= 225;
+
+    bool AStarSeed::isOnTheObstacle(const State& state) {
+        return fusion_map.at<uchar>(fusion_map.rows - state.y() - 1, state.x()) >= 225;
     }
-    bool quickReflex::isOnTheObstacle(const State& state){
-        return fusionMap.at<uchar>(fusionMap.rows - state.y() -1, state.x()) >= 225;
+
+    bool quickReflex::isOnTheObstacle(const State& state) {
+        return fusion_map.at<uchar>(fusion_map.rows - state.y() - 1, state.x()) >= 225;
     }
 }

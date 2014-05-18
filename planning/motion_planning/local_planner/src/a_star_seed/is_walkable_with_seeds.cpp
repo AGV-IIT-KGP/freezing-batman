@@ -6,67 +6,61 @@
 //  Copyright (c) 2013 Satya Prakash. All rights reserved.
 //
 
-const int MAP_MAX_ = 1000;
+#include <a_star_seed/a_star_seed.hpp>
 
-#include "a_star_seed/a_star_seed.hpp"
+const int map_max_ = 1000;
+
 namespace navigation {
 
     /*TO DO :
     isWalkable ()
     output, input should be correct */
 
-    bool AStarSeed::isWalkableWithSeeds(StateOfCar const& startState, StateOfCar const& targetState, int MAP_MAX_COLS, int MAP_MAX_ROWS) {
+    bool AStarSeed::isWalkableWithSeeds(StateOfCar const& start_state, StateOfCar const& target_state, int map_max_cols, int map_max_rows) {
+        bool no_obstacle = true;
 
-        bool NoObstacle = true;
-
-        for (std::vector<State>::iterator stateIt = givenSeeds[targetState.seedTaken()].intermediatePoints.begin(); stateIt != givenSeeds[targetState.seedTaken()].intermediatePoints.end(); ++stateIt) {
-
-            const State state = *stateIt;
-
-            double alpha = startState.theta();
+        for (std::vector<State>::iterator state_it = givenSeeds[target_state.seedTaken()].intermediatePoints.begin(); state_it != givenSeeds[target_state.seedTaken()].intermediatePoints.end(); ++state_it) {
+            const State state = *state_it;
+            double alpha = start_state.theta();
 
             int x = state.x();
             int y = state.y();
 
-            int intermediateXcordinate = (int) (x * sin(alpha * (CV_PI / 180)) + y * cos(alpha * (CV_PI / 180)) + startState.x());
+            int intermediate_x = (int) (x * sin(alpha * (CV_PI / 180)) + y * cos(alpha * (CV_PI / 180)) + start_state.x());
+            int intermediate_y = (int) (-x * cos(alpha * (CV_PI / 180)) + y * sin(alpha * (CV_PI / 180)) + start_state.y());
 
-            int intermediateYcordinate = (int) (-x * cos(alpha * (CV_PI / 180)) + y * sin(alpha * (CV_PI / 180)) + startState.y());
-
-            if (((intermediateXcordinate >= 0) && (intermediateXcordinate < MAP_MAX_COLS)) && ((intermediateYcordinate >= 0) && (intermediateYcordinate < MAP_MAX_ROWS))) {
-
-                fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate - 1, intermediateXcordinate) < 250 ? NoObstacle *= 1 : NoObstacle *= 0;
-
-
+            if (((intermediate_x >= 0) && (intermediate_x < map_max_cols)) && ((intermediate_y >= 0) && (intermediate_y < map_max_rows))) {
+                fusion_map.at<uchar>(fusion_map.rows - intermediate_y - 1, intermediate_x) < 250 ? NoObstacle *= 1 : no_obstacle *= 0;
             } else {
                 return false;
             }
         }
 
-        if (fusionMap.at<uchar>(fusionMap.rows - targetState.y() - 1, targetState.x()) >= 250)
+        if (fusion_map.at<uchar>(fusion_map.rows - target_state.y() - 1, target_state.x()) >= 250) {
             return false;
-        return NoObstacle == true;
+        }
+
+        return no_obstacle == true;
     }
-    bool quickReflex::isWalkableWithSeeds(State const& startState, State const& targetState, Seed targetSeed) {
-        
-        bool NoObstacle = true;
 
-        for (std::vector<State>::iterator stateIt = targetSeed.intermediatePoints.begin(); stateIt != targetSeed.intermediatePoints.end(); ++stateIt) {
+    bool quickReflex::isWalkableWithSeeds(State const& start_state, State const& target_state, Seed target_seed) {
+        bool no_obstacle = true;
 
-            int intermediateXcordinate = stateIt->x() + startState.x();
-            int intermediateYcordinate = stateIt->y() + startState.y();
-            
-            if (((intermediateXcordinate >= 0) && (intermediateXcordinate < MAP_MAX_)) && (( intermediateYcordinate >= 0) && (intermediateYcordinate < MAP_MAX_))) {
+        for (std::vector<State>::iterator state_it = target_seed.intermediatePoints.begin(); state_it != target_seed.intermediatePoints.end(); ++state_it) {
+            int intermediate_x = state_it->x() + start_state.x();
+            int intermediate_y = state_it->y() + start_state.y();
 
-                fusionMap.at<uchar>(fusionMap.rows - intermediateYcordinate -1, intermediateXcordinate) < 250 ? NoObstacle *= 1 : NoObstacle *= 0;
-    
-            } 
-            else {
+            if (((intermediate_x >= 0) && (intermediate_x < map_max_)) && ((intermediate_y >= 0) && (intermediate_y < map_max_))) {
+                fusion_map.at<uchar>(fusion_map.rows - intermediate_y - 1, intermediate_x) < 250 ? no_obstacle *= 1 : no_obstacle *= 0;
+            } else {
                 return false;
             }
         }
-        
-        if(fusionMap.at<uchar>(fusionMap.rows - targetSeed.finalState.y() -1, targetSeed.finalState.x()) >= 250)
+
+        if (fusion_map.at<uchar>(fusion_map.rows - target_seed.final_state.y() - 1, target_seed.final_state.x()) >= 250) {
             return false;
-        return NoObstacle == true;
+        }
+
+        return no_obstacle == true;
     }
 }

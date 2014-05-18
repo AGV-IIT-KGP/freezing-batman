@@ -76,17 +76,17 @@ namespace navigation {
         std::pair<std::vector<StateOfCar>, Seed> findPathToTarget(const cv::Mat& fusionMap, const State& start, const State& goal, int , int, int&);
         int distance_transform, debug_current_state;
         std::string getSeedFileNameAStarSeed(ros::NodeHandle& nodeHandle);
-        ros::NodeHandle nh;
+        ros::NodeHandle node_handle;
         int status;
 
 
     private:
         static const int MAX_ITERATIONS;
         std::string SEEDS_FILE;
-        int MAP_MAX_COLS;
-        int MAP_MAX_ROWS;
+        int map_max_cols;
+        int map_max_rows;
         std::vector<Seed> givenSeeds;
-        cv::Mat fusionMap;
+        cv::Mat fusion_map;
         cv::Mat image;
 
         void distanceTransform();
@@ -113,13 +113,13 @@ namespace navigation {
         std::pair<std::vector<State>, Seed> findPathToTarget(const cv::Mat& fusionMap, const State& start, const State& goal, int&);
         void showPath(std::vector<State>& path, const State& start, const State& goal);
         std::string getSeedFileNameQuickReflex(ros::NodeHandle& nodeHandle);
-        ros::NodeHandle nh;
+        ros::NodeHandle node_handle;
         int status;
 
     private:
-        cv::Mat fusionMap;
+        cv::Mat fusion_map;
         cv::Mat image;
-        std::string SEEDS_FILE;
+        std::string seeds_file;
 
         void distanceTransform();
         void loadGivenSeeds(const State& start, const State& goal);

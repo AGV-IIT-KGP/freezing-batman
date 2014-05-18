@@ -10,8 +10,8 @@
 #define __AStarSeed__State__
 
 #include <cmath>
-#include <string>
 #include <iostream>
+#include <string>
 
 namespace navigation {
 
@@ -21,7 +21,7 @@ namespace navigation {
         int xCordinate_, yCordinate_;
         int theta_, curvature_;
 
-        static const double inRange(const double theta_);
+        double inRange(const double theta_);
 
     public:
 
@@ -41,7 +41,7 @@ namespace navigation {
             return curvature_;
         }
 
-        //TODO : removue this
+        //TODO : remove this
 
         inline State() {
         }
@@ -50,30 +50,19 @@ namespace navigation {
         }
 
         inline double distanceSqTo(const State& b) const {
-
             return (xCordinate_ - b.xCordinate_) * (xCordinate_ - b.xCordinate_) + (yCordinate_ - b.yCordinate_) * (yCordinate_ - b.yCordinate_);
-
         }
 
         inline double distanceTo(const State& b) const {
-
             return sqrt((xCordinate_ - b.xCordinate_) * (xCordinate_ - b.xCordinate_) + (yCordinate_ - b.yCordinate_) * (yCordinate_ - b.yCordinate_));
-
-
         }
 
         inline double euclidianDistanceTo(const State& b) const {
-
             return sqrt((xCordinate_ - b.xCordinate_) * (xCordinate_ - b.xCordinate_) + (yCordinate_ - b.yCordinate_) * (yCordinate_ - b.yCordinate_));
-
-
         }
 
         inline double manhattanDistanceTo(const State& b) const {
-
             return std::abs(xCordinate_ - b.xCordinate_) + std::abs(yCordinate_ - b.yCordinate_);
-
-
         }
 
         inline bool operator==(const State& b) const {
@@ -83,30 +72,15 @@ namespace navigation {
         inline bool operator!=(const State& b) const {
             return !(xCordinate_ == b.x() && yCordinate_ == b.y() && theta_ == b.theta() && curvature_ == curvature());
         }
-        inline bool isCloseTo(State const& givenLocation) const     {
+
+        inline bool isCloseTo(State const& givenLocation) const {
             return (distanceTo(givenLocation) < 100);
         }
+
         const std::string toString() const;
-
-        //        bool isOutsideOfMap()
-        //        {
-        //            if (!(((xCordinate_ >= 0) && (xCordinate_ < MAP_MAX)) &&
-        //                  ((yCordinate_ >= 0) && (yCordinate_ < MAP_MAX))))
-        //                return true;
-        //            else
-        //                return false;
-        //        }
-        //        
-
-
-
-        //        const std::ostream& operator<<(const std::ostream& os, const State& state);
-
     };
 
-    // typedef std::shared_ptr<State> StatePtr;
     typedef State* StatePtr;
 }
-
 
 #endif /* defined(__AStarSeed__State__) */

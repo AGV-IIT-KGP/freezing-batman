@@ -15,9 +15,9 @@ namespace navigation {
         std::vector<StateOfCar> neighbours;
 
         for (int i = 0; i < givenSeeds.size(); i++) {
-            const double deltaX = givenSeeds[i].finalState.x();
-            const double deltaY = givenSeeds[i].finalState.y();
-            const double deltaZ = givenSeeds[i].finalState.theta();
+            const double deltaX = givenSeeds[i].final_state.x();
+            const double deltaY = givenSeeds[i].final_state.y();
+            const double deltaZ = givenSeeds[i].final_state.theta();
 
             const int x = (int) (currentState.x() + deltaX * sin(currentState.theta() * (CV_PI / 180)) + deltaY * cos(currentState.theta() * (CV_PI / 180)));
             const int y = (int) (currentState.y() - deltaX * cos(currentState.theta() * (CV_PI / 180)) + deltaY * sin(currentState.theta() * (CV_PI / 180)));
@@ -27,7 +27,7 @@ namespace navigation {
             const StateOfCar neighbour(x, y, theta, 0, givenSeeds[i].costOfseed, 0, i);
 
 
-            if (!isWalkableWithSeeds(currentState, neighbour, MAP_MAX_COLS, MAP_MAX_ROWS)) {
+            if (!isWalkableWithSeeds(currentState, neighbour, map_max_cols, map_max_rows)) {
                 continue;
             }
             neighbours.push_back(neighbour);

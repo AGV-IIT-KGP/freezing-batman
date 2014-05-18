@@ -11,7 +11,6 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <ros/ros.h>
-#include <cv_bridge/CvBridge.h>
 #include <cv_bridge/cv_bridge.h>
 #include <geometry_msgs/Pose2D.h>
 #include <geometry_msgs/Twist.h>

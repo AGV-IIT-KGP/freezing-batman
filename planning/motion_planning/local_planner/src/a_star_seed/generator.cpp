@@ -1,195 +1,171 @@
-#include <stdio.h>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <cstdio>
+#include <ros/package.h>
 
-#include "ros/package.h"
+int multiplier;
+const int distance_between_wheels = 17;
 
-int MULTIPLIER;
-const int distanceBetweenWheels = 17;
+int main() {
+    int number_of_seeds, number_of_intermediate_points, layers;
+    double velocity_ratio, final_x, final_y, final_orientation;
+    FILE *seed_output;
+    std::string seeds_file;
+    seeds_file = ros::package::getPath("local_planner") + "/seeds/seeds.txt";
+    seed_output = fopen(seeds_file.c_str(), "w");
 
-int main()
-{
-	int numberOfSeeds, numberOfIntermediatePoints, layers;
-	double velocityRatio, finalX, finalY, finalOrientation;
+    //printf("OutputFormat:\nnumberOfSseeds\nvelocityRatio finalX finalY finalOrientation\nSeedPoints\nintermediateXValue intermediateYValue\n");
 
-	FILE *seedOutput;
-	
-	std::string SEEDS_FILE;
-	SEEDS_FILE = ros::package::getPath("local_planner")+"/seeds/seeds.txt";
-	
-	seedOutput=fopen(SEEDS_FILE.c_str(),"w");
-	
-	//printf("OutputFormat:\nnumberOfSseeds\nvelocityRatio finalX finalY finalOrientation\nSeedPoints\nintermediateXValue intermediateYValue\n");
-	
-	printf("Enter number of seeds to be generated per quadrant\n");
-	scanf("%d", &numberOfSeeds);
+    printf("Enter number of seeds to be generated per quadrant\n");
+    scanf("%d", &number_of_seeds);
 
-	printf("Enter number of layers\n");
-	scanf("%d", &layers);
+    printf("Enter number of layers\n");
+    scanf("%d", &layers);
 
+    fprintf(seed_output, "%d\n", (4 * number_of_seeds + 2) * layers);
 
-	fprintf(seedOutput, "%d\n", (4*numberOfSeeds+2)*layers);
+    for (int x = 1; x <= layers; x++) {
+        multiplier = (x * 150 / number_of_seeds) / layers;
+        printf("%d\n", multiplier);
 
-	for(int x = 1; x <= layers; x++){
+        for (int i = 0; i < number_of_seeds; ++i) {
 
-		MULTIPLIER = (x * 150 / numberOfSeeds) / layers;
-		printf("%d\n",MULTIPLIER);
+            final_x = (i + 1) * multiplier;
+            final_y = (2 * number_of_seeds - i) * multiplier;
 
+            double radius_of_curvature = (final_x * final_x + final_y * final_y) / (2 * final_x);
+            double theta = asinf(final_y / radius_of_curvature);
 
-		for(int i = 0; i < numberOfSeeds; ++i){
-		
-			finalX = (i + 1)*MULTIPLIER;
-			finalY = (2*numberOfSeeds-i)*MULTIPLIER;
+            final_orientation = M_PI / 2 - theta;
+            velocity_ratio = 1 + distance_between_wheels / radius_of_curvature;
 
-			double radiusOfCurvature = (finalX*finalX + finalY*finalY)/(2 * finalX);
-			double theta = asinf (finalY / radiusOfCurvature);
+            fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, final_y, final_orientation * 180 / M_PI);
 
-			finalOrientation = M_PI/2 - theta;
-			velocityRatio = 1 + distanceBetweenWheels / radiusOfCurvature;
+            number_of_intermediate_points = (final_x + final_y) / 10;
+            fprintf(seed_output, "%d\n", number_of_intermediate_points);
 
-			fprintf(seedOutput, "%lf %lf %lf %lf\n", velocityRatio, finalX, finalY, finalOrientation*180/M_PI);
+            double tempX = 0, tempY = 0, temp_orientation = theta / (2 * number_of_intermediate_points);
+            double l = (2 * radius_of_curvature * sinf(theta / (2 * number_of_intermediate_points)));
 
-			numberOfIntermediatePoints = (finalX + finalY)/10;
-			fprintf(seedOutput, "%d\n", numberOfIntermediatePoints);
+            for (int j = 0; j < number_of_intermediate_points; ++j) {
+                tempX += l * sinf(temp_orientation);
+                tempY += l * cosf(temp_orientation);
+                temp_orientation += theta / number_of_intermediate_points;
 
-			double tempX=0, tempY=0, tempOrientation=theta/(2*numberOfIntermediatePoints);
+                fprintf(seed_output, "%lf %lf\n", tempX, tempY);
+            }
+        }
 
-			double l = (2 * radiusOfCurvature *sinf(theta/(2*numberOfIntermediatePoints)));
+        for (int i = 0; i < number_of_seeds; ++i) {
 
-			for(int j = 0; j < numberOfIntermediatePoints; ++j){
-				tempX += l*sinf(tempOrientation);
-				tempY += l*cosf(tempOrientation);
-				tempOrientation += theta/numberOfIntermediatePoints;
+            final_x = (i + 1) * multiplier;
+            final_y = (2 * number_of_seeds - i) * multiplier;
 
-				fprintf(seedOutput,"%lf %lf\n", tempX, tempY);
-			}
+            double radius_of_curvature = (final_x * final_x + final_y * final_y) / (2 * final_x);
+            double theta = asinf(final_y / radius_of_curvature);
 
-		}
+            final_orientation = M_PI / 2 - theta;
+            velocity_ratio = 1 - distance_between_wheels / radius_of_curvature;
 
+            fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, -final_x, final_y, 180 - final_orientation * 180 / M_PI);
 
-		for(int i = 0; i < numberOfSeeds; ++i){
-		
-			finalX = (i + 1)*MULTIPLIER;
-			finalY = (2*numberOfSeeds-i)*MULTIPLIER;
+            number_of_intermediate_points = (final_x + final_y) / 10;
+            fprintf(seed_output, "%d\n", number_of_intermediate_points);
 
-			double radiusOfCurvature = (finalX*finalX + finalY*finalY)/(2 * finalX);
-			double theta = asinf (finalY / radiusOfCurvature);
+            double tempX = 0, tempY = 0, temp_orientation = theta / (2 * number_of_intermediate_points);
+            double l = (2 * radius_of_curvature * sinf(theta / (2 * number_of_intermediate_points)));
 
-			finalOrientation = M_PI/2 - theta;
-			velocityRatio = 1 - distanceBetweenWheels / radiusOfCurvature;;
+            for (int j = 0; j < number_of_intermediate_points; ++j) {
+                tempX += l * sinf(temp_orientation);
+                tempY += l * cosf(temp_orientation);
+                temp_orientation += theta / number_of_intermediate_points;
+                fprintf(seed_output, "%lf %lf\n", -tempX, tempY);
+            }
+        }
 
-			fprintf(seedOutput, "%lf %lf %lf %lf\n", velocityRatio, -finalX, finalY, 180 - finalOrientation*180/M_PI);
+        //generating straight seed
+        velocity_ratio = 1.0;
+        final_x = 0;
+        final_y = (2 * number_of_seeds + 1) * multiplier;
+        final_orientation = M_PI / 2;
 
-			numberOfIntermediatePoints = (finalX + finalY)/10;
-			fprintf(seedOutput, "%d\n", numberOfIntermediatePoints);
+        fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, final_y, final_orientation * 180 / M_PI);
 
-			double tempX=0, tempY=0, tempOrientation=theta/(2*numberOfIntermediatePoints);
+        number_of_intermediate_points = (final_x + final_y) / 10;
+        fprintf(seed_output, "%d\n", number_of_intermediate_points);
 
-			double l = (2 * radiusOfCurvature *sinf(theta/(2*numberOfIntermediatePoints)));
+        for (int i = 1; i <= number_of_intermediate_points; ++i) {
+            fprintf(seed_output, "%lf %lf\n", final_x, final_y * i / number_of_intermediate_points);
+        }
 
-			for(int j = 0; j < numberOfIntermediatePoints; ++j){
-				tempX += l*sinf(tempOrientation);
-				tempY += l*cosf(tempOrientation);
-				tempOrientation += theta/numberOfIntermediatePoints;
+        for (int i = 0; i < number_of_seeds; ++i) {
+            final_x = (i + 1) * multiplier;
+            final_y = (2 * number_of_seeds - i) * multiplier;
 
-				fprintf(seedOutput,"%lf %lf\n", -tempX, tempY);
-			}
+            double radius_of_curvature = (final_x * final_x + final_y * final_y) / (2 * final_x);
+            double theta = asinf(final_y / radius_of_curvature);
 
-		}
+            final_orientation = M_PI / 2 - theta;
+            velocity_ratio = 1 + distance_between_wheels / radius_of_curvature;
+            fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, -final_x, -final_y, 180 + final_orientation * 180 / M_PI);
 
-		//generating straight seed
-		velocityRatio = 1.0;
-		finalX = 0;
-		finalY = (2*numberOfSeeds+1)*MULTIPLIER;
-		finalOrientation = M_PI/2;
-		
-		fprintf(seedOutput, "%lf %lf %lf %lf\n", velocityRatio, finalX, finalY, finalOrientation*180/M_PI);
-		
-		numberOfIntermediatePoints = (finalX + finalY)/10;
-		fprintf(seedOutput, "%d\n", numberOfIntermediatePoints);
+            number_of_intermediate_points = (final_x + final_y) / 10;
+            fprintf(seed_output, "%d\n", number_of_intermediate_points);
 
-		for (int i = 1; i <= numberOfIntermediatePoints; ++i){
-			fprintf(seedOutput,"%lf %lf\n", finalX, finalY*i/numberOfIntermediatePoints);
-		}
+            double temp_x = 0, temp_y = 0, temp_orientation = theta / (2 * number_of_intermediate_points);
 
+            double length = (2 * radius_of_curvature * sinf(theta / (2 * number_of_intermediate_points)));
 
-		for(int i = 0; i < numberOfSeeds; ++i){
-			
-			finalX = (i + 1)*MULTIPLIER;
-			finalY = (2*numberOfSeeds-i)*MULTIPLIER;
+            for (int j = 0; j < number_of_intermediate_points; ++j) {
+                temp_x += length * sinf(temp_orientation);
+                temp_y += length * cosf(temp_orientation);
+                temp_orientation += theta / number_of_intermediate_points;
+                fprintf(seed_output, "%lf %lf\n", -temp_x, -temp_y);
+            }
+        }
 
-			double radiusOfCurvature = (finalX*finalX + finalY*finalY)/(2 * finalX);
-			double theta = asinf (finalY / radiusOfCurvature);
+        for (int i = 0; i < number_of_seeds; ++i) {
+            final_x = (i + 1) * multiplier;
+            final_y = (2 * number_of_seeds - i) * multiplier;
 
-			finalOrientation = M_PI/2 - theta;
-			velocityRatio = 1 + distanceBetweenWheels / radiusOfCurvature;
-			fprintf(seedOutput, "%lf %lf %lf %lf\n", velocityRatio, -finalX, -finalY, 180 + finalOrientation*180/M_PI);
+            double radius_of_curvature = (final_x * final_x + final_y * final_y) / (2 * final_x);
+            double theta = asinf(final_y / radius_of_curvature);
 
-			numberOfIntermediatePoints = (finalX + finalY)/10;
-			fprintf(seedOutput, "%d\n", numberOfIntermediatePoints);
+            final_orientation = M_PI / 2 - theta;
+            velocity_ratio = 1 + distance_between_wheels / radius_of_curvature;
 
-			double tempX=0, tempY=0, tempOrientation=theta/(2*numberOfIntermediatePoints);
+            fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, -final_y, 360 - final_orientation * 180 / M_PI);
 
-			double l = (2 * radiusOfCurvature *sinf(theta/(2*numberOfIntermediatePoints)));
+            number_of_intermediate_points = (final_x + final_y) / 10;
+            fprintf(seed_output, "%d\n", number_of_intermediate_points);
 
-			for(int j = 0; j < numberOfIntermediatePoints; ++j){
-				tempX += l*sinf(tempOrientation);
-				tempY += l*cosf(tempOrientation);
-				tempOrientation += theta/numberOfIntermediatePoints;
+            double temp_x = 0, temp_y = 0, temp_orientation = theta / (2 * number_of_intermediate_points);
+            double l = (2 * radius_of_curvature * sinf(theta / (2 * number_of_intermediate_points)));
 
-				fprintf(seedOutput,"%lf %lf\n", -tempX, -tempY);
-			}
+            for (int j = 0; j < number_of_intermediate_points; ++j) {
+                temp_x += l * sinf(temp_orientation);
+                temp_y += l * cosf(temp_orientation);
+                temp_orientation += theta / number_of_intermediate_points;
+                fprintf(seed_output, "%lf %lf\n", temp_x, -temp_y);
+            }
+        }
+        
+        //generating straight seed
+        velocity_ratio = 1.0;
+        final_x = 0;
+        final_y = (2 * number_of_seeds + 1) * multiplier;
+        final_orientation = M_PI / 2;
+        fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, -final_y, final_orientation * 180 / M_PI);
 
-		}
+        number_of_intermediate_points = (final_x + final_y) / 10;
+        fprintf(seed_output, "%d\n", number_of_intermediate_points);
 
-		for(int i = 0; i < numberOfSeeds; ++i){
-			
-			finalX = (i + 1)*MULTIPLIER;
-			finalY = (2*numberOfSeeds-i)*MULTIPLIER;
-
-			double radiusOfCurvature = (finalX*finalX + finalY*finalY)/(2 * finalX);
-			double theta = asinf (finalY / radiusOfCurvature);
-
-			finalOrientation = M_PI/2 - theta;
-			velocityRatio = 1 + distanceBetweenWheels / radiusOfCurvature;
-
-			fprintf(seedOutput, "%lf %lf %lf %lf\n", velocityRatio, finalX, -finalY, 360 - finalOrientation*180/M_PI);
-
-			numberOfIntermediatePoints = (finalX + finalY)/10;
-			fprintf(seedOutput, "%d\n", numberOfIntermediatePoints);
-
-			double tempX=0, tempY=0, tempOrientation=theta/(2*numberOfIntermediatePoints);
-
-			double l = (2 * radiusOfCurvature *sinf(theta/(2*numberOfIntermediatePoints)));
-
-			for(int j = 0; j < numberOfIntermediatePoints; ++j){
-				tempX += l*sinf(tempOrientation);
-				tempY += l*cosf(tempOrientation);
-				tempOrientation += theta/numberOfIntermediatePoints;
-
-				fprintf(seedOutput,"%lf %lf\n", tempX, -tempY);
-			}
-
-		}
-		//generating straight seed
-		velocityRatio = 1.0;
-		finalX = 0;
-		finalY = (2*numberOfSeeds+1)*MULTIPLIER;
-		finalOrientation = M_PI/2;
-		
-		fprintf(seedOutput, "%lf %lf %lf %lf\n", velocityRatio, finalX, -finalY, finalOrientation*180/M_PI);
-		
-		numberOfIntermediatePoints = (finalX + finalY)/10;
-		fprintf(seedOutput, "%d\n", numberOfIntermediatePoints);
-
-		for (int i = 1; i <= numberOfIntermediatePoints; ++i){
-			fprintf(seedOutput,"%lf %lf\n", finalX, -finalY*i/numberOfIntermediatePoints);
-		}
-
-	}
-	return 0;
+        for (int i = 1; i <= number_of_intermediate_points; ++i) {
+            fprintf(seed_output, "%lf %lf\n", final_x, -final_y * i / number_of_intermediate_points);
+        }
+    }
+    return 0;
 }
-
 
 /*
 Documentation:
@@ -215,4 +191,4 @@ For II quadrant
 tempX and finalOrientation is complemented.
 
 Lastly, the straight seed is generated.
-*/
+ */

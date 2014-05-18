@@ -6,40 +6,35 @@
 //  Copyright (c) 2013 Satya Prakash. All rights reserved.
 //
 
+#include <a_star_seed/a_star_seed.hpp>
 
-#include "a_star_seed/a_star_seed.hpp"
-
-
-//remove this
-#include "ros/package.h"
 namespace navigation {
 
-    std::string AStarSeed::getSeedFileNameAStarSeed(ros::NodeHandle& nh) {
+    std::string AStarSeed::getSeedFileNameAStarSeed(ros::NodeHandle& node_handle) {
         std::string ss;
-        nh.getParam("local_planner/seed_file2", ss);
+        node_handle.getParam("local_planner/seed_file2", ss);
         return ss;
     }
 
-    std::string quickReflex::getSeedFileNameQuickReflex(ros::NodeHandle& nh) {
+    std::string quickReflex::getSeedFileNameQuickReflex(ros::NodeHandle& node_handle) {
         std::string ss;
-        nh.getParam("local_planner/seed_file8", ss);
+        node_handle.getParam("local_planner/seed_file8", ss);
         return ss;
     }
 
-    AStarSeed::AStarSeed(ros::NodeHandle& nodeHandle) : nh(nodeHandle) {
+    AStarSeed::AStarSeed(ros::NodeHandle& nodeHandle) : node_handle(nodeHandle) {
         std::stringstream ss;
         ss << ros::package::getPath("local_planner");
-        ss << getSeedFileNameAStarSeed(nh);
+        ss << getSeedFileNameAStarSeed(node_handle);
         SEEDS_FILE = ss.str();
         loadGivenSeeds();
-        nh.getParam("local_planner/debug_current_state", debug_current_state);
-        nh.getParam("local_planner/distance_transform", distance_transform);
+        node_handle.getParam("local_planner/debug_current_state", debug_current_state);
+        node_handle.getParam("local_planner/distance_transform", distance_transform);
     }
 
-    quickReflex::quickReflex(ros::NodeHandle& nodeHandle) : nh(nodeHandle) {
+    quickReflex::quickReflex(ros::NodeHandle& nodeHandle) : node_handle(nodeHandle) {
         std::stringstream ss;
-        ss << ros::package::getPath("local_planner") + getSeedFileNameQuickReflex(nh);
-        SEEDS_FILE = ss.str();
+        ss << ros::package::getPath("local_planner") + getSeedFileNameQuickReflex(node_handle);
+        seeds_file = ss.str();
     }
-
 }
