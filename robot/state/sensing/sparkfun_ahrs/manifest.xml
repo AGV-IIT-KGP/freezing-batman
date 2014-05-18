@@ -1,8 +1,8 @@
 
 <package>
-  <description brief="eklavya_imu_sparkfun">
+  <description brief="sparkfun_ahrs">
 
-     eklavya_imu_sparkfun
+     sparkfun_ahrs
 
   </description>
   <author>Jit Ray Chowdhury</author>

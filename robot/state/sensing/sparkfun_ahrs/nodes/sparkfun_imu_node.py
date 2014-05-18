@@ -27,7 +27,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import roslib; roslib.load_manifest('eklavya_imu_sparkfun')
+import roslib; roslib.load_manifest('sparkfun_ahrs')
 import rospy
 
 import serial
@@ -36,14 +36,14 @@ import math
 
 from time import time
 from sensor_msgs.msg import Imu
-from eklavya_imu_sparkfun.msg import RazorImu
+from sparkfun_ahrs.msg import RazorImu
 import tf
 
 grad2rad = 3.141592/180.0
 
 rospy.init_node("node")
-pub = rospy.Publisher('imu', Imu)
-pubRaw = rospy.Publisher('imuRaw', RazorImu)
+pub = rospy.Publisher('sparkfun_ahrs/imu', Imu)
+pubRaw = rospy.Publisher('sparkfun_ahra/imuRaw', RazorImu)
 
 imuMsg = Imu()
 imuRawMsg = RazorImu()
