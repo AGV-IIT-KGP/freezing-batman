@@ -99,7 +99,7 @@ std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator Waypoint_Selecto
 }
 
 std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator Waypoint_Selector::selectNextWaypointInSequence() {
-    int flag = -1;
+    int flagged_index = -1;
     if (last_waypoint_ == gps_waypoints_.end()) {
         return gps_waypoints_.begin();
     }
@@ -107,20 +107,20 @@ std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator Waypoint_Selecto
     unsigned int index = last_waypoint_ - gps_waypoints_.begin() + 1;
     for (; index != (last_waypoint_ - gps_waypoints_.begin()); index = (index + 1) % gps_waypoints_.size()) {
         if (!gps_waypoints_.at(index).second) {
-            flag = index;
+            flagged_index = index;
             break;
         }
     }
-    if (flag == -1) {
+    if (flagged_index == -1) {
         if (!gps_waypoints_.at(index).second) {
-            flag = index;
+            flagged_index = index;
         }
     }
-    if (flag == -1) {
+    if (flagged_index == -1) {
         return gps_waypoints_.end();
     }
 
-    return gps_waypoints_.begin() + flag;
+    return gps_waypoints_.begin() + flagged_index;
 }
 
 bool Waypoint_Selector::seeifReached(std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator target_ptr) {
