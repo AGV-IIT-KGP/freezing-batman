@@ -20,7 +20,13 @@ int main() {
     struct timeval t, c;
     gettimeofday(&t, NULL);
 
-    int iterations = 1000;
+    int iterations;
+    int MAP_MAX_ROWS, MAP_MAX_COLS;
+    ros::NodeHandle nh;
+    nh.getParam("local_planner_tester/iterations", iterations);
+    nh.getParam("local_planner_tester/map_max_rows", MAP_MAX_ROWS);
+    nh.getParam("local_planner_tester/map_max_cols", MAP_MAX_COLS);
+
 
     navigation::AStarSeed planner;
 
@@ -28,7 +34,7 @@ int main() {
     while (iterations--) {
 
 
-        cv::Mat img = cv::Mat::zeros(1000, 1000, CV_8UC1);
+        cv::Mat img = cv::Mat::zeros(MAP_MAX_ROWS, MAP_MAX_COLS, CV_8UC1);
         // std::chrono::steady_clock::time_point startC=std::chrono::steady_clock::now();
 
         navigation::addObstacles(img, 5);

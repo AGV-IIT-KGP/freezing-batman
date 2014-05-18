@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="local_planner" type="local_planner_tester" name="local_planner_tester" output="screen" cwd="node">
+        <param name="iterations" type="int" value="1000"/>
+        <param name="map_max_rows" type="int" value="1000"/>
+        <param name="map_max_cols" type="int" value="1000"/>        
+    </node>
+    <node pkg="local_planner" type="local_planner" name="local_planner" output="screen" cwd="node">
+        <param name="debug_current_state" type="int" value="0"/>
+        <param name="distance_transform" type="int" value="1"/>
+        <param name="seed_file2" type="str" value="/seeds/seeds2.txt"/>
+        <param name="seed_file8" type="str" value="/seeds/seeds8.txt"/>
+        <param name="planning_strategy" type="int" value="1"/>
+        <param name="map_max_rows" type="int" value="1000"/>
+        <param name="map_max_cols" type="int" value="1000"/>
+        <param name="loop_rate" type="int" value="10"/>
+        <param name="wait_time" type="int" value="100"/>
+        <param name="max_iterations" type="int" value="10000"/>
+        <param name="max_threshold" type="int" value="255"/>
+        <param name="min threshold" type="int" value="100"/>
+        <param name="distance_transform_constant" type="int" value="2"/>
+        <param name="vmax" type="int" value="70"/>
+        <param name="min_rad" type="int" value="70"/>
+        <param name="max_iterations_load_given_seeds" type="int" value="10000"/>
+
+    </node>
+    <node pkg="showpath_debugger" type="debugger" name="debugger" output="screen" cwd="node">
+        <param name="loop_rate" type="int" value="10"/>
+        <param name="map_max_rows" type="int" value="1000"/>
+        <param name="map_max_cols" type="int" value="1000"/>
+    </node>
+</launch>
+
