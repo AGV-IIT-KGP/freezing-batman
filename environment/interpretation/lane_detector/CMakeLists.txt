@@ -59,5 +59,5 @@ rosbuild_add_library(laneDetector
                      src/detector/preprocessing.cpp)
 target_link_libraries(laneDetector svm)
 
-rosbuild_add_executable(laneDetectorNode src/laneDetectorNode.cpp)
-target_link_libraries(laneDetectorNode laneDetector libagv_framework.so m)
+rosbuild_add_executable(lane_detector src/laneDetectorNode.cpp)
+target_link_libraries(lane_detector laneDetector libagv_framework.so m)

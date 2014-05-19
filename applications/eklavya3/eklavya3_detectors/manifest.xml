@@ -1,0 +1,16 @@
+<package>
+  <description brief="eklavya3_detectors">
+
+     eklavya3_detectors
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/eklavya3_detectors</url>
+  <depend package="lane_detector"/>
+  <depend package="obstacle_detector"/>
+
+</package>
+
+

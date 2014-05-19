@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+    <include file="$(find waypoint_selector)/launch/module.launch" />
+    <include file="$(find waypoint_navigator)/launch/module.launch" />
+    <include file="$(find lane_navigator)/launch/module.launch" />
+</launch>

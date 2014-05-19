@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="logitech_camera" type="logitech_camera" name="logitech_camera" cwd="node" output="screen">
+        <param name="camera_id" type="int" value="0"/>
+        <param name="node_name" type="str" value="camera"/>
+        <param name="message_queue_size" type="int" value="10"/>
+    </node>
+</launch>
+    

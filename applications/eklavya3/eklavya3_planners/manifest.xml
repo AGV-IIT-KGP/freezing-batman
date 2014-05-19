@@ -1,0 +1,16 @@
+<package>
+  <description brief="eklavya3_planners">
+
+     eklavya3_planners
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/eklavya3_planners</url>
+  <depend package="strategy_planner"/>
+  <depend package="local_planner"/>
+
+</package>
+
+

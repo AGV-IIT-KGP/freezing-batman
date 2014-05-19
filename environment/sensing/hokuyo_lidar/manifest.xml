@@ -1,0 +1,15 @@
+<package>
+  <description brief="hokuyo_lidar">
+
+     hokuyo_lidar
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hokuyo_lidar</url>
+  <depend package="hokuyo_node"/>
+
+</package>
+
+

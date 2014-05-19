@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="Hokuyo" value="1" />
+  <arg name="VectorNav" value="1" />
+  <arg name="Sparkfun" value="1" />
+  <arg name="Logitech" value="1" />
+
+  <include if="$(arg Hokuyo)" file="$(find hokuyo_lidar)/launch/module.launch" />
+
+  <include if="$(arg VectorNav)" file="$(find vn_ins)/launch/module.launch" />
+
+  <include if="$(arg Sparkfun)" file="$(find sparkfun_ahrs)/launch/module.launch" />
+  
+  <include if="$(arg Logitech)" file="$(find logitech_camera)/launch/module.launch" />
+
+</launch>

@@ -1,0 +1,18 @@
+<package>
+  <description brief="eklavya3_sensors">
+
+     eklavya3_sensors
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/eklavya3_sensors</url>
+  <depend package="vn_ins"/>
+  <depend package="hokuyo_node"/>
+  <depend package="logitech_camera"/>
+  <depend package="sparkfun_ahrs"/>
+
+</package>
+
+

@@ -1,0 +1,18 @@
+<package>
+  <description brief="eklavya3_navigators">
+
+     eklavya3_navigators
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/eklavya3_navigators</url>
+  <depend package="dummy_navigator"/>
+  <depend package="lane_navigator"/>
+  <depend package="waypoint_navigator"/>
+  <depend package="waypoint_selector"/>
+
+</package>
+
+

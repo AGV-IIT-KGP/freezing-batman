@@ -1,0 +1,19 @@
+<package>
+  <description brief="eklavya3">
+
+     eklavya3
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/eklavya3</url>
+  <depend package="eklavya3_detectors"/>
+  <depend package="eklavya3_navigators"/>
+  <depend package="eklavya3_pilot"/>
+  <depend package="eklavya3_planners"/>
+  <depend package="eklavya3_sensors"/>
+
+</package>
+
+

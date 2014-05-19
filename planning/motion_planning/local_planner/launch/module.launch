@@ -1,10 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-    <node pkg="local_planner" type="local_planner_tester" name="local_planner_tester" output="screen" cwd="node">
-        <param name="iterations" type="int" value="1000"/>
-        <param name="map_max_rows" type="int" value="1000"/>
-        <param name="map_max_cols" type="int" value="1000"/>        
-    </node>
     <node pkg="local_planner" type="local_planner" name="local_planner" output="screen" cwd="node">
         <param name="debug_current_state" type="int" value="0"/>
         <param name="distance_transform" type="int" value="1"/>

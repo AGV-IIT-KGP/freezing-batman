@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="strategy_planner" type="strategy_planner" name="strategy_planner" output="screen" cwd="node" />
+</launch>
