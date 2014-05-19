@@ -11,9 +11,9 @@
 #include <cmath>
 #include <boost/bind.hpp>
 #include <ros/ros.h>
-#include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Pose2D.h>
 #include <sensor_msgs/NavSatFix.h>
+#include <std_msgs/Float64.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/String.h>
 
@@ -22,11 +22,13 @@ static const int loop_rate_hz = 10;
 
 class WaypointNavigator {
 private:
-    sensor_msgs::NavSatFix current_gps_, target_gps_;
+    float heading_;
+    sensor_msgs::NavSatFix current_fix_, target_fix_;
 
 public:
-    void setTargetGPS(sensor_msgs::NavSatFix target);
-    void setCurrentGPS(sensor_msgs::NavSatFix current);
+    void set_target_fix(sensor_msgs::NavSatFix target_fix);
+    void set_current_fix(sensor_msgs::NavSatFix current_fix);
+    void set_heading(std_msgs::Float64 heading);
     geometry_msgs::Pose2D interpret();
 };
 
