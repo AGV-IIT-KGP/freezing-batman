@@ -12,12 +12,12 @@
 namespace navigation {
 
     LocalPlanner::LocalPlanner(ros::NodeHandle& nodeHandle) : node_handle(nodeHandle) {
-        loadParams(node_handle);
         node_handle.getParam("local_planner/map_max_rows", map_max_rows);
         node_handle.getParam("local_planner/map_max_cols", map_max_cols);
 
         fusion_map_subscriber = node_handle.subscribe("data_fuser/map", 10, &LocalPlanner::updateFusionMap, this);
         target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &LocalPlanner::updateTargetPose, this);
+        planning_strategy_subscriber = node_handle.subscribe("strategy_planner/which_planner", 10, &LocalPlanner::updateStrategy, this);
 
         seed_publisher = node_handle.advertise<local_planner::Seed>("local_planner/seed", 1000);
         status_publisher = node_handle.advertise<std_msgs::String>("local_planner/status", 1000);
@@ -36,6 +36,16 @@ namespace navigation {
         } catch (cv_bridge::Exception& e) {
             ROS_ERROR("cv_bridge exception: %s", e.what());
             return;
+        }
+    }
+
+    void LocalPlanner::updateStrategy(const std_msgs::String planner_strategy) {
+        if (planner_strategy.data ==  std::string("A_Star_Seed")) {
+           planning_strategy_=0;
+        }else {
+            if(planner_strategy.data==std::string("Quick_Response")){
+                planning_strategy_=1;
+            }            
         }
     }
 
@@ -144,16 +154,12 @@ namespace navigation {
         } else if (status == 2) {
             ss << "PATH FOUND";
         } else {
-            ss << "OVERFLOW : OPEN LIST SIZE " << status;
+            ss << "OPEN LIST OVERFLOW";
         }
 
         msg.data = ss.str();
         status_publisher.publish(msg);
     }
 
-    void LocalPlanner::loadParams(ros::NodeHandle& node_handle) {
-        planning_strategy = 0;
-        std::string node_name = std::string("/") + ros::this_node::getName();
-        node_handle.getParam(node_name + "/planning_strategy", planning_strategy);
-    }
+    
 }

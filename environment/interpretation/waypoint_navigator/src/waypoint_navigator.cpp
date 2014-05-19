@@ -17,9 +17,13 @@ void WaypointNavigator::setTargetGPS(sensor_msgs::NavSatFix target) {
     target_gps_ = target;
 }
 
+void WaypointNavigator::setHeading(std_msgs::Float64 heading){
+    heading_=heading.data;
+}
+
 geometry_msgs::Pose2D WaypointNavigator::interpret() {
     geometry_msgs::Pose pose, temp;
-    geometry_msgs::Pose2D target_relative_pose;
+    geometry_msgs::Pose2D temp_rel_pose;
 
     static const precnum_t a = 6378137L; // Semi-major axis of the Earth (meters)
     static const precnum_t b = 6356752.3142L; // Semi-minor axis:
@@ -54,8 +58,15 @@ geometry_msgs::Pose2D WaypointNavigator::interpret() {
     pose.position.y = -clon * slat * temp.position.x - slon * slat * temp.position.y + clat * temp.position.z;
     pose.position.z = clon * clat * temp.position.x + slon * clat * temp.position.y + slat * temp.position.z;
 
-    target_relative_pose.x = pose.position.x;
-    target_relative_pose.y = pose.position.y;
-
+    temp_rel_pose.x = pose.position.x;
+    temp_rel_pose.y = pose.position.y;
+    
+    heading_ *= (M_PI / 180.0);  
+        double alpha = -heading_;
+        geometry_msgs::Pose2D target_relative_pose;
+        target_relative_pose.y = -(temp_rel_pose.x* cos(alpha) + temp_rel_pose.y* sin(alpha));
+        target_relative_pose.x = -temp_rel_pose.x* sin(alpha) + temp_rel_pose.y* cos(alpha);
+        target_relative_pose.theta = M_PI/2;
+        
     return target_relative_pose;
 }

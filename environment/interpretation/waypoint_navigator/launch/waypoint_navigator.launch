@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="waypoint_navigator" type="waypoint_navigator" name="waypoint_navigator" args="1" output="screen" cwd="node">
+        <param name="yaw_subscriber_topic" type="str" value="/vn_ins/yaw"/>                      
+    </node>
+</launch>

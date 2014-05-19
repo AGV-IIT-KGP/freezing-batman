@@ -11,10 +11,9 @@ int main(int argc, char* argv[]) {
     ros::init(argc, argv, std::string("waypoint_selector"));
     ros::NodeHandle node_handle;
 
-    node_handle.getParam(std::string("/") + node_name + std::string("/proximity"), proximity);
     node_handle.getParam(std::string("/") + node_name + std::string("/filename"), filename);
     node_handle.getParam(std::string("/") + node_name + std::string("/strategy"), strategy);
-
+    
     Waypoint_Selector waypoint_selector(filename, strategy);
 
     ros::Publisher next_waypoint_publisher = node_handle.advertise<sensor_msgs::NavSatFix>("waypoint_selector/next_waypoint", buffer_size);
@@ -24,6 +23,7 @@ int main(int argc, char* argv[]) {
 
     ros::Rate loop_rate(loop_rate_hz);
     while (ros::ok()) {
+        node_handle.getParam(std::string("/") + node_name + std::string("/proximity"), waypoint_selector.proximity_);
         ros::spinOnce();
         target = waypoint_selector.getTarget();
         nml = waypoint_selector.ifnml();
