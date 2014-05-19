@@ -79,7 +79,7 @@ void vectorNav::initializeParameters(int argc, char** argv) {
 
 void vectorNav::setupCommunications() {
     fix_publisher = node_handle->advertise<sensor_msgs::NavSatFix>(fix_topic_name.c_str(), message_queue_size);
-    yaw_publisher = node_handle->advertise<geometry_msgs::Twist>(yaw_topic_name.c_str(), message_queue_size);
+    yaw_publisher = node_handle->advertise<std_msgs::Float64>(yaw_topic_name.c_str(), message_queue_size);
 }
 
 int main(int argc, char** argv) {
@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
         ros::spinOnce();
         rate_enforcer.sleep();
     }
-    
-    vectornav->disconnect();    
+
+    vectornav->disconnect();
     return 0;
 }
