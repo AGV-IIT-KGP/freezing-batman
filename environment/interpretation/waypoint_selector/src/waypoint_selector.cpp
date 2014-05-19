@@ -100,7 +100,7 @@ std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator WaypointSelector
         return gps_waypoints_.begin();
     }
 
-    unsigned int index = last_waypoint_ - gps_waypoints_.begin() + 1;
+    unsigned int index = (last_waypoint_ - gps_waypoints_.begin() + 1) % gps_waypoints_.size();
     for (; index != (last_waypoint_ - gps_waypoints_.begin()); index = (index + 1) % gps_waypoints_.size()) {
         if (!gps_waypoints_.at(index).second) {
             flagged_index = index;

@@ -11,7 +11,7 @@
 
 namespace navigation {
 
-    const double State::inRange(const double thetaP) {
+    double State::inRange(const double thetaP) {
 
         double theta = thetaP;
         while (theta >= M_PI * 2 || theta < 0) {
