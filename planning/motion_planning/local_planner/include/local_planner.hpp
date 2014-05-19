@@ -30,26 +30,25 @@ namespace navigation {
     class LocalPlanner : public planning::Planner {
     public:
         int status;
-
         LocalPlanner(ros::NodeHandle& nodehandle);
         void planWithAstarSeed(navigation::AStarSeed& astar_seed_planner);
         void planWithQuickReflex(navigation::quickReflex& quick_reflex_planner);
+        int planning_strategy_;
 
     private:
         int map_max_cols, map_max_rows;
-        
         ros::NodeHandle node_handle;
-        int planning_strategy;
-        void loadParams(ros::NodeHandle& nh);
+
 
         ros::Subscriber fusion_map_subscriber;
         ros::Subscriber target_subscriber;
+        ros::Subscriber planning_strategy_subscriber;
 
         ros::Publisher seed_publisher;
         ros::Publisher path_publisher;
         ros::Publisher status_publisher;
         image_transport::Publisher pub_path_image;
-        
+
         navigation::State bot_pose, target_pose;
         cv::Mat local_map;
 
@@ -59,11 +58,12 @@ namespace navigation {
         void publishStatusQuickReflex(int status);
         void publishStatusAStarSeed(int status);
         void updateFusionMap(const sensor_msgs::ImageConstPtr& fusion_map);
-        
+        void updateStrategy(const std_msgs::String planner_strategy);
+
         inline void updateTargetPose(const geometry_msgs::Pose2D::ConstPtr _pose) {
             int x = _pose->x;
             int y = _pose->y;
-            int theta = (_pose->theta)*180/M_PI;
+            int theta = (_pose->theta)*180 / M_PI;
             target_pose = navigation::State(x, y, theta, 0);
         }
     };

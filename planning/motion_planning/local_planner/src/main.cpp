@@ -10,7 +10,6 @@
 
 int main(int argc, char* argv[]) {
     const std::string node_name = "local_planner";
-    int planning_strategy;
 
     ros::init(argc, argv, node_name.c_str());
     ros::NodeHandle node_handle;
@@ -23,8 +22,7 @@ int main(int argc, char* argv[]) {
     navigation::AStarSeed astar_seed_planner(node_handle);
 
     while (ros::ok()) {
-        node_handle.getParam("local_planner/planning_strategy", planning_strategy);
-        if (planning_strategy == 0) {
+        if (local_planner.planning_strategy_ == 0) {
             local_planner.planWithAstarSeed(astar_seed_planner);
         } else {
             local_planner.planWithQuickReflex(quick_reflex_planner);

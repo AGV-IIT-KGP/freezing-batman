@@ -30,7 +30,7 @@ namespace navigation {
             int intermediate_y = (int) (-x * cos(alpha * (CV_PI / 180)) + y * sin(alpha * (CV_PI / 180)) + start_state.y());
 
             if (((intermediate_x >= 0) && (intermediate_x < map_max_cols)) && ((intermediate_y >= 0) && (intermediate_y < map_max_rows))) {
-                fusion_map.at<uchar>(fusion_map.rows - intermediate_y - 1, intermediate_x) < 250 ? NoObstacle *= 1 : no_obstacle *= 0;
+                fusion_map.at<uchar>(fusion_map.rows - intermediate_y - 1, intermediate_x) < 250 ? no_obstacle *= 1 : no_obstacle *= 0;
             } else {
                 return false;
             }
