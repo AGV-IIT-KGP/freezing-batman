@@ -134,7 +134,7 @@ namespace navigation {
                 cost_DT += fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
                 s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
             }
-            s.costOfseed = (cost / n_seed_points)/200 + DT_CONSTANT*(cost_DT / n_seed_points)/255 + abs(atanf((goal.y()-start.y())/(goal.x()-start.x())) - atanf(y/x));
+            s.costOfseed = (cost / n_seed_points)/200 + ((cost_DT / n_seed_points)/255)/DT_CONSTANT + abs(atanf((goal.y()-start.y())/(goal.x()-start.x())) - atanf(y/x));
             givenSeeds.push_back(s);
         }
 
