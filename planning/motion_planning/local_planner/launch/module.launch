@@ -13,7 +13,7 @@
         <param name="max_iterations" type="int" value="10000"/>
         <param name="max_threshold" type="int" value="255"/>
         <param name="min threshold" type="int" value="100"/>
-        <param name="distance_transform_constant" type="int" value="2"/>
+        <param name="distance_transform_constant" type="int" value="0.5"/>
         <param name="vmax" type="int" value="70"/>
         <param name="min_rad" type="int" value="70"/>
         <param name="max_iterations_load_given_seeds" type="int" value="10000"/>

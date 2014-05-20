@@ -100,6 +100,7 @@ namespace navigation {
         for (int i = 0; i < numberOfSeeds; i++) {
             Seed s;
             double cost = 0;
+            double cost_DT = 0;
             return_status = fscanf(textFileOFSeeds, "%lf %lf %lf %lf\n", &s.velocityRatio, &x, &y, &z);
             if (return_status == 0) {
                 //                ROS_ERROR("[PLANNER] Incorrect seed file format");
@@ -122,16 +123,18 @@ namespace navigation {
                 double tempXvalue, tempYvalue;
                 return_status = fscanf(textFileOFSeeds, "%lf %lf \n", &tempXvalue, &tempYvalue);
                 State point((int) tempXvalue, (int) tempYvalue, 0, 0);
+                State point2((int) start.x() + tempXvalue, (int) start.y() + tempYvalue, 0, 0);
 
                 if (return_status == 0) {
                     //ROS_ERROR("[PLANNER] Incorrect seed file format");
                     exit(1);
                 }
 
-                cost += point.distanceTo(goal) + DT_CONSTANT * fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
+                cost += point2.distanceTo(goal);
+                cost_DT += fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
                 s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
             }
-            s.costOfseed = (cost / n_seed_points);
+            s.costOfseed = (cost / n_seed_points)/200 + DT_CONSTANT*(cost_DT / n_seed_points)/255 + abs(atanf((goal.y()-start.y())/(goal.x()-start.x())) - atanf(y/x));
             givenSeeds.push_back(s);
         }
 
