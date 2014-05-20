@@ -102,7 +102,7 @@ void LogitechCamera::loadParams(ros::NodeHandle& node_handle) {
     node_handle.getParam("/logitech_camera/publisher_queue_size", message_queue_size);
     std::ostringstream convert;
     convert << camera_id;
-    topic_name = node_name + std::string("/") +  convert.str() + std::string("/image");
+    topic_name = node_name + convert.str() + std::string("/image");
 }
 
 void LogitechCamera::setupComms(ros::NodeHandle& node_handle) {

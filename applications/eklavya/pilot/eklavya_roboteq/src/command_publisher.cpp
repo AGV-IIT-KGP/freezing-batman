@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
   ros::NodeHandle nh;
   
   ros::Publisher vel_pub;
-  vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",1);
+  vel_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel",1);
   
   geometry_msgs::Twist cmdvel;
   double scale = 100;
