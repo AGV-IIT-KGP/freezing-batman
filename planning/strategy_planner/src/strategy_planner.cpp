@@ -80,19 +80,24 @@ void Strategy_Planner::setNavigator(int navigator) {
 
 }
 
-void Strategy_Planner::plan() {
-    if (!is_emergency_) {
-        setPlanner(a_star_seed);
-    } else {
-        setPlanner(quick_response);
-    }
-    if (nml_flag) {
-        setNavigator(waypoint_navigator);
-    } else {
-        if (is_confident_) {
-            setNavigator(lane_navigator);
+void Strategy_Planner::plan(bool is_test_mode, int planner, int navigator) {
+    if (!is_test_mode) {
+        if (!is_emergency_) {
+            setPlanner(a_star_seed);
         } else {
-            setNavigator(waypoint_navigator);
+            setPlanner(quick_response);
         }
+        if (nml_flag) {
+            setNavigator(waypoint_navigator);
+        } else {
+            if (is_confident_) {
+                setNavigator(lane_navigator);
+            } else {
+                setNavigator(waypoint_navigator);
+            }
+        }
+    }else {
+        setPlanner(planner);
+        setNavigator(navigator);
     }
 }
