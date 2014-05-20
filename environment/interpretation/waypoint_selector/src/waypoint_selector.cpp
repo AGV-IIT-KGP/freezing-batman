@@ -2,9 +2,11 @@
 
 typedef long double precnum_t;
 
-bool WaypointSelector::readWaypoints(std::ifstream& waypoints, std::vector<std::pair<sensor_msgs::NavSatFix, bool> >& gps_waypoints, std::string filename) {
+bool WaypointSelector::readWaypoints(std::ifstream& waypoints, std::vector<std::pair<sensor_msgs::NavSatFix, bool> >& gps_waypoints, int num_of_waypoints, std::string filename) {
     std::pair < sensor_msgs::NavSatFix, bool> target;
-    waypoints.open(filename.c_str(), std::ios::in); //use getParam
+    std::string line;
+    int temp_no_waypoints = -1;
+    waypoints.open(filename.c_str(), std::ios::in);
     int i = 0;
     while (waypoints.good()) {
         if (i == 0 && waypoints.eof()) {
@@ -13,12 +15,33 @@ bool WaypointSelector::readWaypoints(std::ifstream& waypoints, std::vector<std::
         }
 
         if (!waypoints.eof()) {
-            waypoints >> target.first.latitude;
-            waypoints >> target.first.longitude;
-            target.second = false;
-            gps_waypoints.push_back(target);
-            i++;
+            while (std::getline(waypoints, line)) {
+                if (line[0] != '#') {//checks if there is any commented line
+                    std::istringstream iss(line);
+                    if (i == 0) {//checks if an integer is given in the beginning
+                        float num;
+                        iss>>num;
+                        if (num-floor(num)==0) {
+                            temp_no_waypoints = num;
+                        } else {
+                            iss.str(line);
+                        }
+                    }
+                    float lat, lon;
+                    while (temp_no_waypoints == -1 || i < temp_no_waypoints) {//if waypoints are less than the number written exits
+                        while (iss >> lat && iss >> lon) {//checks if both lat and lon are given
+                            target.first.latitude = lat;
+                            target.first.longitude = lon;
+                            target.first.altitude = altitude_preset;
+                            target.second = false;
+                            gps_waypoints.push_back(target);
+                            i++;
+                        }
+                    }
+                }
+            }
         } else {
+            num_of_waypoints = i;
             return true;
         }
     }
@@ -36,32 +59,36 @@ geometry_msgs::Pose2D WaypointSelector::interpret(sensor_msgs::NavSatFix current
     precnum_t lat = (precnum_t(current_fix_.latitude) * M_PI / 180);
     precnum_t N = a / std::sqrt(1 - sin2_ae_earth * std::pow(sin(lat), 2));
 
-    geometry_msgs::Pose2D enu_relative_target;
-    enu_relative_target.x = (N + current_fix_.altitude) * cos(lat) * cos(lon);
-    enu_relative_target.y = (N + current_fix_.altitude) * cos(lat) * sin(lon);
-    enu_relative_target.theta = (cos2_ae_earth * N + current_fix_.altitude) * sin(lat);
+    geometry_msgs::Pose enu_relative_target;
+    enu_relative_target.position.x = (N + current_fix_.altitude) * cos(lat) * cos(lon);
+    enu_relative_target.position.y = (N + current_fix_.altitude) * cos(lat) * sin(lon);
+    enu_relative_target.position.z = (cos2_ae_earth * N + current_fix_.altitude) * sin(lat);
 
     lon = (precnum_t(target_fix_.longitude) * M_PI / 180);
     lat = (precnum_t(target_fix_.latitude) * M_PI / 180);
     N = a / std::sqrt(1 - sin2_ae_earth * std::pow(sin(lat), 2));
 
-    geometry_msgs::Pose2D temp;
-    temp.x = (N + target_fix_.altitude) * cos(lat) * cos(lon);
-    temp.y = (N + target_fix_.altitude) * cos(lat) * sin(lon);
-    temp.theta = (cos2_ae_earth * N + target_fix_.altitude) * sin(lat);
+    geometry_msgs::Pose temp;
+    temp.position.x = (N + target_fix_.altitude) * cos(lat) * cos(lon);
+    temp.position.y = (N + target_fix_.altitude) * cos(lat) * sin(lon);
+    temp.position.z = (cos2_ae_earth * N + target_fix_.altitude) * sin(lat);
 
     const double clat = cos((current_fix_.latitude * M_PI / 180)), slat = sin((current_fix_.latitude * M_PI / 180));
     const double clon = cos((current_fix_.longitude * M_PI / 180)), slon = sin((current_fix_.longitude * M_PI / 180));
 
-    temp.x -= enu_relative_target.x;
-    temp.y -= enu_relative_target.y;
-    temp.theta -= enu_relative_target.theta;
+    temp.position.x -= enu_relative_target.position.x;
+    temp.position.y -= enu_relative_target.position.y;
+    temp.position.z -= enu_relative_target.position.z;
 
-    enu_relative_target.x = -slon * temp.x + clon * temp.y;
-    enu_relative_target.y = -clon * slat * temp.x - slon * slat * temp.y + clat * temp.theta;
-    enu_relative_target.theta = clon * clat * temp.x + slon * clat * temp.y + slat * temp.theta;
+    enu_relative_target.position.x = -slon * temp.position.x + clon * temp.position.y;
+    enu_relative_target.position.y = -clon * slat * temp.position.x - slon * slat * temp.position.y + clat * temp.position.z;
+    enu_relative_target.position.z = clon * clat * temp.position.x + slon * clat * temp.position.y + slat * temp.position.z;
 
-    return enu_relative_target;
+    geometry_msgs::Pose2D enu_relative_target_2D;
+    enu_relative_target_2D.x = enu_relative_target.position.x;
+    enu_relative_target_2D.y = enu_relative_target.position.y;
+
+    return enu_relative_target_2D;
 }
 
 double WaypointSelector::getMod(geometry_msgs::Pose2D pose) {
@@ -122,7 +149,7 @@ std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator WaypointSelector
 bool WaypointSelector::reachedCurrentWaypoint(std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator target_ptr) {
     double error = getMod(interpret(current_gps_position_, target_ptr->first));
     std::cout << "Error: " << error << std::endl;
-    
+
     if (error < proximity_ || planner_status_ == "TARGET REACHED") {
         target_ptr->second = true;
         last_waypoint_ = target_ptr;
@@ -142,7 +169,9 @@ void WaypointSelector::set_planner_status(std_msgs::String status) {
 }
 
 WaypointSelector::WaypointSelector(std::string file, int strategy) {
-    readWaypoints(waypoints_, gps_waypoints_, file);
+    if (!readWaypoints(waypoints_, gps_waypoints_, num_of_waypoints_, file)) {
+        exit(1);
+    }
     strategy_ = strategy;
     last_waypoint_ = gps_waypoints_.end();
     inside_no_mans_land_ = false;

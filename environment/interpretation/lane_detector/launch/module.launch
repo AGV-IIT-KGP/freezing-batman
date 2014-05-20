@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <launch>
-    <node pkg="lane_detector" type="lane_detector" name="lane_detector" args="6" output="screen" cwd="node">
-        <param name="debug_mode" type="int" value="5"/>
+    <node pkg="lane_detector" type="laneDetectorNode" name="lane_detector" args="6" output="screen" cwd="node">
+        <param name="debug_mode" type="int" value="0"/>
         <param name="ipt_offsets_file" type="str" value="../data/ipt_offsets0.txt"/>                
         <param name="map_size" type="int" value="1000"/>        
         <param name="published_topic_name" type="str" value="/lane_detector/lanes"/>        
@@ -11,5 +11,8 @@
         <param name="training_data_file" type="str" value="../data/Samples"/>
         <param name="wait_time" type="int" value="10"/>
         <param name="warp_matrix_file" type="str" value="../data/warp_matrix0.dat"/>
+    </node>
+    <node pkg="lane_navigator" type="lane_navigator" name="lane_navigator" output="screen" cwd="node" args="1">
+        <param name="debug" type="int" value="0"  />
     </node>
 </launch>
