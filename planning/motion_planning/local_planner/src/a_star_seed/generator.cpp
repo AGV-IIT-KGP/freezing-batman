@@ -4,7 +4,7 @@
 #include <ros/package.h>
 
 int multiplier;
-const int distance_between_wheels = 17;
+const int distance_between_wheels = 72;
 
 int main() {
     int number_of_seeds, number_of_intermediate_points, layers;
@@ -37,7 +37,7 @@ int main() {
             double theta = asinf(final_y / radius_of_curvature);
 
             final_orientation = M_PI / 2 - theta;
-            velocity_ratio = 1 + distance_between_wheels / radius_of_curvature;
+            velocity_ratio = (radius_of_curvature + distance_between_wheels/2) / (radius_of_curvature - distance_between_wheels/2);
 
             fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, final_y, final_orientation * 180 / M_PI);
 
