@@ -33,6 +33,7 @@ namespace navigation {
         LocalPlanner(ros::NodeHandle& nodehandle);
         void planWithAstarSeed(navigation::AStarSeed& astar_seed_planner);
         void planWithQuickReflex(navigation::quickReflex& quick_reflex_planner);
+        void truncate(int& pose_target_x, int& pose_target_y);
         int planning_strategy_;
 
     private:
@@ -64,6 +65,7 @@ namespace navigation {
             int x = _pose->x;
             int y = _pose->y;
             int theta = (_pose->theta)*180 / M_PI;
+            truncate(x,y);
             target_pose = navigation::State(x, y, theta, 0);
         }
     };

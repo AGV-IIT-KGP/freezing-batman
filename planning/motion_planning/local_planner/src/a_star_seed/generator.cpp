@@ -11,7 +11,7 @@ int main() {
     double velocity_ratio, final_x, final_y, final_orientation;
     FILE *seed_output;
     std::string seeds_file;
-    seeds_file = ros::package::getPath("local_planner") + "/seeds/seeds.txt";
+    seeds_file = ros::package::getPath("local_planner") + "/seeds/seeds8.txt";
     seed_output = fopen(seeds_file.c_str(), "w");
 
     //printf("OutputFormat:\nnumberOfSseeds\nvelocityRatio finalX finalY finalOrientation\nSeedPoints\nintermediateXValue intermediateYValue\n");
@@ -86,7 +86,7 @@ int main() {
         //generating straight seed
         velocity_ratio = 1.0;
         final_x = 0;
-        final_y = (2 * number_of_seeds + 1) * multiplier;
+        final_y = (2 * number_of_seeds) * multiplier;
         final_orientation = M_PI / 2;
 
         fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, final_y, final_orientation * 180 / M_PI);
@@ -153,7 +153,7 @@ int main() {
         //generating straight seed
         velocity_ratio = 1.0;
         final_x = 0;
-        final_y = (2 * number_of_seeds + 1) * multiplier;
+        final_y = (2 * number_of_seeds) * multiplier;
         final_orientation = M_PI / 2;
         fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, -final_y, final_orientation * 180 / M_PI);
 

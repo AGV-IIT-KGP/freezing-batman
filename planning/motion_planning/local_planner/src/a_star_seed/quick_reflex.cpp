@@ -6,7 +6,7 @@ namespace navigation {
         std::pair<std::vector<State>, Seed> quickReflex::findPathToTarget(const cv::Mat& img, const State& start, const State& goal, int& status) {
 
         fusion_map = img;
-        distanceTransform();
+//        distanceTransform();
 
         givenSeeds.clear();
         loadGivenSeeds(start, goal);

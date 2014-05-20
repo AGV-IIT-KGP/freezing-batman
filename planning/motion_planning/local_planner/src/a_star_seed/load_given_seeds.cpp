@@ -121,15 +121,16 @@ namespace navigation {
             for (int j = 0; j < n_seed_points; j++) {
                 double tempXvalue, tempYvalue;
                 return_status = fscanf(textFileOFSeeds, "%lf %lf \n", &tempXvalue, &tempYvalue);
-                State point((int) tempXvalue, (int) tempYvalue, 0, 0);
+                State point((int) (start.x()+tempXvalue), (int) (start.y()+tempYvalue), 0, 0);
 
                 if (return_status == 0) {
                     //ROS_ERROR("[PLANNER] Incorrect seed file format");
                     exit(1);
                 }
 
-                cost += point.distanceTo(goal) + DT_CONSTANT * fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
-                s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
+                cost += point.distanceTo(goal);// + DT_CONSTANT * fusion_map.at<uchar>(fusion_map.rows - tempYvalue - 1, tempXvalue);
+                State point2((int) tempXvalue, (int) tempYvalue, 0, 0);
+                s.intermediatePoints.insert(s.intermediatePoints.begin(), point2);
             }
             s.costOfseed = (cost / n_seed_points);
             givenSeeds.push_back(s);

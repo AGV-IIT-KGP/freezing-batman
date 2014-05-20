@@ -16,7 +16,7 @@ namespace navigation {
         node_handle.getParam("local_planner/map_max_cols", map_max_cols);
 
         fusion_map_subscriber = node_handle.subscribe("data_fuser/map", 10, &LocalPlanner::updateFusionMap, this);
-        target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &LocalPlanner::updateTargetPose, this);
+        target_subscriber = node_handle.subscribe("/nose_navigator/target", 10, &LocalPlanner::updateTargetPose, this);
         planning_strategy_subscriber = node_handle.subscribe("strategy_planner/which_planner", 10, &LocalPlanner::updateStrategy, this);
 
         seed_publisher = node_handle.advertise<local_planner::Seed>("local_planner/seed", 1000);
@@ -33,6 +33,10 @@ namespace navigation {
         try {
             cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::MONO8);
             local_map = cv_ptr->image;
+            cv::rectangle(local_map, cv::Point(0 * local_map.cols, 0 * local_map.rows), cv::Point(.2 * local_map.cols, 1 * local_map.rows), cv::Scalar(0, 0, 0), -1, 8, 0);
+            cv::rectangle(local_map, cv::Point(.2 * local_map.cols, 1 * local_map.rows), cv::Point(.8 * local_map.cols, .8 * local_map.rows), cv::Scalar(0, 0, 0), -1, 8, 0);
+            cv::rectangle(local_map, cv::Point(.8 * local_map.cols, .8 * local_map.rows), cv::Point(1 * local_map.cols, 0 * local_map.rows), cv::Scalar(0, 0, 0), -1, 8, 0);
+            cv::rectangle(local_map, cv::Point(.2 * local_map.cols, 0 * local_map.rows), cv::Point(.8 * local_map.cols, .2 * local_map.rows), cv::Scalar(0, 0, 0), -1, 8, 0);
         } catch (cv_bridge::Exception& e) {
             ROS_ERROR("cv_bridge exception: %s", e.what());
             return;
@@ -40,12 +44,12 @@ namespace navigation {
     }
 
     void LocalPlanner::updateStrategy(const std_msgs::String planner_strategy) {
-        if (planner_strategy.data ==  std::string("A_Star_Seed")) {
-           planning_strategy_=0;
-        }else {
-            if(planner_strategy.data==std::string("Quick_Response")){
-                planning_strategy_=1;
-            }            
+        if (planner_strategy.data == std::string("A_Star_Seed")) {
+            planning_strategy_ = 0;
+        } else {
+            if (planner_strategy.data == std::string("Quick_Response")) {
+                planning_strategy_ = 1;
+            }
         }
     }
 
@@ -66,6 +70,7 @@ namespace navigation {
     void LocalPlanner::planWithQuickReflex(navigation::quickReflex& quick_reflex_planner) {
         // struct timeval t, c;
         // gettimeofday(&t, NULL);
+
         std::pair<std::vector<navigation::State>, navigation::Seed> path =
                 quick_reflex_planner.findPathToTarget(local_map, bot_pose, target_pose, quick_reflex_planner.status);
         // gettimeofday(&c, NULL);
@@ -161,5 +166,60 @@ namespace navigation {
         status_publisher.publish(msg);
     }
 
-    
+    void LocalPlanner::truncate(int& pose_target_x, int& pose_target_y) {
+        int pose_x = pose_target_x;
+        int pose_y = pose_target_y;
+        if ((pose_y <= 0.9 * map_max_rows && pose_y >= 0.1 * map_max_rows) && (pose_x <= 0.9 * map_max_cols && pose_x >= 0.1 * map_max_cols)) {
+            pose_target_x = pose_x;
+            pose_target_y = pose_y;
+            return;
+        }
+
+        double pose_target_x_on_boundary, pose_target_y_on_boundary;
+        int pose_bot_x = .5 * map_max_cols;
+        int pose_bot_y = .1 * map_max_rows;
+
+        if (pose_y < 0.1 * map_max_rows) {
+            pose_target_y = 0.05 * map_max_rows;
+            pose_target_x = (pose_x < pose_bot_x) ? 0.25 * map_max_cols : 0.75 * map_max_cols;
+            return;
+        }
+
+        // L1: y = 0.9A
+        pose_target_x_on_boundary = pose_bot_x + (0.9 * map_max_cols - pose_bot_y) * (pose_x - pose_bot_x) / (pose_y - pose_bot_y);
+        pose_target_y_on_boundary = 0.9 * map_max_rows;
+        if (((0.1 * map_max_cols <= pose_target_x_on_boundary) && (pose_target_x_on_boundary <= 0.9 * map_max_cols)) && ((pose_bot_y - 0.9 * map_max_rows) * (pose_y - 0.9 * map_max_rows) <= 0) && (pose_y >= 0.9 * map_max_rows)) {
+            pose_target_x = pose_target_x_on_boundary;
+            pose_target_y = pose_target_y_on_boundary;
+            return;
+        }
+
+        // L2: y = 0.1A
+        pose_target_x_on_boundary = pose_bot_x + (0.1 * map_max_rows - pose_bot_y) * (pose_x - pose_bot_x) / (pose_y - pose_bot_y);
+        pose_target_y_on_boundary = 0.1 * map_max_rows;
+
+        if (((0.1 * map_max_rows <= pose_target_x_on_boundary) && (pose_target_x_on_boundary <= 0.9 * map_max_cols)) && ((pose_bot_y - 0.1 * map_max_rows) * (pose_y - 0.1 * map_max_rows) <= 0) && (pose_y <= 0.1 * map_max_rows)) {
+            pose_target_x = pose_target_x_on_boundary;
+            pose_target_y = pose_target_y_on_boundary;
+            return;
+        }
+
+        // L3: x = 0.1A
+        pose_target_x_on_boundary = 0.1 * map_max_cols;
+        pose_target_y_on_boundary = pose_bot_y + (0.1 * map_max_rows - pose_bot_x) * (pose_y - pose_bot_y) / (pose_x - pose_bot_x);
+        if (pose_target_y_on_boundary > .1 * map_max_cols && pose_target_y_on_boundary < .9 * map_max_rows && (pose_x < 0.1 * map_max_cols)) {
+            pose_target_x = pose_target_x_on_boundary;
+            pose_target_y = pose_target_y_on_boundary;
+            return;
+        }
+
+        // L4: x = 0.9A
+        pose_target_x_on_boundary = 0.9 * map_max_cols;
+        pose_target_y_on_boundary = pose_bot_y + (0.9 * map_max_rows - pose_bot_x) * (pose_y - pose_bot_y) / (pose_x - pose_bot_x);
+        if (pose_target_y_on_boundary > .1 * map_max_rows && pose_target_y_on_boundary < .9 * map_max_rows && pose_x > 0.9 * map_max_cols) {
+            pose_target_x = pose_target_x_on_boundary;
+            pose_target_y = pose_target_y_on_boundary;
+            return;
+        }
+    }
 }

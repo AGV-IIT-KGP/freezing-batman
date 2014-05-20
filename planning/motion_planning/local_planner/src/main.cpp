@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
     ros::init(argc, argv, node_name.c_str());
     ros::NodeHandle node_handle;
     navigation::LocalPlanner local_planner(node_handle);
-
+    int planning_strategy;
     int loop_rate_hz;
     node_handle.getParam("local_planner/loop_rate", loop_rate_hz);
     ros::Rate loop_rate(loop_rate_hz);
@@ -22,11 +22,18 @@ int main(int argc, char* argv[]) {
     navigation::AStarSeed astar_seed_planner(node_handle);
 
     while (ros::ok()) {
-        if (local_planner.planning_strategy_ == 0) {
+        node_handle.getParam("local_planner/planning_strategy", planning_strategy);
+        // if (local_planner.planning_strategy_ == 0) {
+        //     local_planner.planWithAstarSeed(astar_seed_planner);
+        // } else {
+        //     local_planner.planWithQuickReflex(quick_reflex_planner);
+        // }
+        if (planning_strategy == 0) {
             local_planner.planWithAstarSeed(astar_seed_planner);
         } else {
             local_planner.planWithQuickReflex(quick_reflex_planner);
         }
+
 
         ros::spinOnce();
         loop_rate.sleep();

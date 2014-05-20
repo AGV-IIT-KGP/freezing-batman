@@ -15,7 +15,7 @@ namespace navigation {
         node_handle.getParam("debugger/map_max_cols", map_max_cols);
 
         fusion_map_subscriber = node_handle.subscribe("data_fuser/map", 10, &Debugger::updateFusionMap, this);
-        target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &Debugger::updateTargetPose, this);
+        target_subscriber = node_handle.subscribe("/nose_navigator/target", 10, &Debugger::updateTargetPose, this);
         path_subscriber = node_handle.subscribe("local_planner/path", 10, &Debugger::updatePath, this);
 
         cv::namedWindow("FusionMap", CV_WINDOW_FREERATIO);
@@ -60,7 +60,7 @@ namespace navigation {
 
     void Debugger::showPath() {
         cv::imshow("FusionMap", local_map);
-        cvWaitKey(10);
+        cv::waitKey(10);
     }
 }
 
