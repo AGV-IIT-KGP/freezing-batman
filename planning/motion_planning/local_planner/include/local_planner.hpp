@@ -40,15 +40,18 @@ namespace navigation {
         int map_max_cols, map_max_rows;
         ros::NodeHandle node_handle;
 
+                geometry_msgs::Pose2D target_pose_;
 
         ros::Subscriber fusion_map_subscriber;
         ros::Subscriber target_subscriber;
         ros::Subscriber planning_strategy_subscriber;
-
+        
+        ros::Publisher pub_target_pose;
         ros::Publisher seed_publisher;
         ros::Publisher path_publisher;
         ros::Publisher status_publisher;
         image_transport::Publisher pub_path_image;
+        image_transport::Publisher pub_world_map;
 
         navigation::State bot_pose, target_pose;
         cv::Mat local_map;

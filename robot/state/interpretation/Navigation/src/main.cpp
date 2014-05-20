@@ -81,29 +81,6 @@ void pose_update(const eklavya_imu_sparkfun::RazorImu::ConstPtr message){
 				break;
 			}
 
-			case DummyNavigator:
-			{
-				current_target = navigation_space::DummyNavigator::getTargetLocation();
-				geometry_msgs::Pose target_pose;
-				target_pose.position.x = current_target.x();
-				target_pose.position.y = current_target.y();
-				target_pose.position.z = current_target.theta();
-
-				pub_target_pose.publish(target_pose);
-
-				bot_location = navigation_space::DummyNavigator::getBotLocation();
-
-				geometry_msgs::Pose bot_pose;
-				bot_pose.position.x = bot_location.x();
-				bot_pose.position.y = bot_location.y();
-				bot_pose.position.z = bot_location.theta();
-
-				pub_bot_pose.publish(bot_pose);
-
-				break;
-
-			}
-
 			case TrackWaypoint://needs to be at a waypoint already
 			{
 				heading = message->yaw;

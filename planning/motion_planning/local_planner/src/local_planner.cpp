@@ -16,12 +16,15 @@ namespace navigation {
         node_handle.getParam("local_planner/map_max_cols", map_max_cols);
 
         fusion_map_subscriber = node_handle.subscribe("data_fuser/map", 10, &LocalPlanner::updateFusionMap, this);
-        target_subscriber = node_handle.subscribe("/nose_navigator/target", 10, &LocalPlanner::updateTargetPose, this);
+        target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &LocalPlanner::updateTargetPose, this);
         planning_strategy_subscriber = node_handle.subscribe("strategy_planner/which_planner", 10, &LocalPlanner::updateStrategy, this);
 
+        image_transport::ImageTransport it(node_handle);
+        pub_world_map = it.advertise("local_planner/map", 1000);
         seed_publisher = node_handle.advertise<local_planner::Seed>("local_planner/seed", 1000);
         status_publisher = node_handle.advertise<std_msgs::String>("local_planner/status", 1000);
         path_publisher = node_handle.advertise<nav_msgs::Path>("local_planner/path", 10);
+        pub_target_pose = nh.advertise<geometry_msgs::Pose2D>("local_planner/target", 1000);
 
         local_map = cv::Mat::zeros(map_max_rows, map_max_cols, CV_8UC1);
         bot_pose = navigation::State(map_max_cols / 2, map_max_rows / 10, 90, 0);
@@ -34,7 +37,7 @@ namespace navigation {
             cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::MONO8);
             local_map = cv_ptr->image;
             cv::rectangle(local_map, cv::Point(0 * local_map.cols, 0 * local_map.rows), cv::Point(.2 * local_map.cols, 1 * local_map.rows), cv::Scalar(0, 0, 0), -1, 8, 0);
-            cv::rectangle(local_map, cv::Point(.2 * local_map.cols, 1 * local_map.rows), cv::Point(.8 * local_map.cols, .8 * local_map.rows), cv::Scalar(0, 0, 0), -1, 8, 0);
+            cv::rectangle(local_map, cv::Point(.2 * local_map.cols, 1 * local_map.rows), cv::Point(1 * local_map.cols, .8 * local_map.rows), cv::Scalar(0, 0, 0), -1, 8, 0);
             cv::rectangle(local_map, cv::Point(.8 * local_map.cols, .8 * local_map.rows), cv::Point(1 * local_map.cols, 0 * local_map.rows), cv::Scalar(0, 0, 0), -1, 8, 0);
             cv::rectangle(local_map, cv::Point(.2 * local_map.cols, 0 * local_map.rows), cv::Point(.8 * local_map.cols, .2 * local_map.rows), cv::Scalar(0, 0, 0), -1, 8, 0);
         } catch (cv_bridge::Exception& e) {
@@ -61,7 +64,9 @@ namespace navigation {
         // gettimeofday(&c, NULL);
         // double td = t.tv_sec + t.tv_usec / 1000000.0;
         // double cd = c.tv_sec + c.tv_usec / 1000000.0;
-
+        target_pose_.x = target_pose.x();
+        target_pose_.y = target_pose.y();
+        target_pose_.theta = (rand() % (360))*(2 * M_PI) / 360;
         publishData(path);
         publishStatusAStarSeed(astar_seed_planner.status);
         // publishImage(image);
@@ -102,6 +107,12 @@ namespace navigation {
             path_msg.poses[i].pose.position.y = path.first[i].y();
         }
         path_publisher.publish(path_msg);
+        cv_bridge::CvImage message;
+        message.encoding = sensor_msgs::image_encodings::MONO8;
+        message.image = local_map;
+        pub_world_map.publish(message.toImageMsg());
+        
+        pub_target_pose.publish(target_pose_);
     }
 
     void LocalPlanner::publishData(std::pair<std::vector<navigation::State>, navigation::Seed>& path) {
@@ -123,14 +134,20 @@ namespace navigation {
             path_msg.poses[i].pose.position.y = bot_pose.y() + path.first[i].y();
         }
         path_publisher.publish(path_msg);
+        cv_bridge::CvImage message;
+        message.encoding = sensor_msgs::image_encodings::MONO8;
+        message.image = local_map;
+        pub_world_map.publish(message.toImageMsg());
+                pub_target_pose.publish(target_pose);
+
     }
 
-    void LocalPlanner::publishImage(cv::Mat image) {
-        cv_bridge::CvImage out_msg;
-        out_msg.encoding = sensor_msgs::image_encodings::TYPE_8UC1;
-        out_msg.image = image;
-        pub_path_image.publish(out_msg.toImageMsg());
-    }
+//    void LocalPlanner::publishImage(cv::Mat image) {
+//        cv_bridge::CvImage out_msg;
+//        out_msg.encoding = sensor_msgs::image_encodings::TYPE_8UC1;
+//        out_msg.image = image;
+//        pub_path_image.publish(out_msg.toImageMsg());
+//    }
 
     void LocalPlanner::publishStatusQuickReflex(int status) {
         std_msgs::String msg;

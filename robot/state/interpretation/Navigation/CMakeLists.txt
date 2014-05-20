@@ -27,7 +27,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
-rosbuild_add_executable(Navigator src/main.cpp src/follow_nose_strategy src/Navigation.cpp src/track_waypoint_strategy.cpp src/lane_follow_strategy.cpp src/state.cpp src/GPS_waypoints.txt src/dummy_navigator.cpp)
+rosbuild_add_executable(Navigator src/main.cpp src/follow_nose_strategy src/Navigation.cpp src/track_waypoint_strategy.cpp src/lane_follow_strategy.cpp src/state.cpp src/GPS_waypoints.txt)
 rosbuild_add_executable(PosefromTarget src/PosefromTarget.cpp)
 
 #rosbuild_link_boost(Navigator signals)

@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 #include <a_star_seed/a_star_seed.hpp>
 
 namespace navigation {
@@ -114,7 +115,7 @@ namespace navigation {
             int n_seed_points;
             return_status = fscanf(textFileOFSeeds, "%d\n", &n_seed_points);
             if (return_status == 0) {
-                std::cout << "[PLANNER] Incorrect seed file format";
+                //std::cout << "[PLANNER] Incorrect seed file format";
                 exit(1);
             }
 
@@ -132,7 +133,18 @@ namespace navigation {
                 State point2((int) tempXvalue, (int) tempYvalue, 0, 0);
                 s.intermediatePoints.insert(s.intermediatePoints.begin(), point2);
             }
-            s.costOfseed = (cost / n_seed_points);
+            if(start.x() == goal.x()){
+                if(x!=0)
+                    s.costOfseed = (cost / n_seed_points)/900 + fabs(atanf(y/x) - M_PI/2)/M_PI;
+                else
+                    s.costOfseed = (cost / n_seed_points)/900;
+            }
+            else{
+                if(x!=0)
+                    s.costOfseed = (cost / n_seed_points)/900 + fabs(atanf(y/x) - atanf((goal.y()-start.y())/(goal.x()-start.x())))/M_PI;
+                else
+                    s.costOfseed = (cost / n_seed_points)/900 + fabs(M_PI/2 - atanf((goal.y()-start.y())/(goal.x()-start.x())))/M_PI;
+            }
             givenSeeds.push_back(s);
         }
 
