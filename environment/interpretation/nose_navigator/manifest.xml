@@ -1,0 +1,19 @@
+<package>
+  <description brief="nose_navigator">
+
+     nose_navigator
+
+  </description>
+  <author>Udai</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/nose_navigator</url>
+  <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="std_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="sensor_msgs"/>
+
+</package>
+
+
