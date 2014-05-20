@@ -1,0 +1,14 @@
+<package>
+  <description brief="eklavya3_roboteq">
+
+     eklavya3_roboteq
+
+  </description>
+  <author>Samuel</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/eklavya3_roboteq</url>
+
+</package>
+
+
