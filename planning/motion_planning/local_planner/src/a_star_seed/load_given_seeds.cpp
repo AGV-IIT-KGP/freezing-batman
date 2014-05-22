@@ -107,9 +107,14 @@ namespace navigation {
                 exit(1);
             }
 
-            s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
-            s.rightVelocity = VMAX / (1 + s.velocityRatio);
-
+            if ( x > 0 || y > 0){
+            	s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
+            	s.rightVelocity = VMAX / (1 + s.velocityRatio);
+            }
+            else{
+            	s.leftVelocity = -VMAX * s.velocityRatio / (1 + s.velocityRatio);
+            	s.rightVelocity = -VMAX / (1 + s.velocityRatio);
+            }
             s.final_state = State((int) x, (int) y, z, 0);
 
             int n_seed_points;
