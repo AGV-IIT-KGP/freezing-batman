@@ -107,7 +107,7 @@ namespace navigation {
                 exit(1);
             }
 
-            if ( x > 0 || y > 0){
+            if (y > 0){
             	s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
             	s.rightVelocity = VMAX / (1 + s.velocityRatio);
             }
