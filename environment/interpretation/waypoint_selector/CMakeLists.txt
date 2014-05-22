@@ -32,4 +32,4 @@ rosbuild_add_executable(waypoint_selector
                         src/main.cpp
                         src/waypoint_selector.cpp)
 rosbuild_add_executable(waypoint_recorder
-                        src/waypoint_selector.cpp)
+                        src/waypoint_recorder.cpp)

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="waypoint_selector" type="waypoint_recorder" name="waypoint_recorder" args="" output="screen" cwd="node">
+        <param name="data_file" type="str" value="../data/.count.dat"/>
+        <param name="record_file_folder" type="str" value="../data/"/>                      
+    </node>
+</launch>
