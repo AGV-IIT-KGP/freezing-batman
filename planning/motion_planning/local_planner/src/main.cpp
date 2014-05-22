@@ -14,8 +14,8 @@ int main(int argc, char* argv[]) {
     ros::init(argc, argv, node_name.c_str());
     ros::NodeHandle node_handle;
     navigation::LocalPlanner local_planner(node_handle);
-    int planning_strategy;
-    int loop_rate_hz;
+    int planning_strategy = 0;
+    int loop_rate_hz = 10;
     node_handle.getParam("local_planner/loop_rate", loop_rate_hz);
     ros::Rate loop_rate(loop_rate_hz);
     navigation::quickReflex quick_reflex_planner(node_handle);

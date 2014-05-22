@@ -40,25 +40,24 @@ namespace navigation {
         int map_max_cols, map_max_rows;
         ros::NodeHandle node_handle;
 
-                geometry_msgs::Pose2D target_pose_;
-
         ros::Subscriber fusion_map_subscriber;
         ros::Subscriber target_subscriber;
         ros::Subscriber planning_strategy_subscriber;
-        
-        ros::Publisher pub_target_pose;
+//                geometry_msgs::Pose2D truncated_target_pose;
+
+        ros::Publisher truncated_target_publisher;
         ros::Publisher seed_publisher;
         ros::Publisher path_publisher;
         ros::Publisher status_publisher;
-        image_transport::Publisher pub_path_image;
-        image_transport::Publisher pub_world_map;
+        ros::Publisher target_publisher;
+        image_transport::Publisher image_publisher;
 
         navigation::State bot_pose, target_pose;
         cv::Mat local_map;
 
         void publishData(std::pair<std::vector<navigation::StateOfCar>, navigation::Seed>& path);
         void publishData(std::pair<std::vector<navigation::State>, navigation::Seed>& path);
-        void publishImage(cv::Mat image);
+        void publishImage(cv::Mat& image);
         void publishStatusQuickReflex(int status);
         void publishStatusAStarSeed(int status);
         void updateFusionMap(const sensor_msgs::ImageConstPtr& fusion_map);
@@ -68,10 +67,14 @@ namespace navigation {
             int x = _pose->x;
             int y = _pose->y;
             int theta = (_pose->theta)*180 / M_PI;
-            truncate(x,y);
+            truncate(x, y);
+//            truncated_target_pose.x = x;
+//            truncated_target_pose.y = y;
+//            truncated_target_pose.theta = 0;
             target_pose = navigation::State(x, y, theta, 0);
         }
     };
+
 }
 
 #endif /* defined(__LOCALPLANNER__LOCALPLANNER__) */

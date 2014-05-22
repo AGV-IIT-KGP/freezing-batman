@@ -15,9 +15,9 @@
 namespace navigation {
 
     void AStarSeed::loadGivenSeeds() {
-        int VMAX;
-        int MAX_ITER;
-        int MIN_RAD;
+        int VMAX = 70;
+        int MAX_ITER = 10000;
+        int MIN_RAD = 70;
         int numberOfSeeds;
         int return_status;
         double x, y, z;

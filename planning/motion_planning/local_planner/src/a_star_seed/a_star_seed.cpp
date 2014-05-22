@@ -13,7 +13,7 @@ namespace navigation {
     std::pair <std::vector<StateOfCar>, Seed> AStarSeed::findPathToTarget(const cv::Mat& map, const State& start, const State& goal, const int distance_transform, const int debug_current_state, int& status) {
         // USE : for guaranteed termination of planner
         int no_of_iterations = 0;
-        int max_iterations;
+        int max_iterations = 10000;
 
         node_handle.getParam("local_planner/max_iterations", max_iterations);
 
