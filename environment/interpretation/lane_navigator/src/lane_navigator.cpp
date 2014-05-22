@@ -9,10 +9,11 @@
 #include <std_msgs/String.h>
 
 const int bot_x = 500, bot_y = 900;
-int step_move = -2000;
+int step_move = -700;
 const cv::Point origin(0, 480); //Wrt top left corner
 int count = 0;
 int debug=1;
+ros::Publisher pub_point;
 
 geometry_msgs::Pose2D findTarget(cv::Mat img) {
     cv::Mat cdst, mdst;
@@ -47,6 +48,12 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
         center_point.y = center_point.y / lines.size();
         if (debug)std::cout << center_point.x << " " << center_point.y << std::endl;
     }
+    else
+    {
+	center_angle= 1.57;
+	center_point.x= bot_x;
+	center_point.y= bot_y;
+    }  
     double m = tan(center_angle);
     if (m == HUGE_VAL) {
         m = 10000;
@@ -120,12 +127,8 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
 }
 
 void publishTarget(const sensor_msgs::ImageConstPtr msg ) {
-    cv::namedWindow("listening", CV_WINDOW_AUTOSIZE);
-    ros::NodeHandle n;
-    std::string node_name= "lane_navigator";
-    n.getParam(node_name + "/debug", debug);
-    if (debug)ROS_INFO("Listened for the %d time\n", count++);
-    ros::Publisher pub_point = n.advertise<geometry_msgs::Pose2D>("target_point", 50);
+    if (debug){ROS_INFO("Listened for the %d time\n", count++);
+    cv::namedWindow("listening", CV_WINDOW_AUTOSIZE);}
     cv::Mat img;
     geometry_msgs::Pose2D msge;
     cv_bridge::CvImagePtr cv_ptr;
@@ -134,15 +137,23 @@ void publishTarget(const sensor_msgs::ImageConstPtr msg ) {
     // cv::cvtColor(msg.image,img,CV_BGR2GRAY);
     img = cv_ptr->image;
     msge = findTarget(img);
-    if(debug)cv::waitKey(33);
     pub_point.publish(msge);
-    if (debug)ROS_INFO("%f %f %f ", msge.x, msge.y, msge.theta);
+    if(debug)
+    {
+       cv::waitKey(33);
+       ROS_INFO("%f %f %f ", msge.x, msge.y, msge.theta);
+    }
 }
 
 int main(int argc, char **argv) {
-    ros::init(argc, argv, "lane_navigator");
+    std::string node_name= "lane_navigator";
+    ros::init(argc, argv, node_name);
     ros::NodeHandle node_handle;
+    pub_point = node_handle.advertise<geometry_msgs::Pose2D>("target_point", 50);
     ros::Subscriber lanes_subscriber = node_handle.subscribe("/lane_detector/lanes", 1, &publishTarget);
-    ros::spin();
+    while(ros::ok()){
+    node_handle.getParam(node_name + "/debug", debug);
+    ros::spinOnce();
+    }
     return 0;
 }
