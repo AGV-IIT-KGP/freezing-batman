@@ -17,7 +17,6 @@
 #include <opencv2/opencv.hpp>
 #include <sensor_msgs/Image.h>
 
- 
 #define DEBUG 0
 #define WAIT_TIME 1000
 #define choice 2
@@ -51,6 +50,7 @@ public:
     std::vector<cv::Vec4i> GetHoughLanes(cv::Mat img, int vote, int length, int mrgha);
     cv::Mat getLaneLines(cv::Mat src);
     image_transport::ImageTransport getLaneNode();
+
 private:
     cv::Size size;
     int depth;
@@ -61,22 +61,21 @@ private:
     cv::Mat lane;
     cv::Mat warp_img;
     cv::Mat img;
-    cv::Mat ker1;     
+    cv::Mat ker1;
     cv::Point offset;
     uchar** ImageData;
     uchar* data;
     double mean, std_dev;
     int i;
     int rows, cols;
-    sensor_msgs::CvBridge bridge;  /////??????????????????????????????? shouldn't it be a cv_bridge::CvImagePtr object
-    cv::Point2f srcQuad[4], dstQuad[4];   
+    sensor_msgs::CvBridge bridge; /////??????????????????????????????? shouldn't it be a cv_bridge::CvImagePtr object
+    cv::Point2f srcQuad[4], dstQuad[4];
     int canny_kernel, high_threshold, low_threshold, vote, length, mrg;
     int k;
     cv::Mat warp_matrix;
     int mouseParam;
-    image_transport::ImageTransport it;
+    image_transport::ImageTransport image_transport;
     void publishLanes(cv::Mat final_img);
-
 };
 
 #endif	/* LANEDETECTOR_HPP */
