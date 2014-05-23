@@ -9,14 +9,15 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 #include <a_star_seed/a_star_seed.hpp>
 
 namespace navigation {
 
     void AStarSeed::loadGivenSeeds() {
-        int VMAX;
-        int MAX_ITER;
-        int MIN_RAD;
+        int VMAX = 70;
+        int MAX_ITER = 10000;
+        int MIN_RAD = 70;
         int numberOfSeeds;
         int return_status;
         double x, y, z;
@@ -107,20 +108,19 @@ namespace navigation {
                 exit(1);
             }
 
-            if (y > 0){
-            	s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
-            	s.rightVelocity = VMAX / (1 + s.velocityRatio);
-            }
-            else{
-            	s.leftVelocity = -VMAX * s.velocityRatio / (1 + s.velocityRatio);
-            	s.rightVelocity = -VMAX / (1 + s.velocityRatio);
+            if (y > 0) {
+                s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
+                s.rightVelocity = VMAX / (1 + s.velocityRatio);
+            } else {
+                s.leftVelocity = -VMAX * s.velocityRatio / (1 + s.velocityRatio);
+                s.rightVelocity = -VMAX / (1 + s.velocityRatio);
             }
             s.final_state = State((int) x, (int) y, z, 0);
 
             int n_seed_points;
             return_status = fscanf(textFileOFSeeds, "%d\n", &n_seed_points);
             if (return_status == 0) {
-                std::cout << "[PLANNER] Incorrect seed file format";
+                //std::cout << "[PLANNER] Incorrect seed file format";
                 exit(1);
             }
 
@@ -139,10 +139,23 @@ namespace navigation {
                 cost_DT += fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
                 s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
             }
-            s.costOfseed = (cost / n_seed_points)/200 + ((cost_DT / n_seed_points)/255)/DT_CONSTANT + abs(atanf((goal.y()-start.y())/(goal.x()-start.x())) - atanf(y/x));
-            givenSeeds.push_back(s);
+            s.costOfseed = (cost / n_seed_points) / 200 + ((cost_DT / n_seed_points) / 255) / DT_CONSTANT + abs(atanf((goal.y() - start.y()) / (goal.x() - start.x())) - atanf(y / x));
+            cost += point.distanceTo(goal); // + DT_CONSTANT * fusion_map.at<uchar>(fusion_map.rows - tempYvalue - 1, tempXvalue);
+            State point2((int) tempXvalue, (int) tempYvalue, 0, 0);
+            s.intermediatePoints.insert(s.intermediatePoints.begin(), point2);
         }
-
+        if (start.x() == goal.x()) {
+            if (x != 0)
+                s.costOfseed = (cost / n_seed_points) / 900 + fabs(atanf(y / x) - M_PI / 2) / M_PI;
+            else
+                s.costOfseed = (cost / n_seed_points) / 900;
+        } else {
+            if (x != 0)
+                s.costOfseed = (cost / n_seed_points) / 900 + fabs(atanf(y / x) - atanf((goal.y() - start.y()) / (goal.x() - start.x()))) / M_PI;
+            else
+                s.costOfseed = (cost / n_seed_points) / 900 + fabs(M_PI / 2 - atanf((goal.y() - start.y()) / (goal.x() - start.x()))) / M_PI;
+        }
+        givenSeeds.push_back(s);
         fclose(textFileOFSeeds);
     }
 }

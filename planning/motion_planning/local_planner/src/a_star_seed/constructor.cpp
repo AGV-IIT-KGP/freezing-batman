@@ -12,12 +12,14 @@ namespace navigation {
 
     std::string AStarSeed::getSeedFileNameAStarSeed(ros::NodeHandle& node_handle) {
         std::string ss;
+        ss = std::string("/seeds/seeds2.txt");
         node_handle.getParam("local_planner/seed_file2", ss);
         return ss;
     }
 
     std::string quickReflex::getSeedFileNameQuickReflex(ros::NodeHandle& node_handle) {
         std::string ss;
+        ss = std::string("/seeds/seeds8.txt");
         node_handle.getParam("local_planner/seed_file8", ss);
         return ss;
     }
@@ -28,6 +30,8 @@ namespace navigation {
         ss << getSeedFileNameAStarSeed(node_handle);
         SEEDS_FILE = ss.str();
         loadGivenSeeds();
+        debug_current_state = 0;
+        distance_transform = 0;
         node_handle.getParam("local_planner/debug_current_state", debug_current_state);
         node_handle.getParam("local_planner/distance_transform", distance_transform);
     }

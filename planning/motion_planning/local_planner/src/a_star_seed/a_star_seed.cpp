@@ -13,7 +13,7 @@ namespace navigation {
     std::pair <std::vector<StateOfCar>, Seed> AStarSeed::findPathToTarget(const cv::Mat& map, const State& start, const State& goal, const int distance_transform, const int debug_current_state, int& status) {
         // USE : for guaranteed termination of planner
         int no_of_iterations = 0;
-        int max_iterations;
+        int max_iterations = 10000;
 
         node_handle.getParam("local_planner/max_iterations", max_iterations);
 
@@ -28,7 +28,7 @@ namespace navigation {
         if (debug_current_state) {
             image = fusion_map.clone();
         }
-        
+
         StateOfCar start_state(start), target_state(goal);
         std::map<StateOfCar, open_map_element> open_map;
         std::map<StateOfCar, StateOfCar, comparatorMapState> came_from;
@@ -39,12 +39,10 @@ namespace navigation {
         if (start_state.isCloseTo(target_state)) {
             status = 1;
             return std::make_pair(std::vector<StateOfCar>(), Seed());
-        }
-        else if (isOnTheObstacle(start_state)) {
+        } else if (isOnTheObstacle(start_state)) {
             std::cout << "Bot is on the Obstacle Map \n";
             return std::make_pair(std::vector<StateOfCar>(), Seed());
-        }
-        else if (isOnTheObstacle(target_state)) {
+        } else if (isOnTheObstacle(target_state)) {
             std::cout << "Target is on the Obstacle Map \n";
             return std::make_pair(std::vector<StateOfCar>(), Seed());
         }
@@ -88,21 +86,13 @@ namespace navigation {
                 double tentative_gcost_along_followed_path = neighbor.gCost() + current_state.gCost();
                 double admissible = neighbor.distanceTo(target_state);
                 double consistent = admissible;
-                double intensity = fusion_map.at<uchar>(neighbor.y(), neighbor.x());
-                // double consistentAndIntensity = (consistent*consistent + 2 + intensity * intensity) / (consistent + intensity + 2);
-                double gcost_and_intensity = (tentative_gcost_along_followed_path * tentative_gcost_along_followed_path + intensity * intensity + 2) / (tentative_gcost_along_followed_path + intensity);
 
                 if (!((open_map.find(neighbor) != open_map.end()) &&
                       (open_map[neighbor].membership == OPEN))) {
                     came_from[neighbor] = current_state;
                     neighbor.hCost(consistent);
-                    if (distance_transform == 1) {
-                        neighbor.gCost(gcost_and_intensity);
-                    } else {
-                        neighbor.gCost(tentative_gcost_along_followed_path);
-                    }
+                    neighbor.gCost(tentative_gcost_along_followed_path);
                     neighbor.updateTotalCost();
-
                     open_set.push(neighbor);
                     open_map[neighbor].membership = OPEN;
                     open_map[neighbor].cost = neighbor.gCost();

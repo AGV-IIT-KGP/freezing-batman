@@ -2,7 +2,7 @@
 <launch>
     <node pkg="local_planner" type="local_planner" name="local_planner" output="screen" cwd="node">
         <param name="debug_current_state" type="int" value="0"/>
-        <param name="distance_transform" type="int" value="1"/>
+        <param name="distance_transform" type="int" value="0"/>
         <param name="seed_file2" type="str" value="/seeds/seeds2.txt"/>
         <param name="seed_file8" type="str" value="/seeds/seeds8.txt"/>
         <param name="planning_strategy" type="int" value="0"/>
@@ -17,7 +17,6 @@
         <param name="vmax" type="int" value="70"/>
         <param name="min_rad" type="int" value="70"/>
         <param name="max_iterations_load_given_seeds" type="int" value="10000"/>
-
     </node>
 </launch>
 

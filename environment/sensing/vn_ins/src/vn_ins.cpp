@@ -70,7 +70,7 @@ void vectorNav::initializeParameters() {
 void vectorNav::initializeParameters(int argc, char** argv) {
     baud_rate = 115200;
     message_queue_size = 10;
-    node_name = std::string("vn_ins") + std::string(argv[1]);
+    node_name = std::string("/vn_ins") + std::string(argv[1]);
     fix_topic_name = node_name + std::string(argv[1]) + std::string("/fix");
     yaw_topic_name = node_name + std::string(argv[1]) + std::string("/yaw");
     vn200_com_port = std::string(argv[2]);

@@ -35,7 +35,12 @@ namespace navigation {
                 return false;
             }
         }
-
+        if (fusion_map.rows - target_state.y() - 1 < 0 || fusion_map.rows - target_state.y() - 1 >= fusion_map.rows) {
+            return true;
+        }
+        if (target_state.x() < 0 || target_state.x() >= fusion_map.cols) {
+            return true;
+        }
         if (fusion_map.at<uchar>(fusion_map.rows - target_state.y() - 1, target_state.x()) >= 250) {
             return false;
         }
