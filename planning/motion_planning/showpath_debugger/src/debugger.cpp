@@ -17,7 +17,7 @@ namespace navigation {
         node_handle.getParam("debugger/map_max_cols", map_max_cols);
 
         fusion_map_subscriber = node_handle.subscribe("local_planner/map", 10, &Debugger::updateFusionMap, this);
-        target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &Debugger::updateTargetPose, this);
+        target_subscriber = node_handle.subscribe("local_planner/target", 10, &Debugger::updateTargetPose, this);
         path_subscriber = node_handle.subscribe("local_planner/path", 10, &Debugger::updatePath, this);
 
         cv::namedWindow("FusionMap", CV_WINDOW_FREERATIO);
@@ -49,8 +49,16 @@ namespace navigation {
         }
     }
 
+    void Strategy_Planner::updateStatus(std_msgs::String status) {
+        if (status.data == "NO PATH FOUND" || status.data == "OPEN LIST OVERFLOW" || status.data == "TARGET BEHIND") {
+            load_in_planner = true;
+        } else {
+            load_in_planner = false;
+        }
+    }
+
     void Debugger::makeMap() {
-        cv::Mat img=local_map;
+        cv::Mat img = local_map;
         cv::circle(img, cvPoint(target_pose.x(), local_map.rows - 1 - target_pose.y()), 5, cvScalar(128), -1);
         cv::line(img, cvPoint(target_pose.x(), local_map.rows - 1 - target_pose.y()), cvPoint(target_pose.x() + 15 * cos((target_pose.theta() * M_PI) / 180), local_map.rows - 1 - target_pose.y() - 15 * sin((target_pose.theta() * M_PI) / 180)), cvScalar(128), 1, 8, 0);
         cv::circle(img, cvPoint(bot_pose.x(), local_map.rows - 1 - bot_pose.y()), 5, cvScalar(128), -1);

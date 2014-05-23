@@ -37,7 +37,7 @@ namespace navigation {
 
     private:
         int map_max_cols, map_max_rows;
-
+        bool load_in_planner;
         ros::Subscriber fusion_map_subscriber;
         ros::Subscriber target_subscriber;
         ros::Subscriber path_subscriber;
@@ -45,6 +45,7 @@ namespace navigation {
 
         void updateFusionMap(const sensor_msgs::ImageConstPtr& fusion_map);
         void updatePath(const nav_msgs::Path& path);
+        void updateStatus(const std::msgs::String status);
 
         inline void updateTargetPose(const geometry_msgs::Pose2D _pose) {
             int x = _pose.x;

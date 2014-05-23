@@ -43,7 +43,7 @@ namespace navigation {
         ros::Subscriber fusion_map_subscriber;
         ros::Subscriber target_subscriber;
         ros::Subscriber planning_strategy_subscriber;
-//                geometry_msgs::Pose2D truncated_target_pose;
+        geometry_msgs::Pose2D truncated_target_pose;
 
         ros::Publisher truncated_target_publisher;
         ros::Publisher seed_publisher;
@@ -68,9 +68,9 @@ namespace navigation {
             int y = _pose->y;
             int theta = (_pose->theta)*180 / M_PI;
             truncate(x, y);
-//            truncated_target_pose.x = x;
-//            truncated_target_pose.y = y;
-//            truncated_target_pose.theta = 0;
+            truncated_target_pose.x = x;
+            truncated_target_pose.y = y;
+            truncated_target_pose.theta = 0;
             target_pose = navigation::State(x, y, theta, 0);
         }
     };

@@ -16,6 +16,9 @@ namespace navigation {
         map_max_cols = 1000;
         node_handle.getParam("local_planner/map_max_rows", map_max_rows);
         node_handle.getParam("local_planner/map_max_cols", map_max_cols);
+        local_map = cv::Mat::zeros(map_max_rows, map_max_cols, CV_8UC1);
+        bot_pose = navigation::State(map_max_cols / 2, map_max_rows / 10, 90, 0);
+        target_pose = navigation::State(map_max_cols / 2, map_max_rows * .95, 90, 0);
 
         fusion_map_subscriber = node_handle.subscribe("data_fuser/map", 10, &LocalPlanner::updateFusionMap, this);
         target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &LocalPlanner::updateTargetPose, this);
@@ -24,12 +27,9 @@ namespace navigation {
         seed_publisher = node_handle.advertise<local_planner::Seed>("local_planner/seed", 1000);
         status_publisher = node_handle.advertise<std_msgs::String>("local_planner/status", 1000);
         path_publisher = node_handle.advertise<nav_msgs::Path>("local_planner/path", 10);
-        //        truncated_target_publisher = node_handle.advertise<geometry_msgs::Pose2D>("local_planner/target", 1000);
+        truncated_target_publisher = node_handle.advertise<geometry_msgs::Pose2D>("local_planner/target", 1000);
         image_transport::ImageTransport it(node_handle);
         image_publisher = it.advertise("local_planner/map", 1000);
-        //        target_publisher = node_handle.advertise<std_msgs::Float32>("")
-        local_map = cv::Mat::zeros(map_max_rows, map_max_cols, CV_8UC1);
-        bot_pose = navigation::State(map_max_cols / 2, map_max_rows / 10, 90, 0);
     }
 
     void LocalPlanner::updateFusionMap(const sensor_msgs::ImageConstPtr& world_map) {
@@ -70,9 +70,8 @@ namespace navigation {
 
         publishData(path);
         publishStatusAStarSeed(astar_seed_planner.status);
-
+        truncated_target_publisher.publish(truncated_target_pose);
         publishImage(local_map);
-        //        truncated_target_publisher.publish(truncated_target_pose);
     }
 
     void LocalPlanner::planWithQuickReflex(navigation::quickReflex& quick_reflex_planner) {
@@ -87,7 +86,7 @@ namespace navigation {
         // planner_quickReflex.showPath(path.first , my_bot_location, my_target_location);
         publishData(path);
         publishStatusQuickReflex(quick_reflex_planner.status);
-        //        truncated_target_publisher.publish(truncated_target_pose);
+        truncated_target_publisher.publish(truncated_target_pose);
         publishImage(local_map);
     }
 
@@ -183,7 +182,6 @@ namespace navigation {
                 pose_target_y = pose_y;
                 return;
             } else {
-                std::cout<<"Target position initially is ("<<pose_x<<", "<<pose_y<<")\n";
                 srand(time(NULL));
                 int bracket = 200;
                 while (1) {
@@ -199,7 +197,6 @@ namespace navigation {
                         if (count > 2) {
                             pose_target_x = temp_x;
                             pose_target_y = temp_y;
-                            std::cout<<"Target position finally is ("<<pose_target_x<<", "<<pose_target_y<<")\n";
                             return;
                         }
                     }
@@ -209,8 +206,6 @@ namespace navigation {
                             if (local_map.at<uchar>(j, pose_x) <= 225) {
                                 pose_target_y = j;
                                 pose_target_x = pose_x;
-                                std::cout<<"Target position finally after bracket is ("<<pose_target_x<<", "<<pose_target_y<<")\n";
-                                
                                 return;
                             }
                         }
