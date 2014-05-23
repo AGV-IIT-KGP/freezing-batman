@@ -4,14 +4,14 @@
 #include <ros/package.h>
 
 int multiplier;
-const int distance_between_wheels = 17;
+const int distance_between_wheels = 72;
 
 int main() {
     int number_of_seeds, number_of_intermediate_points, layers;
     double velocity_ratio, final_x, final_y, final_orientation;
     FILE *seed_output;
     std::string seeds_file;
-    seeds_file = ros::package::getPath("local_planner") + "/seeds/seeds.txt";
+    seeds_file = ros::package::getPath("local_planner") + "/seeds/seeds8.txt";
     seed_output = fopen(seeds_file.c_str(), "w");
 
     //printf("OutputFormat:\nnumberOfSseeds\nvelocityRatio finalX finalY finalOrientation\nSeedPoints\nintermediateXValue intermediateYValue\n");
@@ -37,7 +37,7 @@ int main() {
             double theta = asinf(final_y / radius_of_curvature);
 
             final_orientation = M_PI / 2 - theta;
-            velocity_ratio = 1 + distance_between_wheels / radius_of_curvature;
+            velocity_ratio = (radius_of_curvature + distance_between_wheels/2) / (radius_of_curvature - distance_between_wheels/2);
 
             fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, final_y, final_orientation * 180 / M_PI);
 
@@ -86,7 +86,7 @@ int main() {
         //generating straight seed
         velocity_ratio = 1.0;
         final_x = 0;
-        final_y = (2 * number_of_seeds + 1) * multiplier;
+        final_y = (2 * number_of_seeds) * multiplier;
         final_orientation = M_PI / 2;
 
         fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, final_y, final_orientation * 180 / M_PI);
