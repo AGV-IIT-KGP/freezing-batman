@@ -5,6 +5,7 @@ typedef long double precnum_t;
 bool WaypointSelector::readWaypoints(std::ifstream& waypoints, std::vector<std::pair<sensor_msgs::NavSatFix, bool> >& gps_waypoints, int num_of_waypoints, std::string filename) {
     std::pair < sensor_msgs::NavSatFix, bool> target;
     std::string line;
+    int count = 0;
     int temp_no_waypoints = -1;
     waypoints.open(filename.c_str(), std::ios::in);
     int i = 0;
@@ -21,27 +22,29 @@ bool WaypointSelector::readWaypoints(std::ifstream& waypoints, std::vector<std::
                     if (i == 0) {//checks if an integer is given in the beginning
                         float num;
                         iss>>num;
-                        if (num-floor(num)==0) {
+                        if (num - floor(num) == 0) {
                             temp_no_waypoints = num;
+                            i++;
+                            continue;
                         } else {
                             iss.str(line);
                         }
                     }
                     float lat, lon;
-                    while (temp_no_waypoints == -1 || i < temp_no_waypoints) {//if waypoints are less than the number written exits
-                        while (iss >> lat && iss >> lon) {//checks if both lat and lon are given
+                    while (temp_no_waypoints == -1 || count < temp_no_waypoints) {//if waypoints are less than the number written exits
+                        while (iss >> lat && iss >> lon && count < temp_no_waypoints) {//checks if both lat and lon are given
                             target.first.latitude = lat;
                             target.first.longitude = lon;
                             target.first.altitude = altitude_preset;
                             target.second = false;
                             gps_waypoints.push_back(target);
-                            i++;
+                            count++;
                         }
+                        break;
                     }
                 }
             }
-        } else {
-            num_of_waypoints = i;
+            num_of_waypoints = count;
             return true;
         }
     }

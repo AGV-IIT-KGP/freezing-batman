@@ -4,7 +4,7 @@ int main(int argc, char* argv[]) {
     std::string node_name = "waypoint_selector"; //launchfile-> <node .... name="waypoint_selector" />
     ros::init(argc, argv, node_name);
     ros::NodeHandle node_handle;
-    
+
     int strategy;
     std::string file_name;
     node_handle.getParam(std::string("/") + node_name + std::string("/filename"), file_name);
@@ -21,9 +21,9 @@ int main(int argc, char* argv[]) {
     while (ros::ok()) {
         node_handle.getParam(std::string("/") + node_name + std::string("/proximity"), waypoint_selector.proximity_);
 
+        next_waypoint_publisher.publish(waypoint_selector.findTarget());
         nml_flag.data = waypoint_selector.isInsideNoMansLand();
         nml_flag_publisher.publish(nml_flag);
-        next_waypoint_publisher.publish(waypoint_selector.findTarget());
 
         ros::spinOnce();
         loop_rate.sleep();
