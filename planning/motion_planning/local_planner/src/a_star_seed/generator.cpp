@@ -37,7 +37,7 @@ int main() {
             double theta = asinf(final_y / radius_of_curvature);
 
             final_orientation = M_PI / 2 - theta;
-            velocity_ratio = (radius_of_curvature + distance_between_wheels/2) / (radius_of_curvature - distance_between_wheels/2);
+            velocity_ratio = (radius_of_curvature + distance_between_wheels / 2) / (radius_of_curvature - distance_between_wheels / 2);
 
             fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, final_y, final_orientation * 180 / M_PI);
 
@@ -149,11 +149,11 @@ int main() {
                 fprintf(seed_output, "%lf %lf\n", temp_x, -temp_y);
             }
         }
-        
+
         //generating straight seed
         velocity_ratio = 1.0;
         final_x = 0;
-        final_y = (2 * number_of_seeds + 1) * multiplier;
+        final_y = (2 * number_of_seeds) * multiplier;
         final_orientation = M_PI / 2;
         fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, -final_y, final_orientation * 180 / M_PI);
 

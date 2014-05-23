@@ -14,7 +14,7 @@
   <depend package="std_msgs"/>
   <depend package="sensor_msgs"/>
   <depend package="geometry_msgs"/>
-  <depend package="eklavya_imu_sparkfun"/>
+  <depend package="sparkfun_ahrs"/>
   <depend package="agv_framework"/>
 
 </package>
