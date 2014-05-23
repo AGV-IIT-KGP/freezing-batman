@@ -83,7 +83,7 @@ namespace navigation {
 
     private:
         static const int MAX_ITERATIONS;
-        std::string SEEDS_FILE;
+        std::string seeds_file_name;
         int map_max_cols;
         int map_max_rows;
         std::vector<Seed> givenSeeds;

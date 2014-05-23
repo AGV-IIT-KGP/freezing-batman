@@ -28,7 +28,7 @@ namespace navigation {
         std::stringstream ss;
         ss << ros::package::getPath("local_planner");
         ss << getSeedFileNameAStarSeed(node_handle);
-        SEEDS_FILE = ss.str();
+        seeds_file_name = ss.str();
         loadGivenSeeds();
         debug_current_state = 0;
         distance_transform = 0;

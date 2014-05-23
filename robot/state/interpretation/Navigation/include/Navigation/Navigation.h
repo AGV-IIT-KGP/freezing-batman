@@ -1,19 +1,19 @@
-#include <iostream>
-#include <fstream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <message_filters/subscriber.h>
-#include <vector>
-#include <ros/ros.h>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <State/State.hpp>
-#include <sparkfun_ahrs/RazorImu.h>
-#include <sensor_msgs/NavSatFix.h>
-#include "geometry_msgs/Pose.h"
-#include <boost/bind.hpp>
 #include <cmath>
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <vector>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <ros/ros.h>
+#include <boost/bind.hpp>
+#include <geometry_msgs/Pose.h>
+#include <message_filters/subscriber.h>
+#include <sensor_msgs/NavSatFix.h>
+#include <sparkfun_ahrs/RazorImu.h>
+#include <State/State.hpp>
 
 static const int MAP_MAX = 1000;
 static const int loop_rate_hz = 10;
