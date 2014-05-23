@@ -50,9 +50,9 @@ public:
     void initializeLaneVariables(int argc, char** argv, ros::NodeHandle nh);
     std::vector<cv::Vec4i> GetHoughLanes(cv::Mat img, int vote, int length, int mrgha);
     cv::Mat getLaneLines(cv::Mat src);
-    image_transport::ImageTransport *getLaneNode();
+    image_transport::ImageTransport getLaneNode();
 private:
-    CvSize size;
+    cv::Size size;
     int depth;
     cv::Mat kernel_frame;
     cv::Mat edge_frame;
@@ -61,20 +61,20 @@ private:
     cv::Mat lane;
     cv::Mat warp_img;
     cv::Mat img;
-    IplConvKernel *ker1;     //???
-    CvPoint offset;
+    cv::Mat ker1;     
+    cv::Point offset;
     uchar** ImageData;
     uchar* data;
     double mean, std_dev;
     int i;
     int rows, cols;
-    sensor_msgs::CvBridge bridge;
-    CvPoint2D32f srcQuad[4], dstQuad[4];
+    sensor_msgs::CvBridge bridge;  /////??????????????????????????????? shouldn't it be a cv_bridge::CvImagePtr object
+    cv::Point2f srcQuad[4], dstQuad[4];   
     int canny_kernel, high_threshold, low_threshold, vote, length, mrg;
     int k;
-    cv::Mat* warp_matrix;
+    cv::Mat warp_matrix;
     int mouseParam;
-    image_transport::ImageTransport *it;
+    image_transport::ImageTransport it;
     void publishLanes(cv::Mat final_img);
 
 };
