@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
     ros::Subscriber next_waypoint_subscriber = node_handle.subscribe("waypoint_selector/next_waypoint", buffer_size, &WaypointNavigator::set_target_fix, &waypoint_navigator);
     ros::Subscriber current_fix_subscriber = node_handle.subscribe("vn_ins/fix", buffer_size, &WaypointNavigator::set_current_fix, &waypoint_navigator);
     ros::Subscriber current_yaw_subscriber = node_handle.subscribe(yaw_sub_topic.c_str(), buffer_size, &WaypointNavigator::set_heading, &waypoint_navigator);
-    ros::Publisher target_publisher = node_handle.advertise<geometry_msgs::Pose2D>("waypoint_navigator/target", buffer_size);
+    ros::Publisher target_publisher = node_handle.advertise<geometry_msgs::Pose2D>("waypoint_navigator/proposed_target", buffer_size);
 
     ros::Rate loop_rate(loop_rate_hz);
     while (ros::ok()) {
