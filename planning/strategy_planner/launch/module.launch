@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 
 <launch>
-    <node pkg="strategy_planner" type="strategy_planner" name="strategy_planner" output="screen" cwd="node" />
+    <node pkg="strategy_planner" type="strategy_planner" name="strategy_planner"  output="screen" cwd="node">
+        <param name="test_mode" type="bool" value="false"/>
+        <param name="planner" type="int" value="0"/>                
+        <param name="navigator" type="int" value="1"/>        
+    </node>
 </launch>

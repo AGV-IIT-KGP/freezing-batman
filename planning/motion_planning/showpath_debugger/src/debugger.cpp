@@ -11,10 +11,12 @@
 namespace navigation {
 
     Debugger::Debugger() {
+        map_max_rows = 1000;
+        map_max_cols = 1000;
         node_handle.getParam("debugger/map_max_rows", map_max_rows);
         node_handle.getParam("debugger/map_max_cols", map_max_cols);
 
-        fusion_map_subscriber = node_handle.subscribe("data_fuser/map", 10, &Debugger::updateFusionMap, this);
+        fusion_map_subscriber = node_handle.subscribe("/data_fuser/map", 10, &Debugger::updateFusionMap, this);
         target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &Debugger::updateTargetPose, this);
         path_subscriber = node_handle.subscribe("local_planner/path", 10, &Debugger::updatePath, this);
 
@@ -72,7 +74,7 @@ int main(int argc, char* argv[]) {
     navigation::Debugger debugger;
     debugger.node_handle = node_handle;
 
-    int loop_rate_hz;
+    int loop_rate_hz = 10;
     node_handle.getParam("debugger/loop_rate", loop_rate_hz);
     ros::Rate loop_rate(loop_rate_hz);
     while (ros::ok()) {

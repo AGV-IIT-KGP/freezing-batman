@@ -70,7 +70,7 @@ ObstacleDetector::ObstacleDetector(std::string node_name, ros::NodeHandle& node_
     obstacle_map = cv::Mat(map_size, map_size, CV_8UC1, cvScalarAll(0));
     image_transport = new image_transport::ImageTransport(node_handle);
     obstacle_publisher = image_transport->advertise(std::string("/") + node_name + std::string("/obstacles"), 10);
-    scan_subscriber = node_handle.subscribe("/scan", 2, &ObstacleDetector::scanCallback, this);
+    scan_subscriber = node_handle.subscribe("/sensors/hokuyo_nodes/0", 2, &ObstacleDetector::scanCallback, this);
 }
 
 ObstacleDetector::~ObstacleDetector() {

@@ -15,7 +15,7 @@ namespace navigation {
         node_handle.getParam("local_planner/map_max_rows", map_max_rows);
         node_handle.getParam("local_planner/map_max_cols", map_max_cols);
 
-        fusion_map_subscriber = node_handle.subscribe("data_fuser/map", 10, &LocalPlanner::updateFusionMap, this);
+        fusion_map_subscriber = node_handle.subscribe("/data_fuser/map", 10, &LocalPlanner::updateFusionMap, this);
         target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &LocalPlanner::updateTargetPose, this);
         planning_strategy_subscriber = node_handle.subscribe("strategy_planner/which_planner", 10, &LocalPlanner::updateStrategy, this);
 
