@@ -37,7 +37,7 @@ class Strategy_Planner {
     bool nml_flag, is_confident_;
 
 public:
-    void plan();
+    void plan(bool is_test_mode, int planner, int navigator);
     void setEmergency(std_msgs::String status);
     void setFinalTarget(geometry_msgs::Pose2D set_target_);
     void setWhichPlanner(std::string planner);

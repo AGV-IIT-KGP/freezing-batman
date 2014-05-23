@@ -3,6 +3,8 @@
 int main(int argc, char* argv[]) {
     Strategy_Planner strategy_planner;
 
+    int planner,navigator;
+    bool is_test_mode;
     ros::init(argc, argv, "strategy_planner");
     ros::NodeHandle nh;
 
@@ -22,7 +24,10 @@ int main(int argc, char* argv[]) {
     ros::Rate loop_rate(loop_rate_hz);
     while (ros::ok()) {
         ros::spinOnce();
-        strategy_planner.plan();
+        nh.getParam("/strategy_planner/test_mode",is_test_mode);
+        nh.getParam("/strategy_planner/planner",planner);
+        nh.getParam("/strategy_planner/navigator",navigator);
+        strategy_planner.plan(is_test_mode,planner,navigator);
         pub_target.publish(strategy_planner.getFinalTarget());
         pub_strategy.publish(strategy_planner.getWhichPlanner());
         pub_navigator.publish(strategy_planner.getWhichNavigator());

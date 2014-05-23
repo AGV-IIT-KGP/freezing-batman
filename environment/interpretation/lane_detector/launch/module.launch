@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <launch>
-    <node pkg="lane_detector" type="laneDetectorNode" name="lane_detector" args="6" output="screen" cwd="node">
+    <node pkg="lane_detector" type="lane_detector" name="lane_detector" args="6" output="screen" cwd="node">
         <param name="debug_mode" type="int" value="0"/>
         <param name="ipt_offsets_file" type="str" value="../data/ipt_offsets0.txt"/>                
         <param name="map_size" type="int" value="1000"/>        

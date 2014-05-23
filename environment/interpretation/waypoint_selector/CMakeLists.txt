@@ -31,3 +31,5 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 rosbuild_add_executable(waypoint_selector 
                         src/main.cpp
                         src/waypoint_selector.cpp)
+rosbuild_add_executable(waypoint_recorder
+                        src/waypoint_recorder.cpp)
