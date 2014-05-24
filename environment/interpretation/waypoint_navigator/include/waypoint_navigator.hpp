@@ -11,6 +11,7 @@
 #include <cmath>
 #include <boost/bind.hpp>
 #include <ros/ros.h>
+#include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Pose2D.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <std_msgs/Float64.h>
