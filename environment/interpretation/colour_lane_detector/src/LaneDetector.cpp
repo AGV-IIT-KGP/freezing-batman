@@ -1,117 +1,100 @@
-/* 
- * File:   LaneDetector.cpp
- * Author: samuel
- * 
- * Created on 14 December, 2013, 3:36 AM
- */
-
 #include "LaneDetector.hpp"
+#include <cvblob.h>
+#include <math.h>
 
-void LaneDetector::interpret() {
+using namespace cvb;
 
+#define DEBUG 1
+#define EXPANSION 10
+
+sensor_msgs::CvBridge bridge;
+static int iter = 0;
+IplImage *blue_img;
+IplImage *green_img;
+IplImage *filter_img;
+IplImage *warp_img;
+IplImage* img;
+IplConvKernel *ker1;
+CvPoint2D32f srcQuad[4], dstQuad[4];
+CvMat* warp_matrix = cvCreateMat(3, 3, CV_32FC1);
+
+int vote = 16, length = 30, mrg = 100;
+int k = 200;
+
+LaneDetector::LaneDetector(ros::NodeHandle node_handle) {
+    loadParams(node_handle);
+    setupComms(node_handle);
 }
 
-LaneDetector::LaneDetector() {
-    canny_kernel = 3;
-    high_threshold = 900;
-    low_threshold = 550;
-    vote = 25;
-    length = 50;
-    mrg = 10;
-    k = 90;
-    warp_matrix = cvCreateMat(3, 3, CV_32FC1);
-    mouseParam = 5;
+void LaneDetector::setupComms(ros::NodeHandle node_handle) {
+    image_transport::ImageTransport image_transport(node_handle);
+    lanes_publisher = image_transport.advertise(published_topic_name, 2);
+    image_subscriber = image_transport.subscribe(subscribed_topic_name, 2, &LaneDetector::markLane, this);
+    std::cout << "Communications started with : " << std::endl;
+    std::cout << "\tSubscriber topic : " << subscribed_topic_name << std::endl;
+    std::cout << "\tPublisher topic  : " << published_topic_name << std::endl;
 }
 
-LaneDetector::LaneDetector(const LaneDetector& orig) {
+void LaneDetector::loadParams(ros::NodeHandle node_handle) {
+    published_topic_name = std::string("/lane_detector/lanes");
+    subscribed_topic_name = std::string("/logitech_camera/image");
 }
 
-LaneDetector::~LaneDetector() {
-}
-
-cv::Mat LaneDetector::colorBasedLaneDetection(cv::Mat frame, int k) {
-    cv::Mat frame_out = cvCreateImage(cvGetSize(frame), frame->depth, 1);   //depth??
-    int height = gray_frame->rows;
-    int width = gray_frame->cols;
-    uchar *data;
-
-    cvGetRawData(gray_frame, (uchar**) & data);
-
-    //Calculate the mean of the image
+IplImage* LaneDetector::colorBasedLaneDetection(IplImage *img) {
+    double mean, std_dev;
+    int height = img->height;
+    int width = img->width;
+    //Calculating Mean of the image
     double total = 0;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            total += data[i * gray_frame->cols + j];
+            total += CV_IMAGE_ELEM(img, unsigned char, i, j);
         }
     }
-    mean = (total / (rows * cols));
-
-    //Calculate the standard deviation of the image
+    mean = (total / (height * width));
+    //Calculating Standard Deviation of the image
     double var = 0;
-    for (int a = 0; a < height; a++) {
-        for (int b = 0; b < width; b++) {
-            var += ((data[a * gray_frame->widthStep + b] - mean) * (data[a * gray_frame->widthStep + b] - mean)); //widthstep
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            var += pow(CV_IMAGE_ELEM(img, unsigned char, i, j) - mean, 2);
         }
     }
-    var /= (rows * cols);
+    var /= (height * width);
     std_dev = sqrt(var);
-    cv::threshold(gray_frame, frame_out, (mean + k / 100.0 * std_dev), 255, CV_THRESH_BINARY);
-    return frame_out;
+    cvThreshold(img, img, mean + ((k * std_dev) / 100.0), 255, CV_THRESH_BINARY);
+    //Morphological Operation to reduce noise
+    IplConvKernel *convKernel = cvCreateStructuringElementEx(5, 5, 2, 2, CV_SHAPE_RECT);
+    IplImage* simg = cvCloneImage(img);
+    cvMorphologyEx(img, simg, NULL, convKernel, CV_MOP_OPEN);
+    cvNot(simg, img);
+    cvMorphologyEx(img, simg, NULL, convKernel, CV_MOP_OPEN);
+    cvNot(simg, img);
+    return img;
 }
 
-void LaneDetector::applyHoughTransform(cv::Mat img, cv::Mat dst, int vote, int length, int mrgh) {
-    std::vector<cv::Vec4i> lines;
+IplImage* LaneDetector::applyHoughTransform(IplImage* img) {
+    CvSeq* lines;
     CvMemStorage* storage = cvCreateMemStorage(0);
-    cvSetZero(dst);
     int i;
-
-    cv::Houghlines(img, lines, CV_HOUGH_PROBABILISTIC, 1, CV_PI / 180, vote, length, mrgh);
+    lines = cvHoughLines2(img, storage, CV_HOUGH_PROBABILISTIC, 1, CV_PI / 180, vote, length, mrg);
+    cvSetZero(img);
     int n = lines->total;
     for (i = 0; i < n; i++) {
         CvPoint* line = (CvPoint*) cvGetSeqElem(lines, i);
-        cvLine(dst, line[0], line[1], CV_RGB(255, 255, 255), 15, 8);
+        cvLine(img, line[0], line[1], CV_RGB(255, 255, 255), 5);
     }
-
     cvReleaseMemStorage(&storage);
+    return img;
 }
 
-std::vector<cv::vec4i> LaneDetector::GetHoughLanes(cv::Mat img, int vote, int length, int mrgha) {
-    lines;
-    cv::Houghlines(img, lines, CV_HOUGH_PROBABILISTIC, 1, CV_PI / 180, vote, length, mrgha);
-
-    return lines;
-}
-
-void LaneDetector::initializeLaneVariables(int argc, char** argv, ros::NodeHandle nh) {
-
-    it = new image_transport::ImageTransport(nh);
-    
-    offset = cvPoint((N - 1) / 2, (N - 1) / 2);
-    gray_frame = cvCreateImage(size, depth, 1);
-    kernel_frame = cvCreateImage(cvSize(gray_frame->width + N - 1, gray_frame->height + N - 1), gray_frame->depth, gray_frame->nChannels);
-    edge_frame = cvCreateImage(cvGetSize(kernel_frame), IPL_DEPTH_8U, kernel_frame->nChannels);
-    gray_hough_frame = cvCreateImage(cvGetSize(kernel_frame), IPL_DEPTH_8U, kernel_frame->nChannels);
+void LaneDetector::initializeLaneVariables(IplImage *input_frame) {
+    blue_img = cvCreateImage(cvGetSize(input_frame), input_frame->depth, 1);
+    green_img = cvCreateImage(cvGetSize(input_frame), input_frame->depth, 1);
+    filter_img = cvCreateImage(cvGetSize(input_frame), input_frame->depth, 1);
     warp_img = cvCreateImage(cvSize(MAP_MAX, MAP_MAX), 8, 1);
     ker1 = cvCreateStructuringElementEx(3, 3, 1, 1, CV_SHAPE_ELLIPSE);
-
-    if (DEBUG) {
-        cvNamedWindow("Control Box", 1);
-        cvNamedWindow("warp", 0);
-        cvNamedWindow("view", 0);
-        cvNamedWindow("view_orig", 0);
-        cvNamedWindow("Debug", 0);
-    }
-
-    cvCreateTrackbar("K", "Control Box", &k, 300, NULL);
-    cvCreateTrackbar("Vote", "Control Box", &vote, 50, NULL);
-    cvCreateTrackbar("Length", "Control Box", &length, 100, NULL);
-    cvCreateTrackbar("Merge", "Control Box", &mrg, 15, NULL);
-    cvCreateTrackbar("Canny Kernel", "Control Box", &canny_kernel, 10, NULL);
-    cvCreateTrackbar("High Canny Threshold", "Control Box", &high_threshold, 2000, NULL);
-    cvCreateTrackbar("Low Canny Threshold", "Control Box", &low_threshold, 2000, NULL);
-
     //Destination variables
-    int widthInCM = 100, h1 = 2, h2 = 75; //width and height of the lane. width:widthoflane/scale;
+    int widthInCM = 100, h1 = 220, h2 = 295; //width and height of the lane. width:widthoflane/scale;
 
     srcQuad[0].x = (float) 134; //src Top left
     srcQuad[0].y = (float) 166;
@@ -131,166 +114,102 @@ void LaneDetector::initializeLaneVariables(int argc, char** argv, ros::NodeHandl
     dstQuad[3].x = (float) (500 + widthInCM / (2)); //dst Bot right
     dstQuad[3].y = (float) (999 - h1);
 
+
+    /*srcQuad[0].x = (float) 97; //src Top left
+    srcQuad[0].y = (float) 87;
+    srcQuad[1].x = (float) 426; //src Top right
+    srcQuad[1].y = (float) 82;
+    srcQuad[2].x = (float) 36; //src Bottom left
+    srcQuad[2].y = (float) 184;
+    srcQuad[3].x = (float) 482; //src Bot right
+    srcQuad[3].y = (float) 191;
+    
+    dstQuad[0].x = (float) (434); //dst Top left
+    dstQuad[0].y = (float) (630);
+    dstQuad[1].x = (float) (566); //dst Top right
+    dstQuad[1].y = (float) (630);
+    dstQuad[2].x = (float) (434); //dst Bottom left
+    dstQuad[2].y = (float) (714);
+    dstQuad[3].x = (float) (566); //dst Bot right
+    dstQuad[3].y = (float) (714);*/
+
     cvGetPerspectiveTransform(dstQuad, srcQuad, warp_matrix);
 }
 
-IplImage* LaneDetector::getLaneLines(IplImage* src) {
-    IplImage* dst = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 1);
-    IplImage* color_dst = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 3);
-    CvMemStorage* storage = cvCreateMemStorage(0);
-    CvSeq* lines = 0;
-    int i;
-    cvCanny(src, dst, 50, 200, 3);
-
-    color_dst = cvCreateImage(cvGetSize(dst), dst->depth, 3);
-    cvSetZero(color_dst);
-    //cvCvtColor( dst, color_dst, CV_GRAY2BGR );
-
-    lines = cvHoughLines2(dst, storage, CV_HOUGH_STANDARD, 1, CV_PI / 180, 60, 0, 0);
-
-    for (i = 0; i < MIN(lines->total, 100); i++) {
-        float* line = (float*) cvGetSeqElem(lines, i);
-        float rho = line[0];
-        float theta = line[1];
-        CvPoint pt1, pt2;
-
-        double a = cos(theta), b = sin(theta);
-        double x0 = a*rho, y0 = b*rho;
-        pt1.x = cvRound(x0 + 1000 * (-b));
-        pt1.y = cvRound(y0 + 1000 * (a));
-        pt2.x = cvRound(x0 - 1000 * (-b));
-        pt2.y = cvRound(y0 - 1000 * (a));
-        cvLine(color_dst, pt1, pt2, CV_RGB(255, 255, 255), 3, 8);
-    }
-
-    cvCvtColor(color_dst, dst, CV_BGR2GRAY);
-    return dst;
+void LaneDetector::populateLanes(IplImage *img) {
+    cv::Mat image(img);
+    cv_bridge::CvImage message;
+    message.encoding = sensor_msgs::image_encodings::MONO8;
+    message.image = image;
+    lanes_publisher.publish(message.toImageMsg());
 }
 
-int min(int value) {
-    if (value > 999) {
-        return 999;
-    }
-    if (value < 0) {
-        return 0;
-    }
-}
-
-
-void mouseHandler(int event, int x, int y, int flags, void* param) {
-
-    if (event == CV_EVENT_RBUTTONDOWN) {
-        std::cout << "@ Right mouse button pressed at: " << x << "," << y << std::endl;
-    }
-}
-
-void LaneDetector::getLanes(const sensor_msgs::ImageConstPtr& image) {
+void LaneDetector::markLane(const sensor_msgs::ImageConstPtr& image) {
     try {
         img = bridge.imgMsgToCv(image, "bgr8");
         cvWaitKey(WAIT_TIME);
     } catch (sensor_msgs::CvBridgeException& e) {
         ROS_ERROR("ERROR IN CONVERTING IMAGE!!!");
     }
-    size = cvGetSize(img);
-    depth = img->depth;
-    cvCvtColor(img, gray_frame, CV_BGR2GRAY); // converting image to gray scale
-    if (choice == 1) {
-        lane = colorBasedLaneDetection(gray_frame, k);
-    }
-    if ((choice == 2) || (choice == 0)) {
-        cvEqualizeHist(gray_frame, gray_frame);
-        //cvCopyMakeBorder(gray_frame, kernel_frame, 
-        cvSmooth(gray_frame, gray_frame, CV_GAUSSIAN);
-        // canny edge detection
-        cvCopyMakeBorder(gray_frame, kernel_frame, offset, IPL_BORDER_REPLICATE, cvScalarAll(0));
-        cvCanny(kernel_frame, edge_frame, low_threshold, high_threshold);
-        applyHoughTransform(edge_frame, gray_hough_frame, vote, length, mrg);
-        //TODO: Truncate the image
-        if (DEBUG) {
-            cvResize(gray_hough_frame, show_img1);
-            cvShowImage("Hough", show_img1);
-            cvWaitKey(WAIT_TIME);
-        }
-    }
-    if (choice == 0) {
-        //TODO : reduce the kernel size and copy it to the lane
-        lane = cvCreateImage(cvGetSize(gray_hough_frame), 8, gray_hough_frame->nChannels);
-        lane = gray_hough_frame;
-    }
-    if (choice == 2) {
-        lane = joinResult(colorBasedLaneDetection(img, k), gray_hough_frame);
-    }
-
+    //Displaying the original image
     if (DEBUG) {
-        cvSetMouseCallback("view", &mouseHandler, 0);
-        cvResize(lane, show_img2);
-
-        cvShowImage("view", lane);
+        cvShowImage("OriginalImage", img);
         cvWaitKey(WAIT_TIME);
     }
-
-    cvWarpPerspective(lane, warp_img, warp_matrix, CV_INTER_LINEAR | CV_WARP_INVERSE_MAP | CV_WARP_FILL_OUTLIERS);
-
-    if (DEBUG) {
-        cvResize(warp_img, show_img3);
-        cvShowImage("warp", show_img3);
+    //Initializing the required image variables
+    if (iter == 0) {
+        initializeLaneVariables(img);
+    }
+    iter++;
+    //Enhancing the lanes
+    cvSplit(img, blue_img, green_img, NULL, NULL);
+    cvConvertScale(green_img, green_img, 0.5, 0);
+    cvSub(blue_img, green_img, filter_img);
+    cvConvertScale(filter_img, filter_img, 2, 0);
+    //Displying the filtered image
+    if(DEBUG)
+    {
+        cvShowImage("Filtered Image", filter_img);
         cvWaitKey(WAIT_TIME);
     }
-    cvDilate(warp_img, warp_img, ker1, 55);
-
-    publishLanes(warp_img);
-    cvReleaseImage(&lane);
-}
-
-void LaneDetector::publishLanes(IplImage* final_img) {
-
-    //image_transport::ImageTransport it(*lane_node);
-    image_transport::Publisher pub = it->advertise("camera/image", 10);
-
-}
-
-IplImage* LaneDetector::joinResult(IplImage* color_gray, IplImage* hough_gray) {
-    int i, j;
-    int index_color;
-    int index_hough;
-    IplImage* lane_gray = cvCreateImage(cvGetSize(color_gray), color_gray->depth, 1);
-    uchar* color_data = (uchar*) color_gray->imageData;
-    uchar* hough_data = (uchar*) hough_gray->imageData;
-    uchar* lane_data = (uchar*) lane_gray->imageData;
-
-    for (i = 0; i < color_gray->height; i++) {
-        for (j = 0; j < color_gray->width; j++) {
-            index_color = i * color_gray->widthStep + j;
-            //           index_hough = i+((N-1)/2) * hough_gray->widthStep + j;
-            index_hough = i * hough_gray->widthStep + j;
-            if ((color_data[index_color] > 0) && (hough_data[index_hough] > 0)) {
-                lane_data[index_color] = 255;
-            } else {
-                lane_data[index_color] = 0;
-            }
-        }
+    //Adaptive Thresholding
+    filter_img = colorBasedLaneDetection(filter_img);
+    //Displying thresholded image
+    if(DEBUG)
+    {
+       cvShowImage("Thresholded Image", filter_img);
+       cvWaitKey(WAIT_TIME);
     }
-
-    return lane_gray;
-}
-
-image_transport::ImageTransport *LaneDetector::getLaneNode() {
-    return it;
-}
-
-int main(int argc, char** argv) {
-    LaneDetector lane_detector;
-    ros::init(argc, argv, "hvhg");
-    ros::NodeHandle nh("hvhg");
-    //lane_detector.initializeLaneVariables(argc, argv, nh);
-    image_transport::Subscriber sub = lane_detector.getLaneNode()->subscribe("camera/image", 2, &LaneDetector::getLanes, &lane_detector);
-    ros::Rate loop_rate(LOOP_RATE);
-    ROS_INFO("LANE_THREAD STARTED");
-    while (ros::ok()) {
-        ros::spinOnce();
-        loop_rate.sleep();
+    //Finding Hough Lines
+    filter_img = applyHoughTransform(filter_img);
+    //Displaying hough lanes
+    if(DEBUG)
+    {
+        cvShowImage("Hough Image", filter_img);
+        cvWaitKey(WAIT_TIME);
     }
+    //Inverse Perspective Transform
+    cvWarpPerspective(filter_img, warp_img, warp_matrix, CV_INTER_LINEAR | CV_WARP_INVERSE_MAP | CV_WARP_FILL_OUTLIERS);
+    //Displaying Lane Map
+    if (DEBUG) {
+        cvShowImage("Lane Map", warp_img);
+        cvWaitKey(WAIT_TIME);
+    }
+    cvDilate(warp_img, warp_img, ker1, EXPANSION);
+    populateLanes(warp_img);
+}
 
-    ROS_INFO("Lane code exiting");
+int main(int argc, char *argv[]) {
+    ros::init(argc, argv, "lane_detector");
+    ros::NodeHandle node_handle;
+
+    show_img1 = cvCreateImage(cvSize(400, 400), IPL_DEPTH_8U, 1);
+    show_img2 = cvCreateImage(cvSize(400, 400), IPL_DEPTH_8U, 1);
+    show_img3 = cvCreateImage(cvSize(400, 400), IPL_DEPTH_8U, 1);
+    show_img4 = cvCreateImage(cvSize(400, 400), IPL_DEPTH_8U, 3);
+
+    LaneDetector lane_detector(node_handle);
+
+    ros::spin();
     return 0;
 }

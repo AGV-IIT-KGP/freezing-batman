@@ -24,8 +24,10 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 
+find_package(OpenCV REQUIRED)
+
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
-rosbuild_add_executable(lane_test src/LaneDetector.cpp)
-target_link_libraries(lane_test libagv_framework.so)
+rosbuild_add_executable(lane_detector src/LaneDetector.cpp)
+target_link_libraries(lane_detector libagv_framework.so ${OpenCV_LIBS})
 #target_link_libraries(example ${PROJECT_NAME})

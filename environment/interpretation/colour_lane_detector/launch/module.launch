@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="colour_lane_detector" type="lane_detector" name="lane_detector" args="6" output="screen" cwd="node">
+        <param name="debug_mode" type="bool" value="false"/>
+    </node>
+</launch>
