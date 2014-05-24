@@ -1,81 +1,42 @@
-/* 
- * File:   LaneDetector.hpp
- * Author: samuel
- *
- * Created on 14 December, 2013, 3:36 AM
- */
-
-#ifndef LANEDETECTOR_HPP
-#define	LANEDETECTOR_HPP
-
-#include <environment/Interpreter.hpp>
+#include <cv_bridge/cv_bridge.h>
 #include <cv_bridge/CvBridge.h>
 #include <image_transport/image_transport.h>
 #include <opencv/cvwimage.h>
 #include <stdexcept>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/opencv.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
+#include <opencv2/core/core_c.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/image_encodings.h>
+#include <opencv/highgui.h>
 
-#define DEBUG 0
-#define WAIT_TIME 1000
-#define choice 2
-#define scale 220/57
-#define N 7 // canny kernel
-#define AUTO_CALIB 0
+#ifndef LANE_DATA_H
+#define	LANE_DATA_H
 
 #define MAP_MAX 1000
-#define LOOP_RATE 10
-#define WAIT_TIME 100
+#define WAIT_TIME 10
 
-#define SCALE_X 10
-#define MAP_MAX 1000
+IplImage *show_img1;
+IplImage *show_img2;
+IplImage *show_img3;
+IplImage *show_img4;
 
-extern cv::Mat show_img1;
-extern cv::Mat show_img2;
-extern cv::Mat show_img3;
-extern cv::Mat show_img4;
-
-class LaneDetector : public environment::Interpreter {
-public:
-    void interpret();
-    LaneDetector();
-    LaneDetector(const LaneDetector& orig);
-    virtual ~LaneDetector();
-    void getLanes(const sensor_msgs::ImageConstPtr& image);
-    cv::Mat colorBasedLaneDetection(cv::Mat frame_in, int k);
-    void applyHoughTransform(cv::Mat img, cv::Mat dst, int vote, int length, int merge);
-    cv::Mat joinResult(cv::Mat color_gray, cv::Mat hough_gray);
-    void initializeLaneVariables(int argc, char** argv, ros::NodeHandle nh);
-    std::vector<cv::Vec4i> GetHoughLanes(cv::Mat img, int vote, int length, int mrgha);
-    cv::Mat getLaneLines(cv::Mat src);
-    image_transport::ImageTransport getLaneNode();
-
+class LaneDetector {
 private:
-    cv::Size size;
-    int depth;
-    cv::Mat kernel_frame;
-    cv::Mat edge_frame;
-    cv::Mat gray_hough_frame;
-    cv::Mat gray_frame;
-    cv::Mat lane;
-    cv::Mat warp_img;
-    cv::Mat img;
-    cv::Mat ker1;
-    cv::Point offset;
-    uchar** ImageData;
-    uchar* data;
-    double mean, std_dev;
-    int i;
-    int rows, cols;
-    sensor_msgs::CvBridge bridge; /////??????????????????????????????? shouldn't it be a cv_bridge::CvImagePtr object
-    cv::Point2f srcQuad[4], dstQuad[4];
-    int canny_kernel, high_threshold, low_threshold, vote, length, mrg;
-    int k;
-    cv::Mat warp_matrix;
-    int mouseParam;
-    image_transport::ImageTransport image_transport;
-    void publishLanes(cv::Mat final_img);
+    std::string subscribed_topic_name, published_topic_name;
+    image_transport::Publisher lanes_publisher;
+    image_transport::Subscriber image_subscriber;
+
+    void loadParams(ros::NodeHandle node_handle);
+    void setupComms(ros::NodeHandle node_handle);
+    void populateLanes(IplImage *img);
+public:
+    LaneDetector(ros::NodeHandle node_handle);
+    void markLane(const sensor_msgs::ImageConstPtr& image);
+    IplImage* colorBasedLaneDetection(IplImage* frame_in);
+    IplImage* applyHoughTransform(IplImage* img);
+    IplImage* joinResult(IplImage* color_gray, IplImage* hough_gray);
+    void initializeLaneVariables(IplImage *img);
+    
 };
 
-#endif	/* LANEDETECTOR_HPP */
+#endif
