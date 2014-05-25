@@ -96,7 +96,7 @@ geometry_msgs::Pose2D WaypointNavigator::interpret() {
     enu_relative_target_2D.y = enu_relative_target.position.y;
 
     heading_ *= (M_PI / 180.0);
-    double alpha = heading_;
+    double alpha = -heading_;
     geometry_msgs::Pose2D bot_relative_target_ENU;
     bot_relative_target_ENU.x = enu_relative_target_2D.x * cos(alpha) + enu_relative_target_2D.y * sin(alpha);
     bot_relative_target_ENU.y = -enu_relative_target_2D.x * sin(alpha) + enu_relative_target_2D.y * cos(alpha);
@@ -104,8 +104,8 @@ geometry_msgs::Pose2D WaypointNavigator::interpret() {
 
     geometry_msgs::Pose2D bot_relative_target_local;
 
-    bot_relative_target_local.x = -bot_relative_target_ENU.y;
-    bot_relative_target_local.y = bot_relative_target_ENU.x;
+    bot_relative_target_local.x = bot_relative_target_ENU.y;
+    bot_relative_target_local.y = -bot_relative_target_ENU.x;
     bot_relative_target_local.theta = bot_relative_target_ENU.theta;
 
     return bot_relative_target_local;
