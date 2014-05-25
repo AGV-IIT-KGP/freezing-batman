@@ -61,8 +61,10 @@ namespace navigation {
                 return false;
             }
         }
-
-        if (fusion_map.at<uchar>(fusion_map.rows - target_seed.final_state.y() - 1, target_seed.final_state.x()) >= 250) {
+        if (fusion_map.rows - target_seed.final_state.y() - 1 - start_state.y() < 0 || fusion_map.rows - target_seed.final_state.y() - 1 - start_state.y() > map_max_ ||
+                target_seed.final_state.x() + start_state.x() < 0 || target_seed.final_state.x() + start_state.x() > map_max_) {
+            return false;
+        } else if (fusion_map.at<uchar>(fusion_map.rows - target_seed.final_state.y() - 1 - start_state.y(), target_seed.final_state.x() + start_state.x()) >= 250) {
             return false;
         }
 
