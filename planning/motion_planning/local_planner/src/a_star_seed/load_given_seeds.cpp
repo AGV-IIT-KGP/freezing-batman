@@ -77,20 +77,20 @@ namespace navigation {
     }
 
     void quickReflex::loadGivenSeeds(const State& start, const State& goal) {
-        int VMAX = 70;
-        int numberOfSeeds;
+        int v_max = 70;
+        int number_of_seeds;
         int return_status;
         double x, y, z;
-        int DT_CONSTANT = 2;
-        node_handle.getParam("local_planner/distance_transform_constant", DT_CONSTANT);
-        node_handle.getParam("local_planner/vmax", VMAX);
+        int dt_constant =2;
+        node_handle.getParam("local_planner/distance_transform_constant", dt_constant);
+        node_handle.getParam("local_planner/vmax", v_max);
         FILE *textFileOFSeeds = fopen(seeds_file.c_str(), "r");
 
         if (!textFileOFSeeds) {
             std::cout << "load in opening seed file : " << seeds_file << std::endl;
         }
 
-        return_status = fscanf(textFileOFSeeds, "%d\n", &numberOfSeeds);
+        return_status = fscanf(textFileOFSeeds, "%d\n", &number_of_seeds);
 
         if (return_status == 0) {
             //ROS_ERROR("[PLANNER] Incorrect seed file format");
@@ -98,7 +98,7 @@ namespace navigation {
             exit(1);
         }
 
-        for (int i = 0; i < numberOfSeeds; i++) {
+        for (int i = 0; i < number_of_seeds; i++) {
             Seed s;
             double cost = 0;
             double cost_DT = 0;
@@ -109,12 +109,12 @@ namespace navigation {
             }
 
             if (y > 0){
-             s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
-             s.rightVelocity = VMAX / (1 + s.velocityRatio);
+             s.leftVelocity = v_max * s.velocityRatio / (1 + s.velocityRatio);
+             s.rightVelocity = v_max / (1 + s.velocityRatio);
             }
             else{
-             s.leftVelocity = -VMAX * s.velocityRatio / (1 + s.velocityRatio);
-             s.rightVelocity = -VMAX / (1 + s.velocityRatio);
+             s.leftVelocity = -v_max * s.velocityRatio / (1 + s.velocityRatio);
+             s.rightVelocity = -v_max / (1 + s.velocityRatio);
             }
             s.final_state = State((int) x, (int) y, z, 0);
 
@@ -140,7 +140,7 @@ namespace navigation {
                 cost_DT += fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
                 s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
             }
-            s.costOfseed = (cost / n_seed_points)/900 + ((cost_DT / n_seed_points)/255)/DT_CONSTANT + fabs(atan2f((goal.y()-start.y()), (goal.x()-start.x())) - atan2f(y, x))/M_PI;
+            s.costOfseed = (cost / n_seed_points)/900 + ((cost_DT / n_seed_points)/255)/dt_constant + fabs(atan2f((goal.y()-start.y()), (goal.x()-start.x())) - atan2f(y, x))/M_PI;
             givenSeeds.push_back(s);
         }
 
