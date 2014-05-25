@@ -50,7 +50,7 @@ namespace navigation {
     void LocalPlanner::updateStrategy(const std_msgs::String planner_strategy) {
         if (planner_strategy.data == std::string("A_Star_Seed")) {
             planning_strategy_ = 0;
-        } else if (planner_strategy.data == std::string("Quick_Response")) {
+        } else if (planner_strategy.data == std::string("Quick_Reflex")) {
             planning_strategy_ = 1;
         }
     }

@@ -1,0 +1,140 @@
+*** glibc detected *** /home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/planning/motion_planning/local_planner/bin/local_planner: double free or corruption (out): 0x00000000022d3ae0 ***
+======= Backtrace: =========
+/lib/x86_64-linux-gnu/libc.so.6(+0x7eb96)[0x7f08ef82fb96]
+/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/planning/motion_planning/local_planner/bin/local_planner(_ZNSt6vectorIN10navigation10StateOfCarESaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_+0x30f)[0x41831f]
+/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/planning/motion_planning/local_planner/bin/local_planner(_ZN10navigation9AStarSeed25findPathToTargetWithAstarERKN2cv3MatERKNS_5StateES7_+0x160b)[0x4179fb]
+/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/planning/motion_planning/local_planner/bin/local_planner(_ZN10navigation12LocalPlanner4planEv+0xbb)[0x40dd5b]
+/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/planning/motion_planning/local_planner/bin/local_planner(main+0x10c)[0x40c02c]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xed)[0x7f08ef7d276d]
+/home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/planning/motion_planning/local_planner/bin/local_planner[0x40d2c1]
+======= Memory map: ========
+00400000-00423000 r-xp 00000000 08:0a 1558745                            /home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/planning/motion_planning/local_planner/bin/local_planner
+00622000-00623000 r--p 00022000 08:0a 1558745                            /home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/planning/motion_planning/local_planner/bin/local_planner
+00623000-00624000 rw-p 00023000 08:0a 1558745                            /home/abinashmeher999/fuerte_workspace/sandbox2/freezing-batman/planning/motion_planning/local_planner/bin/local_planner
+02276000-029e2000 rw-p 00000000 00:00 0                                  [heap]
+7f08c4000000-7f08c4022000 rw-p 00000000 00:00 0 
+7f08c4022000-7f08c8000000 ---p 00000000 00:00 0 
+7f08c8000000-7f08c8022000 rw-p 00000000 00:00 0 
+7f08c8022000-7f08cc000000 ---p 00000000 00:00 0 
+7f08cc000000-7f08cc021000 rw-p 00000000 00:00 0 
+7f08cc021000-7f08d0000000 ---p 00000000 00:00 0 
+7f08d0000000-7f08d0021000 rw-p 00000000 00:00 0 
+7f08d0021000-7f08d4000000 ---p 00000000 00:00 0 
+7f08d4000000-7f08d4021000 rw-p 00000000 00:00 0 
+7f08d4021000-7f08d8000000 ---p 00000000 00:00 0 
+7f08d83c2000-7f08d83ca000 r-xp 00000000 08:0a 397549                     /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.0
+7f08d83ca000-7f08d85ca000 ---p 00008000 08:0a 397549                     /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.0
+7f08d85ca000-7f08d85cb000 r--p 00008000 08:0a 397549                     /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.0
+7f08d85cb000-7f08d85cc000 rw-p 00009000 08:0a 397549                     /usr/lib/x86_64-linux-gnu/libltdl.so.7.3.0
+7f08d85cc000-7f08d85dc000 r-xp 00000000 08:0a 397716                     /usr/lib/x86_64-linux-gnu/libtdb.so.1.2.9
+7f08d85dc000-7f08d87db000 ---p 00010000 08:0a 397716                     /usr/lib/x86_64-linux-gnu/libtdb.so.1.2.9
+7f08d87db000-7f08d87dc000 r--p 0000f000 08:0a 397716                     /usr/lib/x86_64-linux-gnu/libtdb.so.1.2.9
+7f08d87dc000-7f08d87dd000 rw-p 00010000 08:0a 397716                     /usr/lib/x86_64-linux-gnu/libtdb.so.1.2.9
+7f08d87dd000-7f08d87e4000 r-xp 00000000 08:0a 397748                     /usr/lib/x86_64-linux-gnu/libvorbisfile.so.3.3.4
+7f08d87e4000-7f08d89e3000 ---p 00007000 08:0a 397748                     /usr/lib/x86_64-linux-gnu/libvorbisfile.so.3.3.4
+7f08d89e3000-7f08d89e4000 r--p 00006000 08:0a 397748                     /usr/lib/x86_64-linux-gnu/libvorbisfile.so.3.3.4
+7f08d89e4000-7f08d89e5000 rw-p 00007000 08:0a 397748                     /usr/lib/x86_64-linux-gnu/libvorbisfile.so.3.3.4
+7f08d89e5000-7f08d89e6000 ---p 00000000 00:00 0 
+7f08d89e6000-7f08d91e6000 rw-p 00000000 00:00 0                          [stack:30338]
+7f08d92c8000-7f08d92d7000 r-xp 00000000 08:0a 397271                     /usr/lib/x86_64-linux-gnu/libcanberra.so.0.2.5
+7f08d92d7000-7f08d94d6000 ---p 0000f000 08:0a 397271                     /usr/lib/x86_64-linux-gnu/libcanberra.so.0.2.5
+7f08d94d6000-7f08d94d7000 r--p 0000e000 08:0a 397271                     /usr/lib/x86_64-linux-gnu/libcanberra.so.0.2.5
+7f08d94d7000-7f08d94d8000 rw-p 0000f000 08:0a 397271                     /usr/lib/x86_64-linux-gnu/libcanberra.so.0.2.5
+7f08d94d8000-7f08d94dc000 r-xp 00000000 08:0a 397267                     /usr/lib/x86_64-linux-gnu/libcanberra-gtk.so.0.1.8
+7f08d94dc000-7f08d96db000 ---p 00004000 08:0a 397267                     /usr/lib/x86_64-linux-gnu/libcanberra-gtk.so.0.1.8
+7f08d96db000-7f08d96dc000 r--p 00003000 08:0a 397267                     /usr/lib/x86_64-linux-gnu/libcanberra-gtk.so.0.1.8
+7f08d96dc000-7f08d96dd000 rw-p 00004000 08:0a 397267                     /usr/lib/x86_64-linux-gnu/libcanberra-gtk.so.0.1.8
+7f08d96dd000-7f08d96e2000 r-xp 00000000 08:0a 5700                       /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/libcanberra-gtk-module.so
+7f08d96e2000-7f08d98e1000 ---p 00005000 08:0a 5700                       /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/libcanberra-gtk-module.so
+7f08d98e1000-7f08d98e2000 r--p 00004000 08:0a 5700                       /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/libcanberra-gtk-module.so
+7f08d98e2000-7f08d98e3000 rw-p 00005000 08:0a 5700                       /usr/lib/x86_64-linux-gnu/gtk-2.0/modules/libcanberra-gtk-module.so
+7f08d98e3000-7f08d9912000 r-xp 00000000 08:0a 5678                       /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+7f08d9912000-7f08d9b12000 ---p 0002f000 08:0a 5678                       /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+7f08d9b12000-7f08d9b13000 r--p 0002f000 08:0a 5678                       /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+7f08d9b13000-7f08d9b14000 rw-p 00030000 08:0a 5678                       /usr/lib/x86_64-linux-gnu/gtk-2.0/2.10.0/engines/libmurrine.so
+7f08d9b14000-7f08d9b15000 ---p 00000000 00:00 0 
+7f08d9b15000-7f08da315000 rw-p 00000000 00:00 0                          [stack:30350]
+7f08da315000-7f08da316000 ---p 00000000 00:00 0 
+7f08da316000-7f08dab16000 rw-p 00000000 00:00 0                          [stack:30349]
+7f08dab16000-7f08dab1d000 r-xp 00000000 08:0a 5540                       /usr/lib/x86_64-linux-gnu/gio/modules/libdconfsettings.so
+7f08dab1d000-7f08dad1c000 ---p 00007000 08:0a 5540                       /usr/lib/x86_64-linux-gnu/gio/modules/libdconfsettings.so
+7f08dad1c000-7f08dad1d000 r--p 00006000 08:0a 5540                       /usr/lib/x86_64-linux-gnu/gio/modules/libdconfsettings.so
+7f08dad1d000-7f08dad1e000 rw-p 00007000 08:0a 5540                       /usr/lib/x86_64-linux-gnu/gio/modules/libdconfsettings.so
+7f08dad1e000-7f08dad2e000 r-xp 00000000 08:0a 5544                       /usr/lib/x86_64-linux-gnu/gio/modules/libgioremote-volume-monitor.so
+7f08dad2e000-7f08daf2d000 ---p 00010000 08:0a 5544                       /usr/lib/x86_64-linux-gnu/gio/modules/libgioremote-volume-monitor.so
+7f08daf2d000-7f08daf2e000 r--p 0000f000 08:0a 5544                       /usr/lib/x86_64-linux-gnu/gio/modules/libgioremote-volume-monitor.so
+7f08daf2e000-7f08daf2f000 rw-p 00010000 08:0a 5544                       /usr/lib/x86_64-linux-gnu/gio/modules/libgioremote-volume-monitor.so
+7f08daf2f000-7f08daf3b000 r-xp 00000000 08:0a 265234                     /lib/x86_64-linux-gnu/libudev.so.0.13.0
+7f08daf3b000-7f08db13a000 ---p 0000c000 08:0a 265234                     /lib/x86_64-linux-gnu/libudev.so.0.13.0
+7f08db13a000-7f08db13b000 r--p 0000b000 08:0a 265234                     /lib/x86_64-linux-gnu/libudev.so.0.13.0
+7f08db13b000-7f08db13c000 rw-p 0000c000 08:0a 265234                     /lib/x86_64-linux-gnu/libudev.so.0.13.0
+7f08db13c000-7f08db17e000 r-xp 00000000 08:0a 263995                     /lib/x86_64-linux-gnu/libdbus-1.so.3.5.8
+7f08db17e000-7f08db37e000 ---p 00042000 08:0a 263995                     /lib/x86_64-linux-gnu/libdbus-1.so.3.5.8
+7f08db37e000-7f08db37f000 r--p 00042000 08:0a 263995                     /lib/x86_64-linux-gnu/libdbus-1.so.3.5.8
+7f08db37f000-7f08db380000 rw-p 00043000 08:0a 263995                     /lib/x86_64-linux-gnu/libdbus-1.so.3.5.8
+7f08db380000-7f08db396000 r-xp 00000000 08:0a 5748                       /usr/lib/x86_64-linux-gnu/gvfs/libgvfscommon.so
+7f08db396000-7f08db595000 ---p 00016000 08:0a 5748                       /usr/lib/x86_64-linux-gnu/gvfs/libgvfscommon.so
+7f08db595000-7f08db596000 r--p 00015000 08:0a 5748                       /usr/lib/x86_64-linux-gnu/gvfs/libgvfscommon.so
+7f08db596000-7f08db597000 rw-p 00016000 08:0a 5748                       /usr/lib/x86_64-linux-gnu/gvfs/libgvfscommon.so
+7f08db597000-7f08db5bf000 r-xp 00000000 08:0a 5545                       /usr/lib/x86_64-linux-gnu/gio/modules/libgvfsdbus.so
+7f08db5bf000-7f08db7be000 ---p 00028000 08:0a 5545                       /usr/lib/x86_64-linux-gnu/gio/modules/libgvfsdbus.so
+7f08db7be000-7f08db7bf000 r--p 00027000 08:0a 5545                       /usr/lib/x86_64-linux-gnu/gio/modules/libgvfsdbus.so
+7f08db7bf000-7f08db7c0000 rw-p 00028000 08:0a 5545                       /usr/lib/x86_64-linux-gnu/gio/modules/libgvfsdbus.so
+7f08db7c0000-7f08db7d0000 r-xp 00000000 08:0a 265998                     /usr/lib/liboverlay-scrollbar-0.2.so.0.0.16
+7f08db7d0000-7f08db9cf000 ---p 00010000 08:0a 265998                     /usr/lib/liboverlay-scrollbar-0.2.so.0.0.16
+7f08db9cf000-7f08db9d0000 r--p 0000f000 08:0a 265998                     /usr/lib/liboverlay-scrollbar-0.2.so.0.0.16
+7f08db9d0000-7f08db9d1000 rw-p 00010000 08:0a 265998                     /usr/lib/liboverlay-scrollbar-0.2.so.0.0.16
+7f08db9d1000-7f08db9db000 r-xp 00000000 08:0a 264038                     /lib/x86_64-linux-gnu/libnss_nis-2.15.so
+7f08db9db000-7f08dbbdb000 ---p 0000a000 08:0a 264038                     /lib/x86_64-linux-gnu/libnss_nis-2.15.so
+7f08dbbdb000-7f08dbbdc000 r--p 0000a000 08:0a 264038                     /lib/x86_64-linux-gnu/libnss_nis-2.15.so
+7f08dbbdc000-7f08dbbdd000 rw-p 0000b000 08:0a 264038                     /lib/x86_64-linux-gnu/libnss_nis-2.15.so
+7f08dbbdd000-7f08dbbf4000 r-xp 00000000 08:0a 264028                     /lib/x86_64-linux-gnu/libnsl-2.15.so
+7f08dbbf4000-7f08dbdf3000 ---p 00017000 08:0a 264028                     /lib/x86_64-linux-gnu/libnsl-2.15.so
+7f08dbdf3000-7f08dbdf4000 r--p 00016000 08:0a 264028                     /lib/x86_64-linux-gnu/libnsl-2.15.so
+7f08dbdf4000-7f08dbdf5000 rw-p 00017000 08:0a 264028                     /lib/x86_64-linux-gnu/libnsl-2.15.so
+7f08dbdf5000-7f08dbdf7000 rw-p 00000000 00:00 0 
+7f08dbdf7000-7f08dbdff000 r-xp 00000000 08:0a 264030                     /lib/x86_64-linux-gnu/libnss_compat-2.15.so
+7f08dbdff000-7f08dbffe000 ---p 00008000 08:0a 264030                     /lib/x86_64-linux-gnu/libnss_compat-2.15.so
+7f08dbffe000-7f08dbfff000 r--p 00007000 08:0a 264030                     /lib/x86_64-linux-gnu/libnss_compat-2.15.so
+7f08dbfff000-7f08dc000000 rw-p 00008000 08:0a 264030                     /lib/x86_64-linux-gnu/libnss_compat-2.15.so
+7f08dc000000-7f08dc0b4000 rw-p 00000000 00:00 0 
+7f08dc0b4000-7f08e0000000 ---p 00000000 00:00 0 
+7f08e01e4000-7f08e01e5000 ---p 00000000 00:00 0 
+7f08e01e5000-7f08e09e5000 rw-p 00000000 00:00 0                          [stack:30344]
+7f08e09e5000-7f08e09e6000 ---p 00000000 00:00 0 
+7f08e09e6000-7f08e11e6000 rw-p 00000000 00:00 0                          [stack:30339]
+7f08e11e6000-7f08e11e7000 ---p 00000000 00:00 0 
+7f08e11e7000-7f08e19e7000 rw-p 00000000 00:00 0                          [stack:30337]
+7f08e19e7000-7f08e19f3000 r-xp 00000000 08:0a 264034                     /lib/x86_64-linux-gnu/libnss_files-2.15.so
+7f08e19f3000-7f08e1bf2000 ---p 0000c000 08:0a 264034                     /lib/x86_64-linux-gnu/libnss_files-2.15.so
+7f08e1bf2000-7f08e1bf3000 r--p 0000b000 08:0a 264034                     /lib/x86_64-linux-gnu/libnss_files-2.15.so
+7f08e1bf3000-7f08e1bf4000 rw-p 0000c000 08:0a 264034                     /lib/x86_64-linux-gnu/libnss_files-2.15.so
+7f08e1bf4000-7f08e22d8000 r--p 00000000 08:0a 393603                     /usr/lib/locale/locale-archive
+7f08e22d8000-7f08e22dd000 r-xp 00000000 08:0a 397173                     /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7f08e22dd000-7f08e24dc000 ---p 00005000 08:0a 397173                     /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7f08e24dc000-7f08e24dd000 r--p 00004000 08:0a 397173                     /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7f08e24dd000-7f08e24de000 rw-p 00005000 08:0a 397173                     /usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0
+7f08e24de000-7f08e24e0000 r-xp 00000000 08:0a 397162                     /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7f08e24e0000-7f08e26df000 ---p 00002000 08:0a 397162                     /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7f08e26df000-7f08e26e0000 r--p 00001000 08:0a 397162                     /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7f08e26e0000-7f08e26e1000 rw-p 00002000 08:0a 397162                     /usr/lib/x86_64-linux-gnu/libXau.so.6.0.0
+7f08e26e1000-7f08e2756000 r-xp 00000000 08:0a 397593                     /usr/lib/x86_64-linux-gnu/liborc-0.4.so.0.16.0
+7f08e2756000-7f08e2955000 ---p 00075000 08:0a 397593                     /usr/lib/x86_64-linux-gnu/liborc-0.4.so.0.16.0
+7f08e2955000-7f08e2957000 r--p 00074000 08:0a 397593                     /usr/lib/x86_64-linux-gnu/liborc-0.4.so.0.16.0
+7f08e2957000-7f08e295c000 rw-p 00076000 08:0a 397593                     /usr/lib/x86_64-linux-gnu/liborc-0.4.so.0.16.0
+7f08e295c000-7f08e2962000 r-xp 00000000 08:0a 397591                     /usr/lib/x86_64-linux-gnu/libogg.so.0.7.1
+7f08e2962000-7f08e2b61000 ---p 00006000 08:0a 397591                     /usr/lib/x86_64-linux-gnu/libogg.so.0.7.1
+7f08e2b61000-7f08e2b62000 r--p 00005000 08:0a 397591                     /usr/lib/x86_64-linux-gnu/libogg.so.0.7.1
+7f08e2b62000-7f08e2b63000 rw-p 00006000 08:0a 397591                     /usr/lib/x86_64-linux-gnu/libogg.so.0.7.1
+7f08e2b63000-7f08e2b84000 r-xp 00000000 08:0a 397740                     /usr/lib/x86_64-linux-gnu/libv4lconvert.so.0
+7f08e2b84000-7f08e2d83000 ---p 00021000 08:0a 397740                     /usr/lib/x86_64-linux-gnu/libv4lconvert.so.0
+7f08e2d83000-7f08e2d85000 r--p 00020000 08:0a 397740                     /usr/lib/x86_64-linux-gnu/libv4lconvert.so.0
+7f08e2d85000-7f08e2d86000 rw-p 00022000 08:0a 397740                     /usr/lib/x86_64-linux-gnu/libv4lconvert.so.0
+7f08e2d86000-7f08e2dd8000 rw-p 00000000 00:00 0 
+7f08e2dd8000-7f08e2df0000 r-xp 00000000 08:0a 264067                     /lib/x86_64-linux-gnu/libresolv-2.15.so
+7f08e2df0000-7f08e2ff0000 ---p 00018000 08:0a 264067                     /lib/x86_64-linux-gnu/libresolv-2.15.so
+7f08e2ff0000-7f08e2ff1000 r--p 00018000 08:0a 264067                     /lib/x86_64-linux-gnu/libresolv-2.15.so
+7f08e2ff1000-7f08e2ff2000 rw-p 00019000 08:0a 264067                     /lib/x86_64-linux-gnu/libresolv-2.15.so
+7f08e2ff2000-7f08e2ff4000 rw-p 00000000 00:00 0 
+7f08e2ff4000-7f08e3011000 r-xp 00000000 08:0a 264071                     /lib/x86_64-linux-gnu/libselinux.so.1[1]    30330 abort (core dumped)  rosrun local_planner local_planner
+

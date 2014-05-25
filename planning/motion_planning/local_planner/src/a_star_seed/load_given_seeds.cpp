@@ -77,11 +77,11 @@ namespace navigation {
     }
 
     void quickReflex::loadGivenSeeds(const State& start, const State& goal) {
-        int vmax;
+        int vmax = 70;
         int num_seeds;
         int return_status;
         double x, y, z;
-        int dt_constant;
+        int dt_constant =2;
         node_handle.getParam("local_planner/distance_transform_constant", dt_constant);
         node_handle.getParam("local_planner/vmax", vmax);
         FILE *textFileOFSeeds = fopen(seeds_file.c_str(), "r");

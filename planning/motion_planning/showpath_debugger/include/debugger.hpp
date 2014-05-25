@@ -31,7 +31,7 @@ namespace navigation {
         cv::Mat local_map;
         std::vector<Pose> path;
         navigation::State bot_pose, target_pose;
-        void constructMap();
+        void makeMap();
         void showPath();
         ros::NodeHandle node_handle;
 
@@ -50,10 +50,9 @@ namespace navigation {
         inline void updateTargetPose(const geometry_msgs::Pose2D _pose) {
             int x = _pose.x;
             int y = _pose.y;
-            int theta = _pose.theta * 180 / M_PI;
+            int theta = (_pose.theta)*180 / M_PI;
             target_pose = navigation::State(x, y, theta, 0);
         }
     };
 }
-
 

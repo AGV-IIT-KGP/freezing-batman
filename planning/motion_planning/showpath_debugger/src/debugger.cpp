@@ -11,13 +11,13 @@
 namespace navigation {
 
     Debugger::Debugger() {
-        map_max_rows = 1000;
         map_max_cols = 1000;
+        map_max_rows = 1000;
         node_handle.getParam("debugger/map_max_rows", map_max_rows);
         node_handle.getParam("debugger/map_max_cols", map_max_cols);
 
-        fusion_map_subscriber = node_handle.subscribe("/data_fuser/map", 10, &Debugger::updateFusionMap, this);
-        target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &Debugger::updateTargetPose, this);
+        fusion_map_subscriber = node_handle.subscribe("local_planner/map", 10, &Debugger::updateFusionMap, this);
+        target_subscriber = node_handle.subscribe("local_planner/target", 10, &Debugger::updateTargetPose, this);
         path_subscriber = node_handle.subscribe("local_planner/path", 10, &Debugger::updatePath, this);
 
         cv::namedWindow("FusionMap", CV_WINDOW_FREERATIO);
@@ -57,7 +57,7 @@ namespace navigation {
         }
     }
 
-    void Debugger::constructMap() {
+    void Debugger::makeMap() {
         cv::Mat img = local_map;
         cv::circle(img, cvPoint(target_pose.x(), local_map.rows - 1 - target_pose.y()), 5, cvScalar(128), -1);
         cv::line(img, cvPoint(target_pose.x(), local_map.rows - 1 - target_pose.y()), cvPoint(target_pose.x() + 15 * cos((target_pose.theta() * M_PI) / 180), local_map.rows - 1 - target_pose.y() - 15 * sin((target_pose.theta() * M_PI) / 180)), cvScalar(128), 1, 8, 0);
@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
     ros::Rate loop_rate(loop_rate_hz);
     while (ros::ok()) {
         ros::spinOnce();
-        debugger.constructMap();
+        debugger.makeMap();
         debugger.showPath();
         loop_rate.sleep();
     }
