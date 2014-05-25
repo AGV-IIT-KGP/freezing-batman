@@ -77,20 +77,20 @@ namespace navigation {
     }
 
     void quickReflex::loadGivenSeeds(const State& start, const State& goal) {
-        int vmax;
-        int num_seeds;
+        int VMAX = 70;
+        int numberOfSeeds;
         int return_status;
         double x, y, z;
-        int dt_constant;
-        node_handle.getParam("local_planner/distance_transform_constant", dt_constant);
-        node_handle.getParam("local_planner/vmax", vmax);
+        int DT_CONSTANT = 2;
+        node_handle.getParam("local_planner/distance_transform_constant", DT_CONSTANT);
+        node_handle.getParam("local_planner/vmax", VMAX);
         FILE *textFileOFSeeds = fopen(seeds_file.c_str(), "r");
 
         if (!textFileOFSeeds) {
             std::cout << "load in opening seed file : " << seeds_file << std::endl;
         }
 
-        return_status = fscanf(textFileOFSeeds, "%d\n", &num_seeds);
+        return_status = fscanf(textFileOFSeeds, "%d\n", &numberOfSeeds);
 
         if (return_status == 0) {
             //ROS_ERROR("[PLANNER] Incorrect seed file format");
@@ -98,37 +98,38 @@ namespace navigation {
             exit(1);
         }
 
-        for (int i = 0; i < num_seeds; i++) {
-            Seed seed;
+        for (int i = 0; i < numberOfSeeds; i++) {
+            Seed s;
             double cost = 0;
-            double cost_dt = 0;
-            return_status = fscanf(textFileOFSeeds, "%lf %lf %lf %lf\n", &seed.velocityRatio, &x, &y, &z);
+            double cost_DT = 0;
+            return_status = fscanf(textFileOFSeeds, "%lf %lf %lf %lf\n", &s.velocityRatio, &x, &y, &z);
             if (return_status == 0) {
-                //                ROS_ERROR("[PLANNER] Incorrect seed file format");
+                // ROS_ERROR("[PLANNER] Incorrect seed file format");
                 exit(1);
             }
 
-            if (y > 0) {
-                seed.leftVelocity = vmax * seed.velocityRatio / (1 + seed.velocityRatio);
-                seed.rightVelocity = vmax / (1 + seed.velocityRatio);
-            } else {
-                seed.leftVelocity = -vmax * seed.velocityRatio / (1 + seed.velocityRatio);
-                seed.rightVelocity = -vmax / (1 + seed.velocityRatio);
+            if (y > 0){
+             s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
+             s.rightVelocity = VMAX / (1 + s.velocityRatio);
             }
-            seed.final_state = State((int) x, (int) y, z, 0);
+            else{
+             s.leftVelocity = -VMAX * s.velocityRatio / (1 + s.velocityRatio);
+             s.rightVelocity = -VMAX / (1 + s.velocityRatio);
+            }
+            s.final_state = State((int) x, (int) y, z, 0);
 
-            int num_seed_points;
-            return_status = fscanf(textFileOFSeeds, "%d\n", &num_seed_points);
+            int n_seed_points;
+            return_status = fscanf(textFileOFSeeds, "%d\n", &n_seed_points);
             if (return_status == 0) {
-                //std::cout << "[PLANNER] Incorrect seed file format";
+                std::cout << "[PLANNER] Incorrect seed file format";
                 exit(1);
             }
 
-            for (int j = 0; j < num_seed_points; j++) {
-                double temp_x, temp_y;
-                return_status = fscanf(textFileOFSeeds, "%lf %lf \n", &temp_x, &temp_y);
-                State point((int) temp_x, (int) temp_y, 0, 0);
-                State point2((int) start.x() + temp_x, (int) start.y() + temp_y, 0, 0);
+            for (int j = 0; j < n_seed_points; j++) {
+                double tempXvalue, tempYvalue;
+                return_status = fscanf(textFileOFSeeds, "%lf %lf\n", &tempXvalue, &tempYvalue);
+                State point((int) tempXvalue, (int) tempYvalue, 0, 0);
+                State point2((int) start.x() + tempXvalue, (int) start.y() + tempYvalue, 0, 0);
 
                 if (return_status == 0) {
                     //ROS_ERROR("[PLANNER] Incorrect seed file format");
@@ -136,29 +137,13 @@ namespace navigation {
                 }
 
                 cost += point2.distanceTo(goal);
-                cost_dt += fusion_map.at<uchar>(fusion_map.rows - (start.x() + temp_x) - 1, start.y() + temp_y);
-                seed.intermediatePoints.insert(seed.intermediatePoints.begin(), point);
-
-                seed.costOfseed = (cost / num_seed_points) / 200 + ((cost_dt / num_seed_points) / 255) / dt_constant + abs(atanf((goal.y() - start.y()) / (goal.x() - start.x())) - atanf(y / x));
-                cost += point.distanceTo(goal); // + DT_CONSTANT * fusion_map.at<uchar>(fusion_map.rows - tempYvalue - 1, tempXvalue);
-                seed.intermediatePoints.insert(seed.intermediatePoints.begin(), point2);
-
-                if (start.x() == goal.x()) {
-                    if (x != 0) {
-                        seed.costOfseed = (cost / num_seed_points) / 900 + fabs(atanf(y / x) - M_PI / 2) / M_PI;
-                    } else {
-                        seed.costOfseed = (cost / num_seed_points) / 900;
-                    }
-                } else {
-                    if (x != 0) {
-                        seed.costOfseed = (cost / num_seed_points) / 900 + fabs(atanf(y / x) - atanf((goal.y() - start.y()) / (goal.x() - start.x()))) / M_PI;
-                    } else {
-                        seed.costOfseed = (cost / num_seed_points) / 900 + fabs(M_PI / 2 - atanf((goal.y() - start.y()) / (goal.x() - start.x()))) / M_PI;
-                    }
-                }
-                givenSeeds.push_back(seed);
-                fclose(textFileOFSeeds);
+                cost_DT += fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
+                s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
             }
+            s.costOfseed = (cost / n_seed_points)/900 + ((cost_DT / n_seed_points)/255)/DT_CONSTANT + abs(atan2f((goal.y()-start.y()), (goal.x()-start.x())) - atan2f(y, x))/M_PI;
+            givenSeeds.push_back(s);
         }
+
+        fclose(textFileOFSeeds);
     }
 }
