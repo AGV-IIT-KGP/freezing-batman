@@ -51,8 +51,8 @@ void Strategy_Planner::setPlanner(int planner) {
         case a_star_seed:
             setWhichPlanner(std::string("A_Star_Seed"));
             break;
-        case quick_response:
-            setWhichPlanner(std::string("Quick_Response"));
+        case quick_reflex:
+            setWhichPlanner(std::string("Quick_Reflex"));
             break;
     }
 }
@@ -85,7 +85,7 @@ void Strategy_Planner::plan(bool is_test_mode, int planner, int navigator) {
         if (!is_emergency_) {
             setPlanner(a_star_seed);
         } else {
-            setPlanner(quick_response);
+            setPlanner(quick_reflex);
         }
         if (nml_flag) {
             setNavigator(waypoint_navigator);

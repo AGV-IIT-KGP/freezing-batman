@@ -22,7 +22,7 @@ enum Navigators {
 
 enum Planners {
     a_star_seed = 0,
-    quick_response = 1,
+    quick_reflex = 1,
 };
 
 class Strategy_Planner {
