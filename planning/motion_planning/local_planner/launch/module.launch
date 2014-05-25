@@ -5,7 +5,7 @@
         <param name="distance_transform" type="int" value="0"/>
         <param name="seed_file2" type="str" value="/seeds/seeds2.txt"/>
         <param name="seed_file8" type="str" value="/seeds/seeds8.txt"/>
-        <param name="planning_strategy" type="int" value="0"/>
+        <param name="planning_strategy" type="int" value="1"/>
         <param name="map_max_rows" type="int" value="1000"/>
         <param name="map_max_cols" type="int" value="1000"/>
         <param name="loop_rate" type="int" value="10"/>
