@@ -26,7 +26,6 @@ int main(int argc, char* argv[]) {
         if (planning_strategy == 0) {
             local_planner.planWithAstarSeed(astar_seed_planner);
         } else {
-    
             local_planner.planWithQuickReflex(quick_reflex_planner);
         }
 
