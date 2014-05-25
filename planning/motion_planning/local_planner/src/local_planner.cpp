@@ -38,10 +38,10 @@ namespace navigation {
         try {
             cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::MONO8);
             local_map = cv_ptr->image;
-            cv::rectangle(local_map, cv::Point(0 * local_map.cols, 0 * local_map.rows), cv::Point(.2 * local_map.cols, 1 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
-            cv::rectangle(local_map, cv::Point(.2 * local_map.cols, 1 * local_map.rows), cv::Point(1 * local_map.cols, .8 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
-            cv::rectangle(local_map, cv::Point(.8 * local_map.cols, .8 * local_map.rows), cv::Point(1 * local_map.cols, 0 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
-            cv::rectangle(local_map, cv::Point(.2 * local_map.cols, 0 * local_map.rows), cv::Point(.8 * local_map.cols, .2 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
+            cv::rectangle(local_map, cv::Point(0 * local_map.cols, 0 * local_map.rows), cv::Point(.1 * local_map.cols, 1 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
+            cv::rectangle(local_map, cv::Point(.1 * local_map.cols, 1 * local_map.rows), cv::Point(1 * local_map.cols, .9 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
+            cv::rectangle(local_map, cv::Point(.9 * local_map.cols, .9 * local_map.rows), cv::Point(1 * local_map.cols, 0 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
+            cv::rectangle(local_map, cv::Point(.1 * local_map.cols, 0 * local_map.rows), cv::Point(.9 * local_map.cols, .1 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
         } catch (cv_bridge::Exception& e) {
             ROS_ERROR("cv_bridge exception: %s", e.what());
         }
