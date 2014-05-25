@@ -36,7 +36,7 @@ class WaypointSelector {
     std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator current_target_ptr;
     std::vector<std::pair<sensor_msgs::NavSatFix, bool> > gps_waypoints_;
     std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator last_waypoint_;
-    
+
 public:
     double proximity_;
 

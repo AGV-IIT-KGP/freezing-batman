@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
         std::string textlat = doubleToText(it->latitude);
         std::string textlon = doubleToText(it->latitude);
         waypoints_file << textlat;
-        waypoints_file <<" ";
+        waypoints_file << " ";
         waypoints_file << textlon << std::endl;
     }
     waypoints_file << "#mention this file in the launch of waypoint_selector." << std::endl;

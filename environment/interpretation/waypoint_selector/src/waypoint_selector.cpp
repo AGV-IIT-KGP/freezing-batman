@@ -41,9 +41,9 @@ bool WaypointSelector::readWaypoints(std::ifstream& waypoints, std::vector<std::
                 }
             }
             num_of_waypoints = count;
-//            for (std::vector < std::pair < sensor_msgs::NavSatFix, bool> >::iterator it = gps_waypoints.begin(); it != gps_waypoints.end(); it++) {
-//                std::cout << std::setprecision(12) << it->first.latitude << " " << it->first.longitude << std::endl;
-//            }
+            //            for (std::vector < std::pair < sensor_msgs::NavSatFix, bool> >::iterator it = gps_waypoints.begin(); it != gps_waypoints.end(); it++) {
+            //                std::cout << std::setprecision(12) << it->first.latitude << " " << it->first.longitude << std::endl;
+            //            }
 
             return true;
         }
@@ -173,7 +173,7 @@ void WaypointSelector::set_planner_status(std_msgs::String status) {
 
 WaypointSelector::WaypointSelector(std::string file, int strategy) {
     if (!readWaypoints(waypoints_, gps_waypoints_, num_of_waypoints_, file)) {
-        std::cout <<"exiting";
+        std::cout << "exiting";
         exit(1);
     }
     strategy_ = strategy;
