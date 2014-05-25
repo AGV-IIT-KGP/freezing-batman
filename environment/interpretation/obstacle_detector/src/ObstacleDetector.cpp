@@ -44,8 +44,8 @@ void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
             int x = (int) ((x1 * 100) + center_x);
             int y = (int) ((y1 * 100) + center_y + lidar_y_shift);
             if (x >= 0 && y >= min_dist && (int) x < map_size && (int) y < max_dist) {
-                int x2 = (x);
-                int y2 = (map_size - y - 30 - 1);
+                int x2 = x;
+                int y2 = map_size - y - 30 - 1 + 50;
                 if (!(y2 >= 0 && y2 < map_size)) {
                     continue;
                 }
@@ -54,14 +54,14 @@ void ObstacleDetector::scanCallback(const sensor_msgs::LaserScan& scan) {
         }
         angle += scan.angle_increment;
     }
-
+    
     interpret();
 }
 
 ObstacleDetector::ObstacleDetector(std::string node_name, ros::NodeHandle& node_handle) {
     loadParams(node_handle);
     this->node_name = node_name;
-    
+
     if (debug_mode > 0) {
         cv::namedWindow(std::string("/") + node_name + std::string("/raw_scan"), CV_WINDOW_AUTOSIZE);
         cv::namedWindow(std::string("/") + node_name + std::string("/dilate_filter"), CV_WINDOW_AUTOSIZE);
@@ -70,7 +70,7 @@ ObstacleDetector::ObstacleDetector(std::string node_name, ros::NodeHandle& node_
     obstacle_map = cv::Mat(map_size, map_size, CV_8UC1, cvScalarAll(0));
     image_transport = new image_transport::ImageTransport(node_handle);
     obstacle_publisher = image_transport->advertise(std::string("/") + node_name + std::string("/obstacles"), 10);
-    scan_subscriber = node_handle.subscribe("/sensors/hokuyo_nodes/0", 2, &ObstacleDetector::scanCallback, this);
+    scan_subscriber = node_handle.subscribe("/scan", 2, &ObstacleDetector::scanCallback, this);
 }
 
 ObstacleDetector::~ObstacleDetector() {
@@ -86,7 +86,7 @@ void ObstacleDetector::loadParams(ros::NodeHandle& node_handle) {
     map_size = 1000;
     max_dist = 400;
     min_dist = 0;
-    obstacle_expansion = 30;
+    obstacle_expansion = 55;
     wait_time = 100;
 
     node_handle.getParam(std::string("/") + node_name + std::string("/center_x"), center_x);
