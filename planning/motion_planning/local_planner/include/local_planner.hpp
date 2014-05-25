@@ -42,7 +42,7 @@ namespace navigation {
 
         ros::Subscriber fusion_map_subscriber;
         ros::Subscriber target_subscriber;
-        ros::Subscriber planning_strategy_subscriber;
+        ros::Subscriber planning_type_subscriber;
 
         ros::Publisher truncated_target_publisher;
         ros::Publisher seed_publisher;
