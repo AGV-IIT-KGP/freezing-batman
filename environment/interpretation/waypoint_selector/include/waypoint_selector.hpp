@@ -10,6 +10,9 @@
 #include <cmath>
 #include <iosfwd>
 #include <ios>
+#include <iomanip>
+#include <sstream>
+#include <stdlib.h>
 
 //All distance units are in meter. Conversion has been taken care of before publishing.
 
@@ -33,11 +36,11 @@ class WaypointSelector {
     std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator current_target_ptr;
     std::vector<std::pair<sensor_msgs::NavSatFix, bool> > gps_waypoints_;
     std::vector<std::pair<sensor_msgs::NavSatFix, bool> >::iterator last_waypoint_;
-    
+
 public:
     double proximity_;
 
-    bool readWaypoints(std::ifstream& waypoints, std::vector<std::pair<sensor_msgs::NavSatFix, bool> >& gps_waypoints, int num_of_waypoints, std::string filename);
+    bool readWaypoints(std::ifstream& waypoints, std::vector<std::pair<sensor_msgs::NavSatFix, bool> >& gps_waypoints, int& num_of_waypoints, std::string filename);
     geometry_msgs::Pose2D interpret(sensor_msgs::NavSatFix current, sensor_msgs::NavSatFix target);
     double getMod(geometry_msgs::Pose2D pose);
     void set_current_position(sensor_msgs::NavSatFix subscriber_gps);
