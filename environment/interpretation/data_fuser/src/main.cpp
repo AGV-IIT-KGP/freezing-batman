@@ -18,11 +18,11 @@ void exit_with_help() {
 }
 
 int main(int argc, char** argv) {
-    int first_subscriber_flag = 1, second_subscriber_flag = 0, debug_flag = 0;
+    int first_subscriber_flag = 1, second_subscriber_flag = 0, debug_flag = 1;
 
-    std::string first_subscriber_topic_name, second_subcriber_topic_name, node_id, node_name, publisher_topic_name;
+    std::string first_subscriber_topic_name, second_subscriber_topic_name, node_id, node_name, publisher_topic_name;
     first_subscriber_topic_name = std::string("/obstacle_detector/obstacles");
-    second_subcriber_topic_name = std::string("/lane_detector0/lanes");
+    second_subscriber_topic_name = std::string("/lane_detector/lanes");
     node_id = std::string("0");
     node_name = std::string("interpreter_fusion_");
 
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
                 first_subscriber_flag = 1;
                 break;
             case 's':
-                second_subcriber_topic_name = std::string(argv[i]);
+                second_subscriber_topic_name = std::string(argv[i]);
                 second_subscriber_flag = 1;
                 break;
             case 'i':
@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
             std::cout << "\t First Subscribed topic  :\t" << first_subscriber_topic_name << std::endl;
         }
         if (second_subscriber_flag) {
-            std::cout << "\t Second Subscribed topic :\t" << first_subscriber_topic_name << std::endl;
+            std::cout << "\t Second Subscribed topic :\t" << second_subscriber_topic_name << std::endl;
         }
     }
 
@@ -87,13 +87,13 @@ int main(int argc, char** argv) {
 
     if (first_subscriber_flag && second_subscriber_flag) {
         first_subscriber.subscribe(node_handle, first_subscriber_topic_name.c_str(), 1);
-        second_subscriber.subscribe(node_handle, second_subcriber_topic_name.c_str(), 1);
+        second_subscriber.subscribe(node_handle, second_subscriber_topic_name.c_str(), 1);
         sync = new TimeSynchronizer<Image, Image>(first_subscriber, second_subscriber, 10);
         sync->registerCallback(boost::bind(&callback, _1, _2));
     } else if (first_subscriber_flag) {
         image_subscriber = image_transporter.subscribe(first_subscriber_topic_name.c_str(), 2, singleCallback);
     } else if (second_subscriber_flag) {
-        image_subscriber = image_transporter.subscribe(second_subcriber_topic_name.c_str(), 2, singleCallback);
+        image_subscriber = image_transporter.subscribe(second_subscriber_topic_name.c_str(), 2, singleCallback);
     }
 
     ros::spin();

@@ -16,13 +16,13 @@ vectorNav::~vectorNav() {
 }
 
 bool vectorNav::connect() {
-    vn200_connect(&vn200, vn200_com_port.c_str(), baud_rate);
+    //vn200_connect(&vn200, vn200_com_port.c_str(), baud_rate);
     vn100_connect(&vn100, vn100_com_port.c_str(), baud_rate);
     return true;
 }
 
 bool vectorNav::disconnect() {
-    vn200_disconnect(&vn200);
+    //vn200_disconnect(&vn200);
     vn100_disconnect(&vn100);
     return true;
 }
@@ -40,12 +40,12 @@ bool vectorNav::fetch() {
     double gpsTime, latitude, longitude, altitude;
     VnVector3 magnetic, acceleration, angularRate, ypr, latitudeLognitudeAltitude, nedVelocity, positionAccuracy;
 
-    vn200_getGpsSolution(&vn200, &gpsTime, &gpsWeek, &gpsFix, &numberOfSatellites, &latitudeLognitudeAltitude, &nedVelocity, &positionAccuracy, &speedAccuracy, &timeAccuracy);
+    //vn200_getGpsSolution(&vn200, &gpsTime, &gpsWeek, &gpsFix, &numberOfSatellites, &latitudeLognitudeAltitude, &nedVelocity, &positionAccuracy, &speedAccuracy, &timeAccuracy);
     ROS_INFO("Triangulating from %d satellites", numberOfSatellites);
 
-    _gps.latitude = latitudeLognitudeAltitude.c0;
+    /*_gps.latitude = latitudeLognitudeAltitude.c0;
     _gps.longitude = latitudeLognitudeAltitude.c1;
-    _gps.altitude = latitudeLognitudeAltitude.c2;
+    _gps.altitude = latitudeLognitudeAltitude.c2;*/
 
     _yaw.data = yaw;
 
@@ -53,7 +53,7 @@ bool vectorNav::fetch() {
 }
 
 void vectorNav::publish(int frame_id) {
-    fix_publisher.publish(_gps);
+    //fix_publisher.publish(_gps);
     yaw_publisher.publish(_yaw);
 }
 
@@ -63,7 +63,7 @@ void vectorNav::initializeParameters() {
     node_name = std::string("vn_ins");
     fix_topic_name = node_name + std::string("/fix");
     yaw_topic_name = node_name + std::string("/yaw");
-    vn200_com_port = std::string("/dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FTUTUVO5-if00-port0");
+    //vn200_com_port = std::string("/dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FTUTUVO5-if00-port0");
     vn100_com_port = std::string("/dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FTVJUC0O-if00-port0");
 }
 
@@ -73,12 +73,12 @@ void vectorNav::initializeParameters(int argc, char** argv) {
     node_name = std::string("/vn_ins") + std::string(argv[1]);
     fix_topic_name = node_name + std::string(argv[1]) + std::string("/fix");
     yaw_topic_name = node_name + std::string(argv[1]) + std::string("/yaw");
-    vn200_com_port = std::string(argv[2]);
+    //vn200_com_port = std::string(argv[2]);
     vn100_com_port = std::string(argv[3]);
 }
 
 void vectorNav::setupCommunications() {
-    fix_publisher = node_handle->advertise<sensor_msgs::NavSatFix>(fix_topic_name.c_str(), message_queue_size);
+    //fix_publisher = node_handle->advertise<sensor_msgs::NavSatFix>(fix_topic_name.c_str(), message_queue_size);
     yaw_publisher = node_handle->advertise<std_msgs::Float64>(yaw_topic_name.c_str(), message_queue_size);
 }
 

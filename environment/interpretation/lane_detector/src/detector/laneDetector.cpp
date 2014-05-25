@@ -21,7 +21,7 @@ LaneDetector::LaneDetector(ros::NodeHandle& node_handle) {
         grass_removal_output_window = ros::this_node::getName() + std::string("/grass_removal_output");
         cv::namedWindow(grass_removal_output_window, CV_WINDOW_AUTOSIZE);
         ipt_output_window = ros::this_node::getName() + std::string("/ipt_output");
-        cv::namedWindow(ipt_output_window, CV_WINDOW_AUTOSIZE);
+        cv::namedWindow(ipt_output_window, 0);
         obstacle_removal_output_window = ros::this_node::getName() + std::string("/obstacle_removal_output");
         cv::namedWindow(obstacle_removal_output_window, CV_WINDOW_AUTOSIZE);
         lane_binary_output = ros::this_node::getName() + std::string("/lane_binary_output");
@@ -40,7 +40,7 @@ void LaneDetector::interpret() {
         cv::waitKey(wait_time);
     }
 
-    if (time_functions > 0) {
+    /*if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
     result = grassRemoval(result);
@@ -59,7 +59,7 @@ void LaneDetector::interpret() {
 
     if (time_functions == 2) {
         gettimeofday(&tval_before, NULL);
-    }
+    }*/
     result = inversePerspectiveTransform(result);
     if (time_functions == 2) {
         gettimeofday(&tval_after, NULL);
@@ -74,7 +74,7 @@ void LaneDetector::interpret() {
         cv::waitKey(wait_time);
     }
 
-    if (time_functions > 0) {
+   /* if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
     result = obstacleRemoval(result);
@@ -114,7 +114,7 @@ void LaneDetector::interpret() {
         } else {
             ROS_INFO("Total FPS : %lf", 1. / total_time_elapsed);
         }
-    }
+    }*/
 
     publishLanes(result);
 }
@@ -150,6 +150,7 @@ void LaneDetector::detectLanes(const sensor_msgs::ImageConstPtr& msg) {
 
 void LaneDetector::publishLanes(cv::Mat &image) {
     cv_bridge::CvImage message;
+    cv::cvtColor(image,image,CV_BGR2GRAY);   ///////addded later for calibration........
     message.encoding = sensor_msgs::image_encodings::MONO8;
     if (debug_mode == 7) {
         message.image = cv::Mat::zeros(map_size, map_size, CV_8UC1);
