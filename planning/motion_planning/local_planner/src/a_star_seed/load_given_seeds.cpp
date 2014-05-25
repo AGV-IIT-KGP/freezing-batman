@@ -140,7 +140,7 @@ namespace navigation {
                 cost_DT += fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
                 s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
             }
-            s.costOfseed = (cost / n_seed_points)/900 + ((cost_DT / n_seed_points)/255)/DT_CONSTANT + abs(atan2f((goal.y()-start.y()), (goal.x()-start.x())) - atan2f(y, x))/M_PI;
+            s.costOfseed = (cost / n_seed_points)/900 + ((cost_DT / n_seed_points)/255)/DT_CONSTANT + fabs(atan2f((goal.y()-start.y()), (goal.x()-start.x())) - atan2f(y, x))/M_PI;
             givenSeeds.push_back(s);
         }
 
