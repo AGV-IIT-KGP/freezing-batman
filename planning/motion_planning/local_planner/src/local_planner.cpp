@@ -22,7 +22,7 @@ namespace navigation {
 
         fusion_map_subscriber = node_handle.subscribe("/data_fuser/map", 10, &LocalPlanner::updateFusionMap, this);
         target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &LocalPlanner::updateTargetPose, this);
-        planning_strategy_subscriber = node_handle.subscribe("strategy_planner/which_planner", 10, &LocalPlanner::updateStrategy, this);
+        planning_type_subscriber = node_handle.subscribe("strategy_planner/planner_type", 10, &LocalPlanner::updateStrategy, this);
 
         seed_publisher = node_handle.advertise<local_planner::Seed>("local_planner/seed", 1000);
         status_publisher = node_handle.advertise<std_msgs::String>("local_planner/status", 1000);
