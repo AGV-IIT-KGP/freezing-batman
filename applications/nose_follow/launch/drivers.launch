@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+    <include file="$(find vn_ins)/launch/imu_only.launch" />
+    <include file="$(find hokuyo_lidar)/launch/module.launch" />
+    <include file="$(find eklavya3_roboteq)/launch/module.launch" />
+</launch>

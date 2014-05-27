@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="nose_navigator" type="nose_navigator" name="nose_navigator">
+        <param name="proposed_target_topic_name" type="str" value="/nose_navigator/proposed_target" />
+        <param name="yaw_topic_name" type="str" value="/vn_ins/yaw" />
+    </node>
+</launch>
+    
