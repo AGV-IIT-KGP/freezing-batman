@@ -64,7 +64,7 @@ namespace navigation {
         if (fusion_map.rows - target_seed.final_state.y() - 1 - start_state.y() < 0 || fusion_map.rows - target_seed.final_state.y() - 1 - start_state.y() > map_max_ ||
                 target_seed.final_state.x() + start_state.x() < 0 || target_seed.final_state.x() + start_state.x() > map_max_) {
             return false;
-        } else if (fusion_map.at<uchar>(fusion_map.rows - target_seed.final_state.y() - 1 - start_state.y(), target_seed.final_state.x() + start_state.x()) >= 250) {
+        } else if (fusion_map.at<uchar>(fusion_map.rows - target_seed.final_state.y() - 1 - start_state.y(), target_seed.final_state.x() + start_state.x()) >= 220) {
             return false;
         }
 
