@@ -1,19 +1,20 @@
 <package>
-  <description brief="nose_follow">
+  <description brief="lane_follow">
 
-     nose_follow
+     lane_follow
 
   </description>
   <author>Samuel</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
-  <url>http://ros.org/wiki/nose_follow</url>
-  <depend package="vn_ins"/>
-  <depend package="nose_navigator"/>
-  <depend package="strategy_planner"/>
+  <url>http://ros.org/wiki/lane_follow</url>
+  <depend package="logitech_camera"/>
   <depend package="hokuyo_lidar"/>
-  <depend package="data_fuser"/>
+  <depend package="lane_detector"/>
   <depend package="obstacle_detector"/>
+  <depend package="data_fuser"/>
+  <depend package="lane_navigator"/>
+  <depend package="strategy_planner"/>
   <depend package="local_planner"/>
   <depend package="showpath_debugger"/>
   <depend package="eklavya3_pilot"/>
