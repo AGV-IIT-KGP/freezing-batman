@@ -35,12 +35,15 @@ LaneDetector::~LaneDetector() {
 void LaneDetector::interpret() {
     total_time_elapsed = 0;
     cv::Mat result = original_image;
+    cv::imwrite("original.jpg",original_image);
     if (debug_mode > 0) {
         cv::imshow(result_window, result);
         cv::waitKey(wait_time);
     }
+    
+    cvtColor(result,result,CV_BGR2HSV);
 
-    /*if (time_functions > 0) {
+    if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
     result = grassRemoval(result);
@@ -56,10 +59,10 @@ void LaneDetector::interpret() {
         cv::imshow(grass_removal_output_window, result);
         cv::waitKey(wait_time);
     }
-
+    cvtColor(result,result,CV_HSV2BGR);
     if (time_functions == 2) {
         gettimeofday(&tval_before, NULL);
-    }*/
+    }
     result = inversePerspectiveTransform(result);
     if (time_functions == 2) {
         gettimeofday(&tval_after, NULL);
@@ -90,7 +93,7 @@ void LaneDetector::interpret() {
         cv::imshow(obstacle_removal_output_window, result);
         cv::waitKey(wait_time);
     }
-
+*/
     if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
@@ -114,8 +117,7 @@ void LaneDetector::interpret() {
         } else {
             ROS_INFO("Total FPS : %lf", 1. / total_time_elapsed);
         }
-    }*/
-
+    }
     publishLanes(result);
 }
 
@@ -150,7 +152,7 @@ void LaneDetector::detectLanes(const sensor_msgs::ImageConstPtr& msg) {
 
 void LaneDetector::publishLanes(cv::Mat &image) {
     cv_bridge::CvImage message;
-    cv::cvtColor(image,image,CV_BGR2GRAY);   ///////addded later for calibration........
+    //cv::cvtColor(image,image,CV_BGR2GRAY);   ///////addded later for calibration........
     message.encoding = sensor_msgs::image_encodings::MONO8;
     if (debug_mode == 7) {
         message.image = cv::Mat::zeros(map_size, map_size, CV_8UC1);
