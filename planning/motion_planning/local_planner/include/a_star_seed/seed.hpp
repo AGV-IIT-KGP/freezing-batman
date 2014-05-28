@@ -24,7 +24,7 @@ namespace navigation {
         Seed() {
         }
 
-        Seed(const Seed& that) : final_state(that.final_state), obstacleCostOfSeed(that.obstacleCostOfSeed), targetCostOfSeed(that.targetCostOfSeed), velocityRatio(that.velocityRatio), leftVelocity(that.leftVelocity), rightVelocity(that.rightVelocity), intermediatePoints(that.intermediatePoints) {
+        Seed(const Seed& other) : final_state(other.final_state), obstacleCostOfSeed(other.obstacleCostOfSeed), targetCostOfSeed(other.targetCostOfSeed), velocityRatio(other.velocityRatio), leftVelocity(other.leftVelocity), rightVelocity(other.rightVelocity), intermediatePoints(other.intermediatePoints) {
         }
 
     };
