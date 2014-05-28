@@ -18,13 +18,13 @@ namespace navigation {
     class Seed {
     public:
         State final_state;
-        double costOfseed, velocityRatio, leftVelocity, rightVelocity;
+        double obstacleCostOfSeed, targetCostOfSeed, velocityRatio, leftVelocity, rightVelocity;
         std::vector<State> intermediatePoints;
 
         Seed() {
         }
 
-        Seed(const Seed& that) : final_state(that.final_state), costOfseed(that.costOfseed), velocityRatio(that.velocityRatio), leftVelocity(that.leftVelocity), rightVelocity(that.rightVelocity), intermediatePoints(that.intermediatePoints) {
+        Seed(const Seed& other) : final_state(other.final_state), obstacleCostOfSeed(other.obstacleCostOfSeed), targetCostOfSeed(other.targetCostOfSeed), velocityRatio(other.velocityRatio), leftVelocity(other.leftVelocity), rightVelocity(other.rightVelocity), intermediatePoints(other.intermediatePoints) {
         }
 
     };
