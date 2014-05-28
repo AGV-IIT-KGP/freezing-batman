@@ -18,8 +18,9 @@ namespace navigation {
     class State {
         // TODO: find a way make it immutable
         // load in swapping after making these const
-        int xCordinate_, yCordinate_;
-        int theta_, curvature_;
+        int xCordinate_, x_coord, yCordinate_, y_coord;
+        int theta_, angle;
+        double curvature_, radius_of_curvature;
 
         double inRange(const double theta_);
 
@@ -37,16 +38,33 @@ namespace navigation {
             return theta_;
         }
 
-        inline int curvature() const {
+        inline double curvature() const {
             return curvature_;
         }
+
+        void setx(int x_coord)  {
+            xCordinate_ = x_coord;
+        }
+
+        void sety(int y_coord)  {
+            yCordinate_ = y_coord;
+        }
+
+        void settheta(int angle)  {
+            theta_ = angle;
+        }
+
+        void setcurvature(double radius_of_curvature)  {
+            curvature_ = radius_of_curvature;
+        }
+
 
         //TODO : remove this
 
         inline State() {
         }
 
-        inline State(int xCordinate, int yCordinate, int theta, int curvature) : xCordinate_(xCordinate), yCordinate_(yCordinate), theta_(theta), curvature_(curvature) {
+        inline State(int xCordinate, int yCordinate, int theta, double curvature) : xCordinate_(xCordinate), yCordinate_(yCordinate), theta_(theta), curvature_(curvature) {
         }
 
         inline double distanceSqTo(const State& b) const {

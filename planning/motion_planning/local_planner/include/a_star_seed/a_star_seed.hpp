@@ -125,9 +125,9 @@ namespace navigation {
         int min_cost_angle;
         int angle_limit;
         float cost;
-        float curvature_max;
-        float dist_bw_wheels;
-        float min_cost;
+        double curvature_max;
+        double dist_bw_wheels;
+        double min_cost;
         int vmax;
 
         cv::Mat fusion_map;

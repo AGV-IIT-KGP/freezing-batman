@@ -18,11 +18,11 @@ namespace navigation {
 
         binary_img = 255 - binary_img;
         cv::distanceTransform(binary_img, transformed_img, CV_DIST_L2, 3);
-                float dt_threshold = 100;
-                for (i = 0; i < fusion_map.rows; i++)
-                    for (j = 0; j < fusion_map.cols; j++)
-                        if (transformed_img.at<float>(i, j) > dt_threshold)
-                            transformed_img.at<float>(i, j) = dt_threshold;
+        //                float dt_threshold = 100;
+        //                for (i = 0; i < fusion_map.rows; i++)
+        //                    for (j = 0; j < fusion_map.cols; j++)
+        //                        if (transformed_img.at<float>(i, j) > dt_threshold)
+        //                            transformed_img.at<float>(i, j) = dt_threshold;
 
         cv::normalize(transformed_img, transformed_img, 0, 1, cv::NORM_MINMAX);
         double min_val, max_val;

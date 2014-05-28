@@ -2,9 +2,9 @@
 <launch>
     <node pkg="local_planner" type="local_planner" name="local_planner" output="screen" cwd="node">
         <param name="angle_limit" type="int" value="30"/>
-        <param name="curvature_max" type="float" value="100"/>
+        <param name="curvature_max" type="double" value="100"/>
         <param name="debug_current_state" type="int" value="0"/>
-        <param name="dist_bw_wheels" type="float" value="0"/>
+        <param name="dist_bw_wheels" type="double" value="0"/>
         <param name="distance_transform" type="int" value="0"/>
         <param name="distance_transform_constant" type="int" value="2"/>
         <param name="loop_rate" type="int" value="10"/>
@@ -13,7 +13,7 @@
         <param name="max_iterations" type="int" value="10000"/>
         <param name="max_threshold" type="int" value="255"/>
         <param name="max_iterations_load_given_seeds" type="int" value="10000"/>
-        <param name="min_cost" type="float" value="9999"/>
+        <param name="min_cost" type="double" value="9999"/>
         <param name="min threshold" type="int" value="100"/>
         <param name="min_rad" type="int" value="70"/>
         <param name="num_of_vectors" type="int" value="120"/>

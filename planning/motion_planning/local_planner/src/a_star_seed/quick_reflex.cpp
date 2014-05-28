@@ -9,8 +9,8 @@ namespace navigation {
 
         distanceTransform();
         angle_limit = 30;
-        curvature_max = 100;
-        dist_bw_wheels = 70;
+        curvature_max = .00333;
+        dist_bw_wheels = 80;
         min_cost = INFINITE;
         num_of_vectors = 120;
         num_of_points = 20;
@@ -18,6 +18,8 @@ namespace navigation {
         vmax = 70;
         vfs = true;
         float pi = 3.14159;
+        int count;
+        count = 0;
         node_handle.getParam("/local_planner/angle_limit", angle_limit);
         node_handle.getParam("/local_planner/curvature_max", curvature_max);
         node_handle.getParam("/local_planner/dist_bw_wheels", dist_bw_wheels);
@@ -29,51 +31,77 @@ namespace navigation {
         node_handle.getParam("/local_planner/vfs", vfs);
 
         if (vfs) {
+            bool no_path_found;
+            int intensity;
+            bool seed_is_walkable;
+            no_path_found = false;
+
             for (iterator1 = 0; iterator1 < num_of_vectors / 2; iterator1++) {
                 cost = 0;
+                seed_is_walkable = true;
                 for (iterator2 = 1; iterator2 <= num_of_points; iterator2++) {
-                    cost += fusion_map.at<uchar>
-                            ((int) vector_radius * sin(pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points,
-                            (int) vector_radius * cos(pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points);
+                    intensity = fusion_map.at<uchar>
+                            (start.y() + vector_radius * sin(pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points,
+                            start.x() + vector_radius * cos(pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points);
+                    if (intensity == 255) {
+                        seed_is_walkable = false;
+                        break;
+                    } else {
+                        cost += intensity;
+                    }
                 }
-                if (min_cost > cost) {
+                if (min_cost > cost && seed_is_walkable) {
                     min_cost = cost;
                     min_cost_angle = angle_limit + 180 * iterator1 / num_of_vectors;
+                    count++;
                 }
             }
             for (iterator1 = num_of_vectors / 2; iterator1 < num_of_vectors; iterator1++) {
                 cost = 0;
+                seed_is_walkable = true;
+
                 for (iterator2 = 1; iterator2 < num_of_points; iterator2++) {
-                    cost += fusion_map.at<uchar>
-                            ((int) vector_radius * sin(-pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points,
-                            (int) vector_radius * cos(-pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points);
+                    intensity = fusion_map.at<uchar>
+                            (start.y() + vector_radius * sin(-pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points,
+                            start.x() + vector_radius * cos(-pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points);
+
+                    if (intensity == 255) {
+                        seed_is_walkable = false;
+                        break;
+                    } else {
+                        cost += intensity;
+                    }
                 }
-                if (min_cost > cost) {
+                if (min_cost > cost && seed_is_walkable) {
                     min_cost = cost;
                     min_cost_angle = -angle_limit + 180 * iterator1 / num_of_vectors;
+                    count++;
                 }
             }
-            Seed* resultSeed = NULL;
-            resultSeed->final_state = State((int) (vector_radius * cos(-pi * angle_limit / 180 + pi * iterator1 / num_of_vectors)),
-                    (int) (vector_radius * sin(-pi * angle_limit / 180 + pi * iterator1 / num_of_vectors)),
-                    (int) (curvature_max * fabs(cos(pi * min_cost_angle / 180))),
-                    90);
-
-            resultSeed->obstacleCostOfSeed = min_cost;
-            resultSeed->velocityRatio = (1 + resultSeed->final_state.curvature()) / (1 - resultSeed->final_state.curvature());
-            resultSeed->rightVelocity = vmax;
-            resultSeed->leftVelocity = vmax * resultSeed->velocityRatio;
+            std::cout << "min_cost_angle: " << min_cost_angle << std::endl;
+            Seed resultSeed;
+            //resultSeed->final_state.setx((vector_radius * cos(min_cost_angle/180)));
+            //resultSeed->final_state.sety((vector_radius * sin(min_cost_angle/180)));
+            resultSeed.final_state.setcurvature(curvature_max * (90. - min_cost_angle) / (90. - angle_limit));
+            std::cout << "result curvature " << resultSeed.final_state.curvature() << std::endl;
+            //resultSeed->final_state.settheta(90);
+            resultSeed.obstacleCostOfSeed = min_cost;
+            //            std::cout << 1 + resultSeed.final_state.curvature() << " " << 1 - resultSeed.final_state.curvature() << std::endl;
+            //            getchar();
+            resultSeed.velocityRatio = (1. - dist_bw_wheels * resultSeed.final_state.curvature()) / (1. + dist_bw_wheels * resultSeed.final_state.curvature());
+            double vavg = vmax / 2.;
+            resultSeed.rightVelocity = 2 * resultSeed.velocityRatio * vavg / (1 + resultSeed.velocityRatio);
+            resultSeed.leftVelocity = 2 * vavg / (1 + resultSeed.velocityRatio);
             State point((int) start.x(), (int) start.y(), 0, 0);
 
-            resultSeed->intermediatePoints.insert(resultSeed->intermediatePoints.begin(), point);
+            resultSeed.intermediatePoints.insert(resultSeed.intermediatePoints.begin(), point);
 
-
-            if (resultSeed == NULL) {
+            if (min_cost == INFINITE) {
                 status = 0;
                 return std::make_pair(std::vector<State>(), Seed());
             }
             status = 999;
-            return std::make_pair(resultSeed->intermediatePoints, *resultSeed);
+            return std::make_pair(resultSeed.intermediatePoints, resultSeed);
 
         } else {
             givenSeeds.clear();
