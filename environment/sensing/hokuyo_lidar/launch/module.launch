@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="hokuyo_node" type="hokuyo_node" name="hokuyo_node" cwd="node" output="screen">
+        <param name="port" value="/dev/serial/by-id/usb-Hokuyo_Data_Flex_for_USB_URG-Series_USB_Driver-if00" />
+        <param name="min_ang" value=" -1.5" />
+        <param name="max_ang" value="  1.5" />
+        <remap from="/scan" to="/hokuyo_lidar/scan"/>
+    </node>
+</launch>
+    

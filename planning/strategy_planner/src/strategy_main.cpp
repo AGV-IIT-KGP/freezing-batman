@@ -17,9 +17,9 @@ int main(int argc, char* argv[]) {
     ros::Subscriber sub_confidence = nh.subscribe("/lane_detector/confidence", buffer_size, &Strategy_Planner::setConfidence, &strategy_planner);
 
     ros::Publisher pub_target = nh.advertise<geometry_msgs::Pose2D>("/strategy_planner/target", buffer_size);
-    ros::Publisher pub_strategy = nh.advertise<std_msgs::String>("/strategy_planner/which_planner", buffer_size);
+    ros::Publisher pub_strategy = nh.advertise<std_msgs::String>("/strategy_planner/planner_type", buffer_size);
     //ros::Publisher pub_target_reached = nh.advertise<std_msgs::Bool>("/strategy_planner/waypoint_arrival", buffer_size);
-    ros::Publisher pub_navigator = nh.advertise<std_msgs::String>("/strategy_planner/which_navigator", buffer_size);
+    ros::Publisher pub_navigator = nh.advertise<std_msgs::String>("/strategy_planner/navigator_type", buffer_size);
 
     ros::Rate loop_rate(loop_rate_hz);
     while (ros::ok()) {
