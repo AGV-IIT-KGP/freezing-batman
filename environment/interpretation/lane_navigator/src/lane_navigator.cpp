@@ -121,7 +121,7 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
     center_angle = -1 * center_angle * 180 / CV_PI;
     geometry_msgs::Pose2D target_pose;
     target_pose.x = target.x;
-    target_pose.y = -1 * target.y + origin.y;
+    target_pose.y = (-1 * target.y + origin.y);
     target_pose.theta = center_angle;
     return target_pose;
 }
@@ -149,7 +149,7 @@ int main(int argc, char **argv) {
     std::string node_name= "lane_navigator";
     ros::init(argc, argv, node_name);
     ros::NodeHandle node_handle;
-    pub_point = node_handle.advertise<geometry_msgs::Pose2D>("target_point", 50);
+    pub_point = node_handle.advertise<geometry_msgs::Pose2D>("/lane_navigator/proposed_target", 50);
     ros::Subscriber lanes_subscriber = node_handle.subscribe("/lane_detector/lanes", 1, &publishTarget);
     while(ros::ok()){
     node_handle.getParam(node_name + "/debug", debug);

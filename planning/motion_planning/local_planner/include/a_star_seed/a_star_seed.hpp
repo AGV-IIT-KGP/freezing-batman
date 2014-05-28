@@ -31,7 +31,7 @@
 #include "ss_priority_queue.hpp"
 #include "state_of_car.hpp"
 #include "seed.hpp"
-static const int PERMISSIBLE_INTENSITY=250;
+static const int PERMISSIBLE_INTENSITY = 250;
 
 
 
@@ -73,8 +73,8 @@ namespace navigation {
 
     class AStarSeed {
     public:
-        AStarSeed( ros::NodeHandle& nodehandle);
-        std::pair<std::vector<StateOfCar>, Seed> findPathToTarget(const cv::Mat& fusionMap, const State& start, const State& goal, int , int, int&);
+        AStarSeed(ros::NodeHandle& nodehandle);
+        std::pair<std::vector<StateOfCar>, Seed> findPathToTarget(const cv::Mat& fusionMap, const State& start, const State& goal, int, int, int&);
         int distance_transform, debug_current_state;
         std::string getSeedFileNameAStarSeed(ros::NodeHandle& nodeHandle);
         ros::NodeHandle node_handle;
@@ -99,16 +99,15 @@ namespace navigation {
         bool isWalkableWithSeeds(const StateOfCar& startState_, const StateOfCar& nextState_, int MAP_MAX_COLS, int MAP_MAX_ROWS);
         std::vector<StateOfCar> neighborNodesWithSeeds(const StateOfCar& currentStateOfCar_);
         std::pair<std::vector<StateOfCar>, Seed> reconstructPath(const StateOfCar& currentStateOfCar_, std::map<StateOfCar, StateOfCar, comparatorMapState>& came_from);
-        
+
 
     };
 
-    class quickReflex
-    {
-
+    class quickReflex {
     public:
         quickReflex(ros::NodeHandle& nodehandle);
-        quickReflex(const State& start, const State& goal){
+
+        quickReflex(const State& start, const State& goal) {
             loadGivenSeeds(start, goal);
         };
         std::pair<std::vector<State>, Seed> findPathToTarget(const cv::Mat& fusionMap, const State& start, const State& goal, int&);
@@ -121,15 +120,16 @@ namespace navigation {
         cv::Mat fusion_map;
         cv::Mat image;
         std::string seeds_file;
+        bool obstacle_guidance;
 
         void distanceTransform();
         void loadGivenSeeds(const State& start, const State& goal);
-        void plotPointInMap(const State& pos_) ;
+        void plotPointInMap(const State& pos_);
         bool isOnTheObstacle(const State& state);
-        bool onTarget(State const& currentState_, const State& targetState)  ;
-        bool isWalkableWithSeeds(State const& startState_, State const& nextState_, Seed targetSeed) ;
+        bool onTarget(State const& currentState_, const State& targetState);
+        bool isWalkableWithSeeds(State const& startState_, State const& nextState_, Seed targetSeed);
         std::vector<Seed> givenSeeds;
-        std::vector<Seed> neighborNodesWithSeeds(const State&  start,const State&  goal)  ;
+        std::vector<Seed> neighborNodesWithSeeds(const State& start, const State& goal);
 
     };
 

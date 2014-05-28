@@ -24,7 +24,7 @@ namespace navigation {
 
             const double theta = (int) (deltaZ - (90 - currentState.theta()));
 
-            const StateOfCar neighbour(x, y, theta, 0, givenSeeds[i].costOfseed, 0, i);
+            const StateOfCar neighbour(x, y, theta, 0, givenSeeds[i].obstacleCostOfSeed, 0, i);
 
 
             if (!isWalkableWithSeeds(currentState, neighbour, map_max_cols, map_max_rows)) {
@@ -34,17 +34,16 @@ namespace navigation {
         }
         return neighbours;
     }
-    std::vector<Seed> quickReflex::neighborNodesWithSeeds(const State&  start,const State&  goal) {
+
+    std::vector<Seed> quickReflex::neighborNodesWithSeeds(const State& start, const State& goal) {
         std::vector<Seed> neighbours;
-        
-        for ( int i = 0; i < givenSeeds.size(); i++) {
-            
-            if ( isWalkableWithSeeds(start, goal, givenSeeds[i])) {
+
+        for (int i = 0; i < givenSeeds.size(); i++) {
+            if (isWalkableWithSeeds(start, goal, givenSeeds[i])) {
                 neighbours.push_back(givenSeeds[i]);
             }
-
         }
-        
+
         return neighbours;
     }
 }
