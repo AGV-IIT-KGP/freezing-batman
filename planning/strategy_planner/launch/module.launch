@@ -2,8 +2,8 @@
 
 <launch>
     <node pkg="strategy_planner" type="strategy_planner" name="strategy_planner"  output="screen" cwd="node">
-        <param name="test_mode" type="bool" value="false"/>
+        <param name="test_mode" type="bool" value="true"/>
         <param name="planner" type="int" value="0"/>                
-        <param name="navigator" type="int" value="1"/>        
+        <param name="navigator" type="int" value="3"/>        
     </node>
 </launch>

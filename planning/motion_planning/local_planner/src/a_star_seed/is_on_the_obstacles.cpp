@@ -17,7 +17,7 @@ namespace navigation {
         if (state.x() < 0 || state.x() >= fusion_map.cols) {
             return 0;
         }
-        return fusion_map.at<uchar>(fusion_map.rows - state.y() - 1, state.x()) >= 225;
+        return fusion_map.at<uchar>(fusion_map.rows - state.y() - 1, state.x()) >= 254;
     }
 
     bool quickReflex::isOnTheObstacle(const State& state) {
@@ -27,6 +27,6 @@ namespace navigation {
         if (state.x() < 0 || state.x() >= fusion_map.cols) {
             return 0;
         }
-        return fusion_map.at<uchar>(fusion_map.rows - state.y() - 1, state.x()) >= 225;
+        return fusion_map.at<uchar>(fusion_map.rows - state.y() - 1, state.x()) > 254;
     }
 }

@@ -12,6 +12,8 @@
         <param name="min_dist" type="int" value="0"/>
         <param name="obstacle_expansion" type="int" value="30"/>
         <param name="wait_time" type="int" value="100"/>
+        <param name="obstacles_topic_name" type="str" value="/obstacle_detector/obstacles"/>
+        <param name="scan_topic_name" type="str" value="/hokuyo_lidar/scan"/>
     </node>
 </launch>
     

@@ -7,7 +7,7 @@ double reference_heading;
 int map_size = 1000;
 
 ros::Subscriber yaw_subscriber;
-ros::Publisher target_publisher;
+ros::Publisher proposed_target_publisher;
 
 geometry_msgs::Pose2D findTarget(double heading) {
     double alpha;
@@ -65,7 +65,7 @@ void publishTarget(const std_msgs::Float64::ConstPtr yaw_msg) {
         iterations++;
     } else {
         target = findTarget(heading);
-        target_publisher.publish(target);
+        proposed_target_publisher.publish(target);
     }
 }
 
@@ -75,8 +75,13 @@ int main(int argc, char** argv) {
 
     iterations = 0;
 
-    target_publisher = node_handle.advertise<geometry_msgs::Pose2D>("/nose_navigator/target", 10);
-    yaw_subscriber = node_handle.subscribe("/vn_ins/yaw", 10, publishTarget);
+    std::string proposed_target_topic_name("/nose_navigator/proposed_target");
+    std::string yaw_topic_name("/vn_ins/yaw");
+    node_handle.getParam("proposed_target_topic_name", proposed_target_topic_name);
+    node_handle.getParam("yaw_topic_name", yaw_topic_name);
+    
+    proposed_target_publisher = node_handle.advertise<geometry_msgs::Pose2D>(proposed_target_topic_name, 10);
+    yaw_subscriber = node_handle.subscribe(yaw_topic_name, 10, publishTarget);
 
     ros::spin();
     return 0;

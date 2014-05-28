@@ -64,8 +64,8 @@ namespace navigation {
         void updateStrategy(const std_msgs::String planner_strategy);
 
         inline void updateTargetPose(const geometry_msgs::Pose2D::ConstPtr _pose) {
-            int x = (_pose->x) * 100;
-            int y = (_pose->y) * 100;
+            int x = _pose->x;
+            int y = _pose->y;
             int theta = (_pose->theta)*180 / M_PI;
             truncate(x, y);
             truncated_target_pose.x = x;

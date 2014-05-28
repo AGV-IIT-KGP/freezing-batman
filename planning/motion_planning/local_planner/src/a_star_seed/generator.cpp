@@ -22,7 +22,7 @@ int main() {
     printf("Enter number of layers\n");
     scanf("%d", &layers);
 
-    fprintf(seed_output, "%d\n", (4 * number_of_seeds + 2) * layers);
+    fprintf(seed_output, "%d\n", (4 * number_of_seeds + 2) * layers/2);
 
     for (int x = 1; x <= layers; x++) {
         multiplier = (x * 150 / number_of_seeds) / layers;
@@ -98,71 +98,71 @@ int main() {
             fprintf(seed_output, "%lf %lf\n", final_x, final_y * i / number_of_intermediate_points);
         }
 
-        for (int i = 0; i < number_of_seeds; ++i) {
-            final_x = (i + 1) * multiplier;
-            final_y = (2 * number_of_seeds - i) * multiplier;
+//        for (int i = 0; i < number_of_seeds; ++i) {
+//            final_x = (i + 1) * multiplier;
+//            final_y = (2 * number_of_seeds - i) * multiplier;
+//
+//            double radius_of_curvature = (final_x * final_x + final_y * final_y) / (2 * final_x);
+//            double theta = asinf(final_y / radius_of_curvature);
+//
+//            final_orientation = M_PI / 2 - theta;
+//            velocity_ratio = 1 + distance_between_wheels / radius_of_curvature;
+//            fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, -final_x, -final_y, 180 + final_orientation * 180 / M_PI);
+//
+//            number_of_intermediate_points = (final_x + final_y) / 10;
+//            fprintf(seed_output, "%d\n", number_of_intermediate_points);
+//
+//            double temp_x = 0, temp_y = 0, temp_orientation = theta / (2 * number_of_intermediate_points);
+//
+//            double length = (2 * radius_of_curvature * sinf(theta / (2 * number_of_intermediate_points)));
+//
+//            for (int j = 0; j < number_of_intermediate_points; ++j) {
+//                temp_x += length * sinf(temp_orientation);
+//                temp_y += length * cosf(temp_orientation);
+//                temp_orientation += theta / number_of_intermediate_points;
+//                fprintf(seed_output, "%lf %lf\n", -temp_x, -temp_y);
+//            }
+//        }
 
-            double radius_of_curvature = (final_x * final_x + final_y * final_y) / (2 * final_x);
-            double theta = asinf(final_y / radius_of_curvature);
-
-            final_orientation = M_PI / 2 - theta;
-            velocity_ratio = 1 + distance_between_wheels / radius_of_curvature;
-            fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, -final_x, -final_y, 180 + final_orientation * 180 / M_PI);
-
-            number_of_intermediate_points = (final_x + final_y) / 10;
-            fprintf(seed_output, "%d\n", number_of_intermediate_points);
-
-            double temp_x = 0, temp_y = 0, temp_orientation = theta / (2 * number_of_intermediate_points);
-
-            double length = (2 * radius_of_curvature * sinf(theta / (2 * number_of_intermediate_points)));
-
-            for (int j = 0; j < number_of_intermediate_points; ++j) {
-                temp_x += length * sinf(temp_orientation);
-                temp_y += length * cosf(temp_orientation);
-                temp_orientation += theta / number_of_intermediate_points;
-                fprintf(seed_output, "%lf %lf\n", -temp_x, -temp_y);
-            }
-        }
-
-        for (int i = 0; i < number_of_seeds; ++i) {
-            final_x = (i + 1) * multiplier;
-            final_y = (2 * number_of_seeds - i) * multiplier;
-
-            double radius_of_curvature = (final_x * final_x + final_y * final_y) / (2 * final_x);
-            double theta = asinf(final_y / radius_of_curvature);
-
-            final_orientation = M_PI / 2 - theta;
-            velocity_ratio = 1 + distance_between_wheels / radius_of_curvature;
-
-            fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, -final_y, 360 - final_orientation * 180 / M_PI);
-
-            number_of_intermediate_points = (final_x + final_y) / 10;
-            fprintf(seed_output, "%d\n", number_of_intermediate_points);
-
-            double temp_x = 0, temp_y = 0, temp_orientation = theta / (2 * number_of_intermediate_points);
-            double l = (2 * radius_of_curvature * sinf(theta / (2 * number_of_intermediate_points)));
-
-            for (int j = 0; j < number_of_intermediate_points; ++j) {
-                temp_x += l * sinf(temp_orientation);
-                temp_y += l * cosf(temp_orientation);
-                temp_orientation += theta / number_of_intermediate_points;
-                fprintf(seed_output, "%lf %lf\n", temp_x, -temp_y);
-            }
-        }
+//        for (int i = 0; i < number_of_seeds; ++i) {
+//            final_x = (i + 1) * multiplier;
+//            final_y = (2 * number_of_seeds - i) * multiplier;
+//
+//            double radius_of_curvature = (final_x * final_x + final_y * final_y) / (2 * final_x);
+//            double theta = asinf(final_y / radius_of_curvature);
+//
+//            final_orientation = M_PI / 2 - theta;
+//            velocity_ratio = 1 + distance_between_wheels / radius_of_curvature;
+//
+//            fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, -final_y, 360 - final_orientation * 180 / M_PI);
+//
+//            number_of_intermediate_points = (final_x + final_y) / 10;
+//            fprintf(seed_output, "%d\n", number_of_intermediate_points);
+//
+//            double temp_x = 0, temp_y = 0, temp_orientation = theta / (2 * number_of_intermediate_points);
+//            double l = (2 * radius_of_curvature * sinf(theta / (2 * number_of_intermediate_points)));
+//
+//            for (int j = 0; j < number_of_intermediate_points; ++j) {
+//                temp_x += l * sinf(temp_orientation);
+//                temp_y += l * cosf(temp_orientation);
+//                temp_orientation += theta / number_of_intermediate_points;
+//                fprintf(seed_output, "%lf %lf\n", temp_x, -temp_y);
+//            }
+//        }
 
         //generating straight seed
-        velocity_ratio = 1.0;
-        final_x = 0;
-        final_y = (2 * number_of_seeds) * multiplier;
-        final_orientation = M_PI / 2;
-        fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, -final_y, final_orientation * 180 / M_PI);
-
-        number_of_intermediate_points = (final_x + final_y) / 10;
-        fprintf(seed_output, "%d\n", number_of_intermediate_points);
-
-        for (int i = 1; i <= number_of_intermediate_points; ++i) {
-            fprintf(seed_output, "%lf %lf\n", final_x, -final_y * i / number_of_intermediate_points);
-        }
+//        velocity_ratio = 1.0;
+//        final_x = 0;
+//        final_y = (2 * number_of_seeds) * multiplier;
+//        final_orientation = M_PI / 2;
+//        fprintf(seed_output, "%lf %lf %lf %lf\n", velocity_ratio, final_x, -final_y, final_orientation * 180 / M_PI);
+//
+//        number_of_intermediate_points = (final_x + final_y) / 10;
+//        fprintf(seed_output, "%d\n", number_of_intermediate_points);
+//
+//        for (int i = 1; i <= number_of_intermediate_points; ++i) {
+//            fprintf(seed_output, "%lf %lf\n", final_x, -final_y * i / number_of_intermediate_points);
+//        }
     }
     return 0;
 }

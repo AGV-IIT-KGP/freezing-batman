@@ -22,7 +22,9 @@ public:
 private:
     int debug_mode;
     std::string node_name;
-
+    std::string obstacles_topic_name;
+    std::string scan_topic_name;
+    
     int center_x, center_y;
     int hokuyo_scale;
     int obstacle_expansion;

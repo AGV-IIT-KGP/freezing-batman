@@ -7,6 +7,10 @@ namespace navigation {
     std::pair<std::vector<State>, Seed> quickReflex::findPathToTarget(const cv::Mat& img, const State& start, const State& goal, int& status) {
         fusion_map = img;
         givenSeeds.clear();
+        distanceTransform();
+//        cv::namedWindow("view", CV_WINDOW_FREERATIO);
+//        cv::imshow("view", fusion_map);
+//        cv::waitKey(0);
         loadGivenSeeds(start, goal);
 
         if (start.isCloseTo(goal)) {
@@ -22,15 +26,29 @@ namespace navigation {
 
         // TODO: Either remove INFINITE or handle it properly
         Seed* resultSeed = NULL;
-        double minCost = INFINITE;
+        double minObstacleCost = INFINITE;
         std::vector<Seed> neighbours = neighborNodesWithSeeds(start, goal);
+        int j = 0;
         for (int i = 0; i < neighbours.size(); ++i) {
-            if (neighbours[i].costOfseed < minCost) {
-                minCost = neighbours[i].costOfseed;
+//            std::cout << neighbours[i].obstacleCostOfSeed << " " << i << " " << minObstacleCost << std::endl;
+            if (neighbours[i].obstacleCostOfSeed < minObstacleCost) {
+                minObstacleCost = neighbours[i].obstacleCostOfSeed;
+                j = i;
                 resultSeed = &neighbours[i];
             }
         }
+        //ROS_INFO("resultSeed: %d, %lf, %lf", j, neighbours[j].leftVelocity, neighbours[j].rightVelocity);
 
+        double minTargetCost = INFINITE;
+//        std::cout << neighbours.size() << " " << givenSeeds.size() << std::endl;
+        if (neighbours.size() >= givenSeeds.size() *.98) {
+            for (int i = 0; i < neighbours.size(); ++i) {
+                if (neighbours[i].targetCostOfSeed < minTargetCost) {
+                    minTargetCost = neighbours[i].targetCostOfSeed;
+                    resultSeed = &neighbours[i];
+                }
+            }
+        }
         if (resultSeed == NULL) {
             status = 0;
             return std::make_pair(std::vector<State>(), Seed());

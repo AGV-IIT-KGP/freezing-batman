@@ -69,8 +69,8 @@ ObstacleDetector::ObstacleDetector(std::string node_name, ros::NodeHandle& node_
 
     obstacle_map = cv::Mat(map_size, map_size, CV_8UC1, cvScalarAll(0));
     image_transport = new image_transport::ImageTransport(node_handle);
-    obstacle_publisher = image_transport->advertise(std::string("/") + node_name + std::string("/obstacles"), 10);
-    scan_subscriber = node_handle.subscribe("/scan", 2, &ObstacleDetector::scanCallback, this);
+    obstacle_publisher = image_transport->advertise(obstacles_topic_name, 10);
+    scan_subscriber = node_handle.subscribe(scan_topic_name, 2, &ObstacleDetector::scanCallback, this);
 }
 
 ObstacleDetector::~ObstacleDetector() {
@@ -88,6 +88,8 @@ void ObstacleDetector::loadParams(ros::NodeHandle& node_handle) {
     min_dist = 0;
     obstacle_expansion = 55;
     wait_time = 100;
+    obstacles_topic_name = std::string("/obstacle_detector/obstacles");
+    scan_topic_name = std::string("/hokuyo_lidar/scan");
 
     node_handle.getParam(std::string("/") + node_name + std::string("/center_x"), center_x);
     node_handle.getParam(std::string("/") + node_name + std::string("/center_y"), center_y);
@@ -99,6 +101,8 @@ void ObstacleDetector::loadParams(ros::NodeHandle& node_handle) {
     node_handle.getParam(std::string("/") + node_name + std::string("/min_dist"), min_dist);
     node_handle.getParam(std::string("/") + node_name + std::string("/obstacle_expansion"), obstacle_expansion);
     node_handle.getParam(std::string("/") + node_name + std::string("/wait_time"), wait_time);
+    node_handle.getParam("obstacles_topic_name", obstacles_topic_name);
+    node_handle.getParam("scan_topic_name", scan_topic_name);
 }
 
 int main(int argc, char** argv) {

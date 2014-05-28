@@ -3,7 +3,7 @@
 using namespace sensor_msgs;
 using namespace message_filters;
 
-float x_offset=-36;
+float x_offset=36;
 float y_offset=-7;
 int x_off=500,y_off=500;
 void on_trackbar(int,void*){
@@ -28,7 +28,7 @@ void callback(const ImageConstPtr& lidar_image, const ImageConstPtr& lane_image)
 		cv::waitKey(10);*/
         for (int i = 0; i < fusion_map.rows; i++) {
             for (int j = 0; j < fusion_map.cols; j++) {
-                if ((i+x_offset>=0 && i+x_offset<fusion_map.rows && j+y_offset>=0 && j+y_offset<fusion_map.cols && lidar_map->image.at<uchar>(i+x_offset, j+y_offset) == 255) || lane_map->image.at<uchar>(i, j) == 255) {
+                if ((i+x_offset>=0 && i+x_offset<fusion_map.rows && j+y_offset>=0 && j+y_offset<fusion_map.cols && lidar_map->image.at<uchar>(i+x_offset, j+y_offset) == 255) || lane_map->image.at<uchar>(i+x_offset, j) == 255) {
                     fusion_map.at<uchar>(i, j) = 255;
                 } else {
                     fusion_map.at<uchar>(i, j) = 0;

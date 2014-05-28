@@ -1,4 +1,13 @@
 <?xml version="1.0"?>
 <launch>
-  <node pkg="vn_ins" type="vn_ins" name="vn_ins" /> 
+    <node pkg="vn_ins" type="vn_ins" name="vn_ins" cwd="node" output="screen" >
+        <param name="imu_only" type="bool" value="false" />
+        <param name="baud_rate" type="int" value="115200" />
+        <param name="message_queue_size" type="int" value="10" />
+        <param name="node_name" type="str" value="vn_ins" />
+        <param name="fix_topic_name" type="str" value="/vn_ins/fix" />
+        <param name="yaw_topic_name" type="str" value="/vn_ins/yaw" />
+        <param name="vn100_com_port" type="str" value="/dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FTVJUC0O-if00-port0" />
+        <param name="vn200_com_port" type="str" value="/dev/serial/by-id/usb-FTDI_USB-RS232_Cable_FTUTUVO5-if00-port0" />
+    </node> 
 </launch>

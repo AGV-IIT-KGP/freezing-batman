@@ -18,6 +18,8 @@
 
 class vectorNav : public environment::Sensor {
 public:
+    bool imu_only;
+    
     bool connect();
     bool disconnect();
     bool fetch();
