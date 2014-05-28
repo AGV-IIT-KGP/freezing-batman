@@ -117,6 +117,19 @@ namespace navigation {
         int status;
 
     private:
+        bool vfs;
+        int vector_radius;
+        int iterator1, iterator2;
+        int num_of_vectors;
+        int num_of_points;
+        int min_cost_angle;
+        int angle_limit;
+        float cost;
+        float curvature_max;
+        float dist_bw_wheels;
+        float min_cost;
+        int vmax;
+
         cv::Mat fusion_map;
         cv::Mat image;
         std::string seeds_file;
