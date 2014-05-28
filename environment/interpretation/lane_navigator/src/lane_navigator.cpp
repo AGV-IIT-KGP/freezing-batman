@@ -10,7 +10,7 @@
 
 const int bot_x = 500, bot_y = 900;
 int step_move = -700;
-const cv::Point origin(0, 480); //Wrt top left corner
+const cv::Point origin(0, 1000); //Wrt top left corner
 int count = 0;
 int debug=1;
 ros::Publisher pub_point;
@@ -23,8 +23,8 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
     center_point.x = 0, center_point.y = 0;
     double center_angle = 0.0;
     cdst = img;
-    cv::Canny(img, cdst, 25, 75, 3);
-    cv::HoughLinesP(cdst, lines, 1, CV_PI / 180, 25, 15, 5);
+    cv::Canny(img, cdst, 1, 100, 3);
+    cv::HoughLinesP(cdst, lines, 1, CV_PI / 180, 1, 5, 5);
     for (int i = 0; i < lines.size(); i++) {
         cv::Vec4i l = lines[i];
         cv::line(mdst, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(255, 255, 255), 3, CV_AA);
@@ -121,7 +121,7 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
     center_angle = -1 * center_angle * 180 / CV_PI;
     geometry_msgs::Pose2D target_pose;
     target_pose.x = target.x;
-    target_pose.y = -1 * target.y + origin.y;
+    target_pose.y = (-1 * target.y + origin.y);
     target_pose.theta = center_angle;
     return target_pose;
 }
@@ -149,7 +149,7 @@ int main(int argc, char **argv) {
     std::string node_name= "lane_navigator";
     ros::init(argc, argv, node_name);
     ros::NodeHandle node_handle;
-    pub_point = node_handle.advertise<geometry_msgs::Pose2D>("target_point", 50);
+    pub_point = node_handle.advertise<geometry_msgs::Pose2D>("/lane_navigator/proposed_target", 50);
     ros::Subscriber lanes_subscriber = node_handle.subscribe("/lane_detector/lanes", 1, &publishTarget);
     while(ros::ok()){
     node_handle.getParam(node_name + "/debug", debug);

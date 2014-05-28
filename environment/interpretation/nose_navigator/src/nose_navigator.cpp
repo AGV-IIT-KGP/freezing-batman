@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
 
     iterations = 0;
 
-    target_publisher = node_handle.advertise<geometry_msgs::Pose2D>("/nose_navigator/target", 10);
+    target_publisher = node_handle.advertise<geometry_msgs::Pose2D>("/nose_navigator/proposed_target", 10);
     yaw_subscriber = node_handle.subscribe("/vn_ins/yaw", 10, publishTarget);
 
     ros::spin();

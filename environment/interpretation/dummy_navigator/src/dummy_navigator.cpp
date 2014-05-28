@@ -8,8 +8,8 @@ int main(int argc, char* argv[]) {
     ros::Publisher target_publisher = node_handle.advertise<geometry_msgs::Pose2D>("dummy_navigator/target", 10);
     
     geometry_msgs::Pose2D target;
-    target.x = 10.;
-    target.y = 0.;
+    target.x = 500;
+    target.y = 975;
     target.theta = M_PI / 2;
     
     ros::Rate loop_rate(10);
