@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
 <launch>
-    <include file="$(find vn_ins)/launch/imu.launch" />
+    <include file="$(find logitech_camera)/launch/module.launch" />
     <include file="$(find hokuyo_lidar)/launch/module.launch" />
 </launch>

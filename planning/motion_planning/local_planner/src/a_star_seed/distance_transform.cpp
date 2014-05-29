@@ -7,6 +7,7 @@
 //
 
 #include <a_star_seed/a_star_seed.hpp>
+#include <opencv2/imgproc/types_c.h>
 
 namespace navigation {
 
@@ -18,11 +19,12 @@ namespace navigation {
 
         binary_img = 255 - binary_img;
         cv::distanceTransform(binary_img, transformed_img, CV_DIST_L2, 3);
-                float dt_threshold = 100;
-                for (i = 0; i < fusion_map.rows; i++)
-                    for (j = 0; j < fusion_map.cols; j++)
-                        if (transformed_img.at<float>(i, j) > dt_threshold)
-                            transformed_img.at<float>(i, j) = dt_threshold;
+        //                float dt_threshold = 100;
+        //                for (i = 0; i < fusion_map.rows; i++)
+        //                    for (j = 0; j < fusion_map.cols; j++)
+        //                        if (transformed_img.at<float>(i, j) > dt_threshold)
+        //                            transformed_img.at<float>(i, j) = dt_threshold;
+
         cv::normalize(transformed_img, transformed_img, 0, 1, cv::NORM_MINMAX);
         double min_val, max_val;
         minMaxLoc(transformed_img, &min_val, &max_val);
@@ -31,7 +33,7 @@ namespace navigation {
 
         binary_img = 255 - binary_img;
         cv::rectangle(binary_img, cv::Point(0 * binary_img.cols, 0 * binary_img.rows), cv::Point(.1 * binary_img.cols, 1 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
-        cv::rectangle(binary_img, cv::Point(.1 * binary_img.cols, 1 * binary_img.rows), cv::Point(1 * binary_img.cols, .85 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
+        cv::rectangle(binary_img, cv::Point(.1 * binary_img.cols, 1 * binary_img.rows), cv::Point(1 * binary_img.cols, .895 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
         cv::rectangle(binary_img, cv::Point(.9 * binary_img.cols, .9 * binary_img.rows), cv::Point(1 * binary_img.cols, 0 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
         cv::rectangle(binary_img, cv::Point(.1 * binary_img.cols, 0 * binary_img.rows), cv::Point(.9 * binary_img.cols, .1 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
         fusion_map = binary_img;
@@ -55,17 +57,16 @@ namespace navigation {
         cv::normalize(transformed_img, transformed_img, 0, 1, cv::NORM_MINMAX);
         double minVal, maxVal;
         minMaxLoc(transformed_img, &minVal, &maxVal);
-        binary_img.convertTo(binary_img, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
-        transformed_img.convertTo(binary_img, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
+        //binary_img.convertTo(binary_img, CV_8U, 400.0 / (maxVal - minVal), -minVal * 400.0 / (maxVal - minVal));
+        transformed_img.convertTo(binary_img, CV_8U, 800.0 / (maxVal - minVal), -minVal * 800.0 / (maxVal - minVal));
 
         binary_img = 255 - binary_img;
         cv::rectangle(binary_img, cv::Point(0 * binary_img.cols, 0 * binary_img.rows), cv::Point(.1 * binary_img.cols, 1 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
-        cv::rectangle(binary_img, cv::Point(.1 * binary_img.cols, 1 * binary_img.rows), cv::Point(1 * binary_img.cols, .89 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
+        cv::rectangle(binary_img, cv::Point(.1 * binary_img.cols, 1 * binary_img.rows), cv::Point(1 * binary_img.cols, .9 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
         cv::rectangle(binary_img, cv::Point(.9 * binary_img.cols, .9 * binary_img.rows), cv::Point(1 * binary_img.cols, 0 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
         cv::rectangle(binary_img, cv::Point(.1 * binary_img.cols, 0 * binary_img.rows), cv::Point(.9 * binary_img.cols, .1 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
         fusion_map = binary_img;
-        //cv::namedWindow("view", CV_WINDOW_FREERATIO);
-        //cv::imshow("view", fusion_map);
-        //cv::waitKey(1);
+
+        //cv::threshold(fusion_map, fusion_map, 245, 0, CV_THRESH_TOZERO);
     }
 }

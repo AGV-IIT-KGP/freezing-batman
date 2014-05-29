@@ -33,31 +33,33 @@ int main(int argc, char **argv) {
         target_pose.y = radius * sin(3.14 * (count % 180) / 180) + 100;
         target_pose.theta = (rand() % (360))*(2 * M_PI) / 360;
         target_publisher.publish(target_pose);
-        count++;
         cv::Point pt1, pt2, pt3, pt4;
-        pt2.x = 350;
-        pt1.x = 600;
-        pt1.y = 150;
-        pt2.y = 950;
-        pt4.x = 650;
-        pt3.y = 150;
-        pt3.x = 800;
-        pt4.y = 950;
+        pt2.x = (300 - count) % 1000;
+        if (pt2.x < 0)pt2.x += 1000;
+        pt1.x = (300 + count) % 1000;
+        pt1.y = 0;
+        pt2.y = 1000;
+        pt4.x = (700 - count) % 1000;
+        if (pt4.x < 0)pt4.x += 1000;
+        pt3.y = 0;
+        pt3.x = (700 + count) % 1000;
+        pt4.y = 1000;
+        count++;
         cv::Mat image = cv::Mat(height, width, CV_8UC1, cvScalarAll(0));
-//        cv::line(image, pt2, pt1, cv::Scalar(255, 255, 255), 50, 8, 0);
-//        cv::line(image, pt4, pt3, cv::Scalar(255, 255, 255), 50, 8, 0);
+        cv::line(image, pt2, pt1, cv::Scalar(255, 255, 255), 50, 8, 0);
+        cv::line(image, pt4, pt3, cv::Scalar(255, 255, 255), 50, 8, 0);
 
         //        for (unsigned int i = 0; i < numberofobs; i++) {
         //            cv::circle(image, cvPoint(rand() % width, 100 + rand() % (height - 200)), minradius + rand() % (maxradius - minradius), cvScalar(255), -1);
         //        }
-        //cv::Mat image = cv::imread("image1.png", CV_LOAD_IMAGE_COLOR);
-        //cv::imshow("view",image);
-        //cv::waitKey(0);
+//        cv::namedWindow("view", 1);
+//        cv::imshow("view", image);
+//        cv::waitKey(10);
         cv_bridge::CvImage message;
         message.encoding = sensor_msgs::image_encodings::MONO8;
         message.image = image;
         map_publisher.publish(message.toImageMsg());
-
+        
         ros::spinOnce();
         loop_rate.sleep();
     }

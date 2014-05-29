@@ -1,22 +1,30 @@
 <?xml version="1.0"?>
 <launch>
     <node pkg="local_planner" type="local_planner" name="local_planner" output="screen" cwd="node">
+        <param name="angle_limit" type="int" value="70"/>
+        <param name="curvature_max" type="double" value=".001"/>
         <param name="debug_current_state" type="int" value="0"/>
+        <param name="dist_bw_wheels" type="double" value="80"/>
         <param name="distance_transform" type="int" value="0"/>
-        <param name="seed_file2" type="str" value="/seeds/seeds2.txt"/>
-        <param name="seed_file8" type="str" value="/seeds/seeds8.txt"/>
-        <param name="planning_strategy" type="int" value="0"/>
+        <param name="distance_transform_constant" type="int" value="2"/>
+        <param name="loop_rate" type="int" value="10"/>
         <param name="map_max_rows" type="int" value="1000"/>
         <param name="map_max_cols" type="int" value="1000"/>
-        <param name="loop_rate" type="int" value="10"/>
-        <param name="wait_time" type="int" value="100"/>
         <param name="max_iterations" type="int" value="10000"/>
         <param name="max_threshold" type="int" value="255"/>
-        <param name="min threshold" type="int" value="100"/>
-        <param name="distance_transform_constant" type="int" value="2"/>
-        <param name="vmax" type="int" value="70"/>
-        <param name="min_rad" type="int" value="70"/>
         <param name="max_iterations_load_given_seeds" type="int" value="10000"/>
+        <param name="min_cost" type="double" value="9999"/>
+        <param name="min threshold" type="int" value="100"/>
+        <param name="min_rad" type="int" value="70"/>
+        <param name="num_of_vectors" type="int" value="120"/>
+        <param name="num_of_points" type="int" value="20"/>
+        <param name="planning_strategy" type="int" value="1"/>
+        <param name="seed_file2" type="str" value="/seeds/seeds2.txt"/>
+        <param name="seed_file8" type="str" value="/seeds/seeds8.txt"/>
+        <param name="vector_radius" type="int" value="70"/>
+        <param name="vfs" type="bool" value="true"/>
+        <param name="vmax" type="int" value="50"/>
+        <param name="wait_time" type="int" value="100"/>
     </node>
 </launch>
 
