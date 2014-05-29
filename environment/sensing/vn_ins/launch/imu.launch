@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="vn_ins" type="vn_ins" name="vn_ins" >
+        <param name="imu_only" type="bool" value="true" />
+    </node> 
+</launch>

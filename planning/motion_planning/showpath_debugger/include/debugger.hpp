@@ -31,7 +31,7 @@ namespace navigation {
         cv::Mat local_map;
         std::vector<Pose> path;
         navigation::State bot_pose, target_pose;
-        void constructMap();
+        void makeMap();
         void showPath();
         ros::NodeHandle node_handle;
 
@@ -55,5 +55,4 @@ namespace navigation {
         }
     };
 }
-
 

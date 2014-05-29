@@ -1,0 +1,5 @@
+3
+22.31666506 87.30921031
+22.31638998 87.30908717
+22.31654231 87.30883589
+#mention this file in the launch of waypoint_selector.

@@ -3,24 +3,39 @@
 using namespace sensor_msgs;
 using namespace message_filters;
 
-void callback(const ImageConstPtr& lane_image, const ImageConstPtr& lidar_image) {
+float x_offset=36;
+float y_offset=-7;
+int x_off=500,y_off=500;
+void on_trackbar(int,void*){
+		x_offset=500-x_off;
+		y_offset=500-y_off;
+		std::cout<<x_offset<<" "<<y_offset<<std::endl;
+}
+
+void callback(const ImageConstPtr& lidar_image, const ImageConstPtr& lane_image) {
     cv_bridge::CvImagePtr lane_map;
     cv_bridge::CvImagePtr lidar_map;
 
     try {
         lane_map = cv_bridge::toCvCopy(lane_image, image_encodings::MONO8);
         lidar_map = cv_bridge::toCvCopy(lidar_image, image_encodings::MONO8);
-        cv::Mat fusion_map = cv::Mat::zeros(lane_map->image.size(), CV_8UC1);
-
+        cv::Mat fusion_map = cv::Mat::zeros(lane_map->image.size(), CV_8UC1); //commented for calibration
+        /*cv::Mat fusion_map=lane_map->image;  /////// added later for calibration
+        cv::namedWindow("fusion",1);    
+		cv::createTrackbar("x_offset- move left to decrease","fusion",&x_off,fusion_map.rows,on_trackbar);
+		cv::createTrackbar("y_offset- move left to decrease","fusion",&y_off,fusion_map.cols,on_trackbar);
+		cv::imshow("fusion",fusion_map);
+		cv::waitKey(10);*/
         for (int i = 0; i < fusion_map.rows; i++) {
             for (int j = 0; j < fusion_map.cols; j++) {
-                if (lane_map->image.at<uchar>(i, j) == 255 || lidar_map->image.at<uchar>(i, j) == 255) {
+                if ((i+x_offset>=0 && i+x_offset<fusion_map.rows && j+y_offset>=0 && j+y_offset<fusion_map.cols && lidar_map->image.at<uchar>(i+x_offset, j+y_offset) == 255) || lane_map->image.at<uchar>(i+x_offset, j) == 255) {
                     fusion_map.at<uchar>(i, j) = 255;
                 } else {
                     fusion_map.at<uchar>(i, j) = 0;
                 }
             }
         }
+        cv::imwrite("fusion_map.jpg",fusion_map);
 
         cv_bridge::CvImage message;
         message.encoding = image_encodings::MONO8;

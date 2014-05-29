@@ -22,7 +22,7 @@ namespace navigation {
 
         fusion_map_subscriber = node_handle.subscribe("/data_fuser/map", 10, &LocalPlanner::updateFusionMap, this);
         target_subscriber = node_handle.subscribe("strategy_planner/target", 10, &LocalPlanner::updateTargetPose, this);
-        planning_strategy_subscriber = node_handle.subscribe("strategy_planner/which_planner", 10, &LocalPlanner::updateStrategy, this);
+        planning_type_subscriber = node_handle.subscribe("strategy_planner/planner_type", 10, &LocalPlanner::updateStrategy, this);
 
         seed_publisher = node_handle.advertise<local_planner::Seed>("local_planner/seed", 1000);
         status_publisher = node_handle.advertise<std_msgs::String>("local_planner/status", 1000);
@@ -38,10 +38,6 @@ namespace navigation {
         try {
             cv_ptr = cv_bridge::toCvCopy(world_map, sensor_msgs::image_encodings::MONO8);
             local_map = cv_ptr->image;
-            cv::rectangle(local_map, cv::Point(0 * local_map.cols, 0 * local_map.rows), cv::Point(.1 * local_map.cols, 1 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
-            cv::rectangle(local_map, cv::Point(.1 * local_map.cols, 1 * local_map.rows), cv::Point(1 * local_map.cols, .9 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
-            cv::rectangle(local_map, cv::Point(.9 * local_map.cols, .9 * local_map.rows), cv::Point(1 * local_map.cols, 0 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
-            cv::rectangle(local_map, cv::Point(.1 * local_map.cols, 0 * local_map.rows), cv::Point(.9 * local_map.cols, .1 * local_map.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);
         } catch (cv_bridge::Exception& e) {
             ROS_ERROR("cv_bridge exception: %s", e.what());
         }
@@ -89,7 +85,7 @@ namespace navigation {
         seed.x = path.second.final_state.x();
         seed.y = path.second.final_state.y();
         seed.theta = path.second.final_state.theta();
-        seed.costOfseed = path.second.costOfseed;
+        seed.costOfseed = path.second.obstacleCostOfSeed;
         seed.velocityRatio = path.second.velocityRatio;
         seed.leftVelocity = path.second.leftVelocity;
         seed.rightVelocity = path.second.rightVelocity;
@@ -110,7 +106,7 @@ namespace navigation {
         seed.x = path.second.final_state.x();
         seed.y = path.second.final_state.y();
         seed.theta = path.second.final_state.theta();
-        seed.costOfseed = path.second.costOfseed;
+        seed.costOfseed = path.second.obstacleCostOfSeed;
         seed.velocityRatio = path.second.velocityRatio;
         seed.leftVelocity = path.second.leftVelocity;
         seed.rightVelocity = path.second.rightVelocity;

@@ -2,7 +2,7 @@
 
 typedef long double precnum_t;
 
-bool WaypointSelector::readWaypoints(std::ifstream& waypoints, std::vector<std::pair<sensor_msgs::NavSatFix, bool> >& gps_waypoints, int num_of_waypoints, std::string filename) {
+bool WaypointSelector::readWaypoints(std::ifstream& waypoints, std::vector<std::pair<sensor_msgs::NavSatFix, bool> >& gps_waypoints, int& num_of_waypoints, std::string filename) {
     std::pair < sensor_msgs::NavSatFix, bool> target;
     std::string line;
     int count = 0;
@@ -20,21 +20,17 @@ bool WaypointSelector::readWaypoints(std::ifstream& waypoints, std::vector<std::
                 if (line[0] != '#') {//checks if there is any commented line
                     std::istringstream iss(line);
                     if (i == 0) {//checks if an integer is given in the beginning
-                        float num;
-                        iss>>num;
-                        if (num - floor(num) == 0) {
-                            temp_no_waypoints = num;
-                            i++;
-                            continue;
-                        } else {
-                            iss.str(line);
-                        }
+                        int num;
+                        iss >> num;
+                        temp_no_waypoints = num;
+                        i++;
+                        continue;
                     }
-                    float lat, lon;
-                    while (temp_no_waypoints == -1 || count < temp_no_waypoints) {//if waypoints are less than the number written exits
-                        while (iss >> lat && iss >> lon && count < temp_no_waypoints) {//checks if both lat and lon are given
-                            target.first.latitude = lat;
-                            target.first.longitude = lon;
+                    std::string lat, lon;
+                    while (count < temp_no_waypoints) {//if waypoints are less than the number written exits
+                        while (std::getline(iss, lat, ' ') && std::getline(iss, lon, ' ')) {//checks if both lat and lon are given
+                            target.first.latitude = strtod(lat.c_str(), NULL);
+                            target.first.longitude = strtod(lon.c_str(), NULL);
                             target.first.altitude = altitude_preset;
                             target.second = false;
                             gps_waypoints.push_back(target);
@@ -173,6 +169,7 @@ void WaypointSelector::set_planner_status(std_msgs::String status) {
 
 WaypointSelector::WaypointSelector(std::string file, int strategy) {
     if (!readWaypoints(waypoints_, gps_waypoints_, num_of_waypoints_, file)) {
+        std::cout << "exiting";
         exit(1);
     }
     strategy_ = strategy;
@@ -195,6 +192,7 @@ sensor_msgs::NavSatFix WaypointSelector::findTarget() {
                     for (std::vector < std::pair < sensor_msgs::NavSatFix, bool> >::iterator it = gps_waypoints_.begin(); it != gps_waypoints_.end(); it++) {
                         it->second = false;
                     }
+                    current_target_ptr = selectNextWaypointInSequence();
                 }
                 if (!reachedCurrentWaypoint(current_target_ptr)) {
                     return current_target_ptr->first;
@@ -203,7 +201,9 @@ sensor_msgs::NavSatFix WaypointSelector::findTarget() {
             break;
         case greedy_selector:
             current_target_ptr = selectNearestWaypoint();
-            if (current_target_ptr == gps_waypoints_.end())return current_gps_position_;
+            if (current_target_ptr == gps_waypoints_.end()) {
+                return current_gps_position_;
+            }
             if (!reachedCurrentWaypoint(current_target_ptr)) {
                 return current_target_ptr->first;
             } else {
@@ -211,7 +211,7 @@ sensor_msgs::NavSatFix WaypointSelector::findTarget() {
                 return current_target_ptr->first;
             }
             break;
-    };
+    }
 }
 
 bool WaypointSelector::isInsideNoMansLand() {

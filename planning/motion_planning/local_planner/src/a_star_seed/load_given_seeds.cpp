@@ -41,7 +41,7 @@ namespace navigation {
 
         for (int i = 0; i < num_seeds; i++) {
             Seed seed;
-            return_status = fscanf(seeds_file, "%lf %lf %lf %lf %lf\n", &seed.velocityRatio, &x, &y, &z, &seed.costOfseed);
+            return_status = fscanf(seeds_file, "%lf %lf %lf %lf %lf\n", &seed.velocityRatio, &x, &y, &z, &seed.obstacleCostOfSeed);
             if (return_status == 0) {
                 //                ROS_ERROR("[PLANNER] Incorrect seed file format");
                 //                Planner::finBot();
@@ -99,24 +99,23 @@ namespace navigation {
         }
 
         for (int i = 0; i < numberOfSeeds; i++) {
-            Seed s;
+            Seed seed;
             double cost = 0;
             double cost_DT = 0;
-            return_status = fscanf(textFileOFSeeds, "%lf %lf %lf %lf\n", &s.velocityRatio, &x, &y, &z);
+            return_status = fscanf(textFileOFSeeds, "%lf %lf %lf %lf\n", &seed.velocityRatio, &x, &y, &z);
             if (return_status == 0) {
                 // ROS_ERROR("[PLANNER] Incorrect seed file format");
                 exit(1);
             }
 
-            if (y > 0){
-             s.leftVelocity = VMAX * s.velocityRatio / (1 + s.velocityRatio);
-             s.rightVelocity = VMAX / (1 + s.velocityRatio);
+            if (y > 0) {
+                seed.leftVelocity = VMAX * seed.velocityRatio / (1 + seed.velocityRatio);
+                seed.rightVelocity = VMAX / (1 + seed.velocityRatio);
+            } else {
+                seed.leftVelocity = -VMAX * seed.velocityRatio / (1 + seed.velocityRatio);
+                seed.rightVelocity = -VMAX / (1 + seed.velocityRatio);
             }
-            else{
-             s.leftVelocity = -VMAX * s.velocityRatio / (1 + s.velocityRatio);
-             s.rightVelocity = -VMAX / (1 + s.velocityRatio);
-            }
-            s.final_state = State((int) x, (int) y, z, 0);
+            seed.final_state = State((int) x, (int) y, z, 0);
 
             int n_seed_points;
             return_status = fscanf(textFileOFSeeds, "%d\n", &n_seed_points);
@@ -137,11 +136,12 @@ namespace navigation {
                 }
 
                 cost += point2.distanceTo(goal);
-                cost_DT += fusion_map.at<uchar>(fusion_map.rows - (start.x() + tempXvalue) - 1, start.y() + tempYvalue);
-                s.intermediatePoints.insert(s.intermediatePoints.begin(), point);
+                cost_DT += fusion_map.at<uchar>(fusion_map.rows - point2.y() - 1, point2.x());
+                seed.intermediatePoints.insert(seed.intermediatePoints.begin(), point);
             }
-            s.costOfseed = (cost / n_seed_points)/900 + ((cost_DT / n_seed_points)/255)/DT_CONSTANT + fabs(atan2f((goal.y()-start.y()), (goal.x()-start.x())) - atan2f(y, x))/M_PI;
-            givenSeeds.push_back(s);
+            seed.targetCostOfSeed = (cost / n_seed_points) / 900 + fabs(atan2f((goal.y() - start.y()), (goal.x() - start.x())) - atan2f(y, x)) / M_PI;
+            seed.obstacleCostOfSeed = ((cost_DT / n_seed_points) / 255);
+            givenSeeds.push_back(seed);
         }
 
         fclose(textFileOFSeeds);
