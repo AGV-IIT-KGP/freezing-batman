@@ -8,13 +8,14 @@ namespace navigation {
         fusion_map = img;
 
         distanceTransform();
-        angle_limit = 30;
-        curvature_max = .00333;
+
+        angle_limit = 45;
+        curvature_max = .001; // min rad of curvature = 1m = 100cm
         dist_bw_wheels = 80;
         min_cost = INFINITE;
         num_of_vectors = 120;
         num_of_points = 20;
-        vector_radius = 70;
+        vector_radius = 200;
         vmax = 70;
         vfs = true;
         float pi = 3.14159;
