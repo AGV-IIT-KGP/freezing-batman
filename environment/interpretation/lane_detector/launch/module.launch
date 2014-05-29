@@ -3,7 +3,7 @@
 <launch>
     
     <node pkg="lane_detector" type="lane_detector" name="lane_detector1" args="lane_detector1" output="screen" cwd="node">
-        <param name="debug_mode" type="int" value="6"/>
+        <param name="debug_mode" type="int" value="0"/>
         <param name="ipt_offsets_file" type="str" value="../data/ipt_offsets1.txt"/>                
         <param name="map_size" type="int" value="1000"/>        
         <param name="published_topic_name" type="str" value="/lane_detector1/lanes"/>        
@@ -14,7 +14,7 @@
         <param name="warp_matrix_file" type="str" value="../data/warp_matrix1.dat"/>
     </node>
    <node pkg="lane_detector" type="lane_detector" name="lane_detector2" args="lane_detector2" output="screen" cwd="node">
-        <param name="debug_mode" type="int" value="6"/>
+        <param name="debug_mode" type="int" value="0"/>
         <param name="ipt_offsets_file" type="str" value="../data/ipt_offsets2.txt"/>                
         <param name="map_size" type="int" value="1000"/>        
         <param name="published_topic_name" type="str" value="/lane_detector2/lanes"/>        

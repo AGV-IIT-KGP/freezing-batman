@@ -101,7 +101,6 @@ namespace navigation {
                 }
             }
 
-            min_cost_angle = 180 - min_cost_angle;
             std::cout << "min_cost_angle: " << min_cost_angle << std::endl;
             Seed resultSeed;
             resultSeed.final_state.setcurvature(curvature_max * (90. - min_cost_angle) / angle_limit);

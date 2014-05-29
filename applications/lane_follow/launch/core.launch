@@ -4,7 +4,7 @@
     <include file="$(find lane_detector)/launch/module.launch" />
     <include file="$(find obstacle_detector)/launch/module.launch" />
     <include file="$(find data_fuser)/launch/module.launch" />
-    <include file="$(find lane_navigator)/launch/module.launch" />
+    <!--<include file="$(find lane_navigator)/launch/module.launch" />-->
     <include file="$(find strategy_planner)/launch/module.launch" />
     <include file="$(find local_planner)/launch/module.launch" />
     <include file="$(find showpath_debugger)/launch/module.launch" />

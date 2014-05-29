@@ -2,7 +2,7 @@
 <launch>
     <node pkg="local_planner" type="local_planner" name="local_planner" output="screen" cwd="node">
         <param name="angle_limit" type="int" value="45"/>
-        <param name="curvature_max" type="double" value=".001"/>
+        <param name="curvature_max" type="double" value=".004"/>
         <param name="debug_current_state" type="int" value="0"/>
         <param name="dist_bw_wheels" type="double" value="80"/>
         <param name="distance_transform" type="int" value="0"/>
@@ -21,9 +21,9 @@
         <param name="planning_strategy" type="int" value="1"/>
         <param name="seed_file2" type="str" value="/seeds/seeds2.txt"/>
         <param name="seed_file8" type="str" value="/seeds/seeds8.txt"/>
-        <param name="vector_radius" type="int" value="200"/>
+        <param name="vector_radius" type="int" value="100"/>
         <param name="vfs" type="bool" value="true"/>
-        <param name="vmax" type="int" value="50"/>
+        <param name="vmax" type="int" value="80"/>
         <param name="wait_time" type="int" value="100"/>
     </node>
 </launch>

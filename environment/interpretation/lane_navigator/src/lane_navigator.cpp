@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, node_name);
     ros::NodeHandle node_handle;
     pub_point = node_handle.advertise<geometry_msgs::Pose2D>("/lane_navigator/proposed_target", 50);
-    ros::Subscriber lanes_subscriber = node_handle.subscribe("/lane_detector/lanes", 1, &publishTarget);
+    ros::Subscriber lanes_subscriber = node_handle.subscribe("/data_fuser1/map", 1, &publishTarget);
     while(ros::ok()){
     node_handle.getParam(node_name + "/debug", debug);
     ros::spinOnce();
