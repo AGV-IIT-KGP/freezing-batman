@@ -25,7 +25,7 @@ namespace navigation {
                     transformed_img.at<float>(i, j) = dt_threshold;
         cv::normalize(transformed_img, transformed_img, 0, 1, cv::NORM_MINMAX);
         double min_val, max_val;
-        minMaxLoc(transformed_img, &min_val, &max_val);
+        cv::minMaxLoc(transformed_img, &min_val, &max_val);
         binary_img.convertTo(binary_img, CV_8U, 255.0 / (max_val - min_val), -min_val * 255.0 / (max_val - min_val));
         transformed_img.convertTo(binary_img, CV_8U, 255.0 / (max_val - min_val), -min_val * 255.0 / (max_val - min_val));
 
