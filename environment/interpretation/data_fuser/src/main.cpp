@@ -34,7 +34,10 @@ int main(int argc, char** argv) {
     node_handle.getParam(std::string("/") + node_name + "/first_subscriber_topic_name", first_subscriber_topic_name);
     node_handle.getParam(std::string("/") + node_name + "/second_subscriber_topic_name", second_subscriber_topic_name);
     node_handle.getParam(std::string("/") + node_name + "/node_id", node_id);
-
+    publisher_topic_name = node_name + "/map";
+    node_handle.getParam(std::string("/") + node_name + "publisher_topic_name",publisher_topic_name);
+    
+ 
     for (int i = 1; i < argc; i++) {
         if (argv[i][0] != '-') {
             break;
@@ -79,9 +82,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    publisher_topic_name = std::string("/data_fuser/map");
-    node_handle.getParam("publisher_topic_name", publisher_topic_name);
-    node_name = node_name + node_id;
+  
 
     image_transport::ImageTransport image_transporter(node_handle);
     world_map_publisher = image_transporter.advertise(publisher_topic_name.c_str(), 10);

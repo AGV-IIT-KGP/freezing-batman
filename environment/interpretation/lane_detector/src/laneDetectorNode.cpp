@@ -34,7 +34,8 @@ void exitWithHelp() {
 }
 
 int main(int argc, char *argv[]) {
-    ros::init(argc, argv, "lane_detector");
+    std::string node_name = argv[1];
+    ros::init(argc, argv, node_name);
     ros::NodeHandle node_handle;
     
     // parse options
