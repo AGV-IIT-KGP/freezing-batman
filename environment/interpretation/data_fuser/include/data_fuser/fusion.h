@@ -13,5 +13,5 @@
 #include <sensor_msgs/Image.h>
 
 extern image_transport::Publisher world_map_publisher;
-void callback(const sensor_msgs::ImageConstPtr& image, const sensor_msgs::ImageConstPtr& lidar);
+void callback(const sensor_msgs::ImageConstPtr& image, const sensor_msgs::ImageConstPtr& lidar, const sensor_msgs::ImageConstPtr& image2);
 void singleCallback(const sensor_msgs::ImageConstPtr& image);

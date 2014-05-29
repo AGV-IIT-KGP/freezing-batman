@@ -1,12 +1,22 @@
 <?xml version="1.0"?>
 
 <launch>
-    <node pkg="data_fuser" type="Fusion" name="data_fuser">
-        <param name="first_subscriber_flag" type="int" value="0" />
+    <node pkg="data_fuser" type="Fusion" name="data_fuser1" args = "data_fuser1" cwd="node" output="screen">
+        <param name="first_subscriber_flag" type="int" value="1" />
+        <param name="second_subscriber_flag" type="int" value="1" />
+        <param name="debug_flag" type="int" value="1" />
+        <param name="first_subscriber_topic_name" type="str" value="/lane_detector1/lanes" />
+        <param name="second_subscriber_topic_name" type="str" value="/lane_detector2/lanes" />
+        <param name="node_id" type="str" value="0" />
+        <param name="publisher_topic_name" type="str" value="/data_fuser/lane" />
+    </node>
+
+    <node pkg="data_fuser" type="Fusion" name="data_fuser2" args = "data_fuser2" cwd="node" output="screen" >
+        <param name="first_subscriber_flag" type="int" value="1" />
         <param name="second_subscriber_flag" type="int" value="1" />
         <param name="debug_flag" type="int" value="1" />
         <param name="first_subscriber_topic_name" type="str" value="/obstacle_detector/obstacles" />
-        <param name="second_subscriber_topic_name" type="str" value="/lane_detector/lanes" />
+        <param name="second_subscriber_topic_name" type="str" value="/data_fuser/lane" />
         <param name="node_id" type="str" value="0" />
         <param name="publisher_topic_name" type="str" value="/data_fuser/map" />
     </node>
