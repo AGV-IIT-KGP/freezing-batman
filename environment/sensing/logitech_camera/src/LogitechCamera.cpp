@@ -54,6 +54,11 @@ ros::Rate rate_enforcer(10)
 #include <LogitechCamera.hpp>
 
 LogitechCamera::LogitechCamera(int argc, char** argv) : Sensor(argc, argv) {
+    camera_id = std::atoi(argv[1]);
+    node_name = argv[2];
+    std::cout<<"camera_id:"<<camera_id<<std::endl;
+    std::cout<<"node_name:"<<node_name<<std::endl;
+    
     ros::init(argc, argv, node_name.c_str());
     ros::NodeHandle node_handle;
     loadParams(node_handle);
@@ -97,11 +102,13 @@ void LogitechCamera::publish(int frame_id) {
 }
 
 void LogitechCamera::loadParams(ros::NodeHandle& node_handle) {
-    node_handle.getParam("/logitech_camera/camera_id", camera_id);
-    node_handle.getParam("/logitech_camera/node_name", node_name);
-    node_handle.getParam("/logitech_camera/publisher_queue_size", message_queue_size);
+   // node_handle.getParam("/logitech_camera/camera_id", camera_id);
+    //node_handle.getParam("/logitech_camera/node_name", node_name);
+    //node_handle.getParam("/logitech_camera/publisher_queue_size", message_queue_size);
     std::ostringstream convert;
     convert << camera_id;
+    std::cout<<"camera_id:"<<camera_id<<std::endl;
+    std::cout<<"node_name:"<<node_name<<std::endl;
     topic_name = node_name + std::string("/image");
 }
 

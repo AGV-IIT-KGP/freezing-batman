@@ -43,7 +43,7 @@ void LaneDetector::interpret() {
     
     cvtColor(result,result,CV_BGR2HSV);
 
-    if (time_functions > 0) {
+   if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
     result = grassRemoval(result);
