@@ -86,7 +86,7 @@ void ObstacleDetector::loadParams(ros::NodeHandle& node_handle) {
     map_size = 1000;
     max_dist = 400;
     min_dist = 0;
-    obstacle_expansion = 55;
+    obstacle_expansion = 30;
     wait_time = 100;
     obstacles_topic_name = std::string("/obstacle_detector/obstacles");
     scan_topic_name = std::string("/hokuyo_lidar/scan");

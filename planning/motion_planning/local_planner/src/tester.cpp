@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
         message.encoding = sensor_msgs::image_encodings::MONO8;
         message.image = image;
         map_publisher.publish(message.toImageMsg());
-
+        
         ros::spinOnce();
         loop_rate.sleep();
     }

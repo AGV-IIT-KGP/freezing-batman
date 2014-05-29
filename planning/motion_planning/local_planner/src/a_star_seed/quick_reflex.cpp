@@ -1,4 +1,6 @@
 #include <a_star_seed/a_star_seed.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/highgui/highgui_c.h>
 
 const int INFINITE = 99999;
 
@@ -8,8 +10,9 @@ namespace navigation {
         fusion_map = img;
 
         distanceTransform();
-        angle_limit = 30;
-        curvature_max = .00333;
+
+        angle_limit = 45;
+        curvature_max = .01; // min rad of curvature = 1m = 100cm
         dist_bw_wheels = 80;
         min_cost = INFINITE;
         num_of_vectors = 120;
@@ -31,78 +34,88 @@ namespace navigation {
         node_handle.getParam("/local_planner/vfs", vfs);
 
         if (vfs) {
-            bool no_path_found;
+            cv::namedWindow("view", CV_WINDOW_NORMAL);
+            cv::imshow("view", fusion_map);
+            cv::waitKey(10);
+
             int intensity;
-            bool seed_is_walkable;
-            no_path_found = false;
+            std::vector<int> min_angles;
 
-            for (iterator1 = 0; iterator1 < num_of_vectors / 2; iterator1++) {
-                cost = 0;
-                seed_is_walkable = true;
-                for (iterator2 = 1; iterator2 <= num_of_points; iterator2++) {
-                    intensity = fusion_map.at<uchar>
-                            (start.y() + vector_radius * sin(pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points,
-                            start.x() + vector_radius * cos(pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points);
-                    if (intensity == 255) {
-                        seed_is_walkable = false;
-                        break;
-                    } else {
-                        cost += intensity;
-                    }
-                }
-                if (min_cost > cost && seed_is_walkable) {
-                    min_cost = cost;
-                    min_cost_angle = angle_limit + 180 * iterator1 / num_of_vectors;
-                    count++;
-                }
+            for (iterator1 = 0; iterator1 < num_of_vectors; iterator1++) {
+                min_angles.push_back(iterator1);
             }
-            for (iterator1 = num_of_vectors / 2; iterator1 < num_of_vectors; iterator1++) {
-                cost = 0;
-                seed_is_walkable = true;
 
-                for (iterator2 = 1; iterator2 < num_of_points; iterator2++) {
+            min_cost_angle = 90;
+            for (iterator2 = 1; iterator2 <= num_of_points; iterator2 += 2) {
+                double min_intensity = 255;
+                int repeats = 0;
+                for (int angle_id = 0; angle_id < min_angles.size(); angle_id++) {
+                    if (min_angles[angle_id] == -1) {
+                        continue;
+                    }
+
+                    double theta = pi / 2 - pi * angle_limit / 180 + 2 * pi * angle_limit * angle_id / (num_of_vectors * 180);
+
                     intensity = fusion_map.at<uchar>
-                            (start.y() + vector_radius * sin(-pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points,
-                            start.x() + vector_radius * cos(-pi * angle_limit / 180 + pi * iterator1 / num_of_vectors) * iterator2 / num_of_points);
+                            (fusion_map.rows - (start.y() + vector_radius * sin(theta) * iterator2 / num_of_points) + 1,
+                             start.x() + vector_radius * cos(theta) * iterator2 / num_of_points);
 
                     if (intensity == 255) {
-                        seed_is_walkable = false;
-                        break;
-                    } else {
-                        cost += intensity;
+                        continue;
+                    }
+                    if (intensity < min_intensity) {
+                        min_intensity = intensity;
+                        min_cost_angle = theta * 180 / pi;
                     }
                 }
-                if (min_cost > cost && seed_is_walkable) {
-                    min_cost = cost;
-                    min_cost_angle = -angle_limit + 180 * iterator1 / num_of_vectors;
-                    count++;
+
+                //std::cout << "min_intensity: " << min_intensity << std::endl;
+
+                if (min_intensity == 255) {
+                    // No Path Found
+                    std::cout << "No Path Found" << std::endl;
+                    return std::make_pair(std::vector<State>(), Seed());
+                }
+
+                //std::cout << "Intensities & Angles:" << std::endl;
+                for (int angle_id = 0; angle_id < min_angles.size(); angle_id++) {
+                    double theta = pi / 2 - pi * angle_limit / 180 + 2 * pi * angle_limit * angle_id / (num_of_vectors * 180);
+                    double x, y;
+                    intensity = fusion_map.at<uchar>
+                            (x = fusion_map.rows - (start.y() + vector_radius * sin(theta) * iterator2 / num_of_points) + 1,
+                             y = start.x() + vector_radius * cos(theta) * iterator2 / num_of_points);
+                    //std::cout << "(" << x << ", " << y << ") " << intensity << ", " << 180 * theta / pi << std::endl;
+                    if (intensity != min_intensity) {
+                        min_angles[angle_id] = -1;
+                    } else {
+                        repeats++;
+                    }
+                }
+                //std::cout << std::endl;
+                //getchar();
+
+                //std::cout << "repeats: " << repeats << std::endl;
+                //std::cout << "min_cost_angle: " << min_cost_angle << std::endl;
+                if (repeats == 0) {
+                    break;
                 }
             }
+
             std::cout << "min_cost_angle: " << min_cost_angle << std::endl;
             Seed resultSeed;
-            //resultSeed->final_state.setx((vector_radius * cos(min_cost_angle/180)));
-            //resultSeed->final_state.sety((vector_radius * sin(min_cost_angle/180)));
-            resultSeed.final_state.setcurvature(curvature_max * (90. - min_cost_angle) / (90. - angle_limit));
-            std::cout << "result curvature " << resultSeed.final_state.curvature() << std::endl;
-            //resultSeed->final_state.settheta(90);
-            resultSeed.obstacleCostOfSeed = min_cost;
-            //            std::cout << 1 + resultSeed.final_state.curvature() << " " << 1 - resultSeed.final_state.curvature() << std::endl;
-            //            getchar();
+            resultSeed.final_state.setcurvature(curvature_max * (90. - min_cost_angle) / angle_limit);
             resultSeed.velocityRatio = (1. - dist_bw_wheels * resultSeed.final_state.curvature()) / (1. + dist_bw_wheels * resultSeed.final_state.curvature());
             double vavg = vmax / 2.;
             resultSeed.rightVelocity = 2 * resultSeed.velocityRatio * vavg / (1 + resultSeed.velocityRatio);
             resultSeed.leftVelocity = 2 * vavg / (1 + resultSeed.velocityRatio);
             State point((int) start.x(), (int) start.y(), 0, 0);
-
             resultSeed.intermediatePoints.insert(resultSeed.intermediatePoints.begin(), point);
-
             if (min_cost == INFINITE) {
                 status = 0;
                 return std::make_pair(std::vector<State>(), Seed());
             }
             status = 999;
             return std::make_pair(resultSeed.intermediatePoints, resultSeed);
-
         } else {
             givenSeeds.clear();
             loadGivenSeeds(start, goal);

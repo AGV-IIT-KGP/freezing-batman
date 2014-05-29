@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     ros::init(argc, argv, node_name.c_str());
     ros::NodeHandle node_handle;
 
-    int first_subscriber_flag = 0, second_subscriber_flag = 1, debug_flag = 1;
+    int first_subscriber_flag = 1, second_subscriber_flag = 0, debug_flag = 1;
     node_handle.getParam("first_subscriber_flag", first_subscriber_flag);
     node_handle.getParam("second_subscriber_flag", second_subscriber_flag);
     node_handle.getParam("debug_flag", debug_flag);
@@ -91,14 +91,14 @@ int main(int argc, char** argv) {
     TimeSynchronizer<Image, Image> *sync;
 
     image_transport::Subscriber image_subscriber;
-
+            
     if (first_subscriber_flag && second_subscriber_flag) {
         first_subscriber.subscribe(node_handle, first_subscriber_topic_name.c_str(), 1);
         second_subscriber.subscribe(node_handle, second_subscriber_topic_name.c_str(), 1);
         sync = new TimeSynchronizer<Image, Image>(first_subscriber, second_subscriber, 10);
         sync->registerCallback(boost::bind(&callback, _1, _2));
     } else if (first_subscriber_flag) {
-        image_subscriber = image_transporter.subscribe(first_subscriber_topic_name.c_str(), 2, singleCallback);
+        image_subscriber = image_transporter.subscribe(first_subscriber_topic_name, 2, singleCallback);
     } else if (second_subscriber_flag) {
         image_subscriber = image_transporter.subscribe(second_subscriber_topic_name.c_str(), 2, singleCallback);
     }
