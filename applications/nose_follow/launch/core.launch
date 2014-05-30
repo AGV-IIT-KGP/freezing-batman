@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <launch>
-    <include file="$(find nose_navigator)/launch/module.launch" />
+  <!--  <include file="$(find nose_navigator)/launch/module.launch" /> -->
     <include file="$(find obstacle_detector)/launch/module.launch" />
     <include file="$(find data_fuser)/launch/module.launch" />
     <include file="$(find strategy_planner)/launch/module.launch" />

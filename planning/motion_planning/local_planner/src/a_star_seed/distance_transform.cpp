@@ -56,7 +56,7 @@ namespace navigation {
         double minVal, maxVal;
         cv::minMaxLoc(transformed_img, &minVal, &maxVal);
         //binary_img.convertTo(binary_img, CV_8U, 400.0 / (maxVal - minVal), -minVal * 400.0 / (maxVal - minVal));
-        transformed_img.convertTo(binary_img, CV_8U, 800.0 / (maxVal - minVal), -minVal * 800.0 / (maxVal - minVal));
+        transformed_img.convertTo(binary_img, CV_8U, 255.0 / (maxVal - minVal), -minVal * 255.0 / (maxVal - minVal));
 
         binary_img = 255 - binary_img;
         cv::rectangle(binary_img, cv::Point(0 * binary_img.cols, 0 * binary_img.rows), cv::Point(.1 * binary_img.cols, 1 * binary_img.rows), cv::Scalar(0, 0, 0), CV_FILLED, 8, 0);

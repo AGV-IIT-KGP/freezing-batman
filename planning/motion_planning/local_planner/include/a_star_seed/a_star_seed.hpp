@@ -118,13 +118,22 @@ namespace navigation {
 
     private:
         bool vfs;
-        int vector_radius;
+        bool seed_is_walkable;
+        bool flag;
+        int angle_limit;
         int iterator1, iterator2;
+        int first_half_intensity, second_half_intnesity;
+        int intensity;
         int num_of_vectors;
         int num_of_points;
         int min_cost_angle;
-        int angle_limit;
+        int min_intensity;
+        int min_cost_weight;
+        int seed_weight;
+        int vector_radius;
+        int weight;
         float cost;
+        double theta;
         double curvature_max;
         double dist_bw_wheels;
         double min_cost;
