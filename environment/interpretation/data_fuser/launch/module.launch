@@ -12,8 +12,8 @@
     </node>
 
    <node pkg="data_fuser" type="Fusion" name="data_fuser" args = "data_fuser" cwd="node" output="screen" >
-        <param name="first_subscriber_flag" type="int" value="0" />
-        <param name="second_subscriber_flag" type="int" value="1" />
+        <param name="first_subscriber_flag" type="int" value="1" />
+        <param name="second_subscriber_flag" type="int" value="0" />
         <param name="debug_flag" type="int" value="1" />
         <param name="first_subscriber_topic_name" type="str" value="/obstacle_detector/obstacles" />
         <param name="second_subscriber_topic_name" type="str" value="/data_fuser1/map" />

@@ -670,7 +670,7 @@ int main(int argc, char **argv)
             }
 	}
    node_name = std::string("sensors_Hokuyo_Node_") + id;
-   topic_name = std::string("sensors/hokuyo_nodes/") + id;
+   topic_name = std::string("/scan");
   return driver_base::main<HokuyoNode>(argc, argv, node_name.c_str());
 }
 
