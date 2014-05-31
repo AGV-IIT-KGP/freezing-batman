@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <launch>
-    <node pkg="logitech_camera" type="logitech_camera" name="logitech_camera1" args="1 logitech_camera1" cwd="node" output="screen">
+    <node pkg="logitech_camera" type="logitech_camera" name="logitech_camera1" args="0 logitech_camera1" cwd="node" output="screen">
         <!--<param name="camera_id" type="int" value="1"/>
         <param name="node_name" type="str" value="logitech_camera1"/>
         <param name="message_queue_size" type="int" value="10"/>-->

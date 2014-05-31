@@ -23,7 +23,7 @@
         <param name="seed_file8" type="str" value="/seeds/seeds8.txt"/>
         <param name="vector_radius" type="int" value="100"/>
         <param name="vfs" type="bool" value="true"/>
-        <param name="vmax" type="int" value="50"/>
+        <param name="vmax" type="int" value="70"/>
         <param name="wait_time" type="int" value="100"/>
     </node>
 </launch>

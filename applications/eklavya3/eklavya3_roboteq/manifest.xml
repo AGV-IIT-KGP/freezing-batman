@@ -8,7 +8,8 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/eklavya3_roboteq</url>
-
+  <depend package="eklavya_roboteq"/>
+  
 </package>
 
 

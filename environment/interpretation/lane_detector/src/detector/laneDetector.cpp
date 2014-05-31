@@ -35,7 +35,7 @@ LaneDetector::~LaneDetector() {
 void LaneDetector::interpret() {
     total_time_elapsed = 0;
     cv::Mat result = original_image;
-    cv::imwrite("original.jpg",original_image);
+    //cv::imwrite(ros::this_node::getName(),original_image);
     if (debug_mode > 0) {
         cv::imshow(result_window, result);
         cv::waitKey(wait_time);
@@ -165,16 +165,16 @@ void LaneDetector::publishLanes(cv::Mat &image) {
 
 void LaneDetector::loadParams(ros::NodeHandle& node_handle) {
     debug_mode = 5;
-    ipt_offsets_file = std::string("../data/ipt_offsets0.txt");
+    ipt_offsets_file = std::string("../data/ipt_offsets1.txt");
     map_size = 1000;
     published_topic_name = std::string("/lane_detector0/lanes");
-    subscribed_topic_name = std::string("/camera/image");
+    subscribed_topic_name = std::string("/logitech_camera1/image");
     time_functions = 0;
-    training_data_file = std::string("../data/Samples");
+    training_data_file = std::string("../data/test_night4");
     wait_time = 10;
-    warp_matrix_file = std::string("../data/warp_matrix0.dat");
+    warp_matrix_file = std::string("../data/warp_matrix1.dat");
     
-    std::string node_name = std::string("/") + ros::this_node::getName();
+   std::string node_name = std::string("/") + ros::this_node::getName();
     node_handle.getParam(node_name + "/debug_mode", debug_mode);
     node_handle.getParam(node_name + "/ipt_offsets_file", ipt_offsets_file);
     node_handle.getParam(node_name + "/map_size", map_size);
@@ -184,4 +184,5 @@ void LaneDetector::loadParams(ros::NodeHandle& node_handle) {
     node_handle.getParam(node_name + "/training_data_file", training_data_file);
     node_handle.getParam(node_name + "/wait_time", wait_time);
     node_handle.getParam(node_name + "/warp_matrix_file", warp_matrix_file);
+    
 }

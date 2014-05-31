@@ -9,8 +9,6 @@ namespace navigation {
     std::pair<std::vector<State>, Seed> quickReflex::findPathToTarget(const cv::Mat& img, const State& start, const State& goal, int& status) {
         fusion_map = img;
         Seed resultSeed;
-        double vavg;
-        vavg = vmax / 2.;
         float pi = 3.14159;
         int count;
         count = 0;
@@ -21,7 +19,8 @@ namespace navigation {
         dist_bw_wheels = 80;
         first_half_intensity = 0;
         second_half_intnesity = 0;
-        flag = false;
+        flag = true;
+        bool npf = false;
         min_cost = INFINITE;
         min_cost_weight = INFINITE;
         num_of_vectors = 120;
@@ -29,7 +28,7 @@ namespace navigation {
         vector_radius = 200;
         vmax = 70;
         vfs = true;
-
+        bool vel_profile = false;
 
         node_handle.getParam("/local_planner/angle_limit", angle_limit);
         node_handle.getParam("/local_planner/curvature_max", curvature_max);
@@ -53,7 +52,7 @@ namespace navigation {
                     for (iterator2 = 1; iterator2 <= num_of_points; iterator2++) {
                         intensity = fusion_map.at<uchar>
                                 (fusion_map.rows - (start.y() + vector_radius * sin(theta) * iterator2 / num_of_points) + 1,
-                                start.x() + vector_radius * cos(theta) * iterator2 / num_of_points);
+                                 start.x() + vector_radius * cos(theta) * iterator2 / num_of_points);
                         seed_weight = intensity * (num_of_points - iterator2);
                         if (intensity == 255) {
                             seed_is_walkable = false;
@@ -76,26 +75,28 @@ namespace navigation {
                 if (min_cost == INFINITE) {
                     status = 0;
                     std::cout << "NO PATH FOUND" << std::endl;
-                    for (iterator1 = 0; iterator1 < fusion_map.rows; iterator1++) {
-                        for (iterator2 = 0; iterator2 < fusion_map.cols / 2; iterator2++) {
-                            if (fusion_map.at<uchar>(iterator1, iterator2) < thresh) {
-                                first_half_intensity++;
+                    if (npf) {
+                        for (iterator1 = 0; iterator1 < fusion_map.rows; iterator1++) {
+                            for (iterator2 = 0; iterator2 < fusion_map.cols / 2; iterator2++) {
+                                if (fusion_map.at<uchar>(iterator1, iterator2) < thresh) {
+                                    first_half_intensity++;
+                                }
+                            }
+
+                            for (iterator2 = fusion_map.cols / 2; iterator2 < fusion_map.cols; iterator2++) {
+                                if (fusion_map.at<uchar>(iterator1, iterator2) < thresh) {
+                                    second_half_intnesity++;
+                                }
                             }
                         }
 
-                        for (iterator2 = fusion_map.cols / 2; iterator2 < fusion_map.cols; iterator2++) {
-                            if (fusion_map.at<uchar>(iterator1, iterator2) < thresh) {
-                                second_half_intnesity++;
-                            }
+                        if (second_half_intnesity > first_half_intensity) {
+                            resultSeed.leftVelocity = -vmax / 2.;
+                            resultSeed.rightVelocity = 0;
+                        } else {
+                            resultSeed.rightVelocity = -vmax / 2.;
+                            resultSeed.leftVelocity = 0;
                         }
-                    }
-
-                    if (second_half_intnesity > first_half_intensity) {
-                        resultSeed.leftVelocity = 0;
-                        resultSeed.rightVelocity = vavg;
-                    } else {
-                        resultSeed.rightVelocity = 0;
-                        resultSeed.leftVelocity = vavg;
                     }
                     return std::make_pair(std::vector<State>(), resultSeed);
                 }
@@ -118,7 +119,7 @@ namespace navigation {
 
                         intensity = fusion_map.at<uchar>
                                 (fusion_map.rows - (start.y() + vector_radius * sin(theta) * iterator2 / num_of_points) + 1,
-                                start.x() + vector_radius * cos(theta) * iterator2 / num_of_points);
+                                 start.x() + vector_radius * cos(theta) * iterator2 / num_of_points);
 
                         if (intensity == 255) {
                             continue;
@@ -134,30 +135,31 @@ namespace navigation {
                     if (min_intensity == 255) {
                         // No Path Found
                         status = 0;
-                        for (iterator1 = 0; iterator1 < fusion_map.rows; iterator1++) {
-                            for (iterator2 = 0; iterator2 < fusion_map.cols / 2; iterator2++) {
-                                if (fusion_map.at<uchar>(iterator1, iterator2) < thresh) {
-                                    first_half_intensity++;
+                        std::cout << "NO PATH FOUND" << std::endl;
+                        if (npf) {
+                            for (iterator1 = 0; iterator1 < fusion_map.rows; iterator1++) {
+                                for (iterator2 = 0; iterator2 < fusion_map.cols / 2; iterator2++) {
+                                    if (fusion_map.at<uchar>(iterator1, iterator2) < thresh) {
+                                        first_half_intensity++;
+                                    }
+                                }
+
+                                for (iterator2 = fusion_map.cols / 2; iterator2 < fusion_map.cols; iterator2++) {
+                                    if (fusion_map.at<uchar>(iterator1, iterator2) < thresh) {
+                                        second_half_intnesity++;
+                                    }
                                 }
                             }
 
-                            for (iterator2 = fusion_map.cols / 2; iterator2 < fusion_map.cols; iterator2++) {
-                                if (fusion_map.at<uchar>(iterator1, iterator2) < thresh) {
-                                    second_half_intnesity++;
-                                }
+                            if (second_half_intnesity > first_half_intensity) {
+                                resultSeed.leftVelocity = -vmax / 2.;
+                                resultSeed.rightVelocity = 0;
+                            } else {
+                                resultSeed.rightVelocity = -vmax / 2.;
+                                resultSeed.leftVelocity = 0;
                             }
-                        }
-
-                        if (second_half_intnesity > first_half_intensity) {
-                            resultSeed.leftVelocity = 0;
-                            resultSeed.rightVelocity = vavg;
-                        } else {
-                            resultSeed.rightVelocity = 0;
-                            resultSeed.leftVelocity = vavg;
                         }
                         return std::make_pair(std::vector<State>(), resultSeed);
-
-                        //return std::make_pair(std::vector<State>(), Seed());
                     }
 
                     //std::cout << "Intensities & Angles:" << std::endl;
@@ -166,7 +168,7 @@ namespace navigation {
                         double x, y;
                         intensity = fusion_map.at<uchar>
                                 (x = fusion_map.rows - (start.y() + vector_radius * sin(theta) * iterator2 / num_of_points) + 1,
-                                y = start.x() + vector_radius * cos(theta) * iterator2 / num_of_points);
+                                 y = start.x() + vector_radius * cos(theta) * iterator2 / num_of_points);
                         //std::cout << "(" << x << ", " << y << ") " << intensity << ", " << 180 * theta / pi << std::endl;
                         if (intensity != min_intensity) {
                             min_angles[angle_id] = -1;
@@ -186,8 +188,17 @@ namespace navigation {
             }
 
             std::cout << "min_cost_angle: " << min_cost_angle << std::endl;
+            //min_cost_angle = 180 - min_cost_angle;
             resultSeed.final_state.setcurvature(curvature_max * (90. - min_cost_angle) / angle_limit);
             resultSeed.velocityRatio = (1. - dist_bw_wheels * resultSeed.final_state.curvature()) / (1. + dist_bw_wheels * resultSeed.final_state.curvature());
+
+            double vavg;
+            if (vel_profile) {
+              vavg = vmax * (.5 + (.1 - .5) * resultSeed.final_state.curvature() / curvature_max);
+            } else {
+              vavg = vmax / 2.;
+            }
+            
             resultSeed.rightVelocity = 2 * resultSeed.velocityRatio * vavg / (1 + resultSeed.velocityRatio);
             resultSeed.leftVelocity = 2 * vavg / (1 + resultSeed.velocityRatio);
             State point((int) start.x(), (int) start.y(), 0, 0);

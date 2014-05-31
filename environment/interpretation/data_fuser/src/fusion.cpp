@@ -3,7 +3,7 @@
 using namespace sensor_msgs;
 using namespace message_filters;
 
-float x_offset = 36;
+float x_offset = -24;
 float y_offset = -7;
 int x_off = 500, y_off = 500;
 
@@ -37,7 +37,7 @@ void callback(const ImageConstPtr& lidar_image, const ImageConstPtr& lane_image)
             }
         }
 
-        int dilation_size = 15;
+        int dilation_size = 11;
         cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT,
                                                     cv::Size(2 * dilation_size + 1, 2 * dilation_size + 1),
                                                     cv::Point(dilation_size, dilation_size));

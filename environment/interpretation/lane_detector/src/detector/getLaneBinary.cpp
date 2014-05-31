@@ -86,6 +86,8 @@ cv::Mat mergeBinaryImages(cv::Mat &bin_img1, cv::Mat &bin_img2, int debug) {
 
 cv::Mat LaneDetector::getLaneBinary(cv::Mat &image) {
     cv::Mat threshold_image(image.rows, image.cols, CV_8UC1, cvScalarAll(0));
+    cv::Mat hough_image(image.rows, image.cols, CV_8UC1, cvScalarAll(0));
     threshold_image = applyThreshold(image, debug_mode);
-    return threshold_image;
+    hough_image = applyHough(threshold_image, debug_mode);
+    return hough_image;
 } // Detect lanes and return a binary image with Lanes only
