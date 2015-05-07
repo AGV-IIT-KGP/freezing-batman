@@ -1,5 +1,20 @@
 cmake_minimum_required(VERSION 2.4.6)
+project(lane_detector)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+  agv_framework
+  cv_bridge
+  #opencv2
+  image_transport
+  roslib
+)
+find_package(OpenCV REQUIRED)
+
+include_directories(  ${catkin_INCLUDE_DIRS}  ${OpenCV_INCLUDE_DIRS} )
+include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
 
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
@@ -8,8 +23,12 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #  RelWithDebInfo : w/ debug symbols, w/ optimization
 #  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
 #set(ROS_BUILD_TYPE RelWithDebInfo)
-
-rosbuild_init()
+catkin_package(
+  INCLUDE_DIRS include
+#  LIBRARIES compute_cdist
+  CATKIN_DEPENDS roscpp rospy cv_bridge image_transport
+#  DEPENDS assimp Eigen mlpack
+)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -40,24 +59,29 @@ set(svm_SRC ${PROJECT_SOURCE_DIR}/src/learner/libsvm/svmWrapper.cpp ${PROJECT_SO
 set_source_files_properties(${svm_SRC} PROPERTIES COMPILE_FLAGS "-O3 -fPIC" )
 add_library(svm ${svm_SRC})
 #set(lib_SVM ${PROJECT_SOURCE_DIR}/libsvmWrapper.so ${PROJECT_SOURCE_DIR}/libsvm.so)
-set(lib_SVM ${PROJECT_SOURCE_DIR}/lib/libsvm.a)
+#set(lib_SVM ${PROJECT_SOURCE_DIR}/lib/libsvm.a)
 
-rosbuild_add_executable(generateSamples src/learner/generateSamples.cpp)
+add_executable(generateSamples src/learner/generateSamples.cpp)
+target_link_libraries(generateSamples ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 
-rosbuild_add_executable(svmTrain src/learner/svmTrain.cpp)
-target_link_libraries(svmTrain ${lib_SVM})
+add_executable(svmTrain src/learner/svmTrain.cpp ${PROJECT_SOURCE_DIR}/src/learner/libsvm/svmWrapper.cpp ${PROJECT_SOURCE_DIR}/src/learner/libsvm/svm.cpp)
+target_link_libraries(svmTrain svm ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 
 #SVM end
 #############################################################################################################################################
 
-rosbuild_add_library(laneDetector
+add_library(laneDetector
                      src/detector/getLaneBinary.cpp
                      src/detector/grassRemoval.cpp
                      src/detector/inversePerspectiveTransform.cpp
                      src/detector/laneDetector.cpp
                      src/detector/obstacleRemoval.cpp
-                     src/detector/preprocessing.cpp)
-target_link_libraries(laneDetector svm)
+                     src/detector/preprocessing.cpp
+		     src/detector/shadowRemoval.cpp)
+target_link_libraries(laneDetector svm ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 
-rosbuild_add_executable(lane_detector src/laneDetectorNode.cpp)
-target_link_libraries(lane_detector laneDetector libagv_framework.so m)
+add_executable(lane_detector src/laneDetectorNode.cpp)
+target_link_libraries(lane_detector laneDetector agv_framework m ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
+
+
+

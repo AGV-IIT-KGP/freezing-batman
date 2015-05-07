@@ -60,6 +60,98 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
     }
     cv::Point leftCenter(0, 0), rightCenter(0, 0);
     double leftSlope = 0.0, rightSlope = 0.0, leftCount = 0, rightCount = 0;
+    cv::Point top(0,0), bottom(0,0);
+    int c=0;
+    for(int i=0;i<img.rows;i++)
+    {
+        for(int j=0;j<img.cols;j++)
+        {
+
+            if(img.at<uchar>(i,j)>200 /*&& img.at<uchar>(i,j)[1]>200 && img.at<uchar>(i,j)[2]>200*/)
+            {
+                c++;
+                top.x+=j;
+                top.y+=i;
+            }
+            if(c==20)
+                break;
+        }
+        if(c==20)
+                break;
+    }
+    top.x/=20;
+    top.y/=20;
+    top.y-=img.rows;
+    c=0;
+    for(int i=img.rows-1;i>=0;i--)
+    {
+        for(int j=0;j<img.cols;j++)
+        {
+            if(img.at<uchar>(i,j)>200 /*&& img.at<uchar>(i,j)[1]>200 && img.at<uchar>(i,j)[2]>200*/)
+            {
+                c++;
+                bottom.x+=j;
+                bottom.y+=i;
+            }
+            if(c==20)
+                break;
+        }
+        if(c==20)
+            break;
+    }
+    bottom.x/=20;
+    bottom.y/=20;
+    bottom.y-=img.rows;
+
+
+    if((bottom.x-top.x)>90 || (top.x-bottom.x)>90)
+    {
+        cv::Point proj,target;
+        if(bottom.x>top.x)
+        {
+            bottom.x-=40;
+            top.x-=40;
+            if(top.x<0)
+                top.x=0;
+            proj.x = (bot_x + m * (bot_y - center_point.y) + m * m * center_point.x) / (1 + m * m); // Verified
+            proj.y = (center_point.y + m * (bot_x - center_point.x) + m * m * bot_y) / (1 + m * m); // Verify it
+            target.x += proj.x + cos(center_angle) * step_move -40;
+            if(target.x<0)
+                target.x=0;
+            target.y = m*(top.x-bottom.x)+bottom.y;
+        }
+        if(bottom.x<top.x)
+        {
+            bottom.x+=40;
+            top.x+=40;
+            if(top.x>img.cols)
+                top.x=img.cols;
+            proj.x = (bot_x + m * (bot_y - center_point.y) + m * m * center_point.x) / (1 + m * m); // Verified
+            proj.y = (center_point.y + m * (bot_x - center_point.x) + m * m * bot_y) / (1 + m * m); // Verify it
+            target.x += proj.x + cos(center_angle) * step_move +40;
+            if(target.x>img.cols)
+                target.x=img.cols;
+            target.y = m*(top.x-bottom.x)+bottom.y;
+        }
+        if (debug)
+    {
+        std::cout << "target.x: " << target.x << " target.y: " << target.y << std::endl;
+        std::cout << "proj.x: " << proj.x << " " << "proj.y: " << proj.y << std::endl;
+        //cv::line(mdst, proj, target, cv::Scalar(150),2,8);
+        cv::line(mdst, cv::Point(bot_x, bot_y), target, cv::Scalar(128), 3, 8);
+        cv::namedWindow("Center_path", cv::WINDOW_AUTOSIZE);
+        cv::imshow("Center_path", mdst);
+        // cv::waitKey(0);
+    }
+        center_angle = -1 * center_angle * 180 / CV_PI;
+    geometry_msgs::Pose2D target_pose;
+    target_pose.x = target.x;
+    target_pose.y = (-1 * target.y + origin.y);
+    target_pose.theta = center_angle;
+    }
+
+
+    else{
     for (int i = 0; i < lines.size(); i++) {
         cv::Vec4i p = lines[i];
         cv::Point midPoint = cv::Point((p[0] + p[2]) / 2, (p[1] + p[3]) / 2);
@@ -123,7 +215,11 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
     target_pose.x = target.x;
     target_pose.y = (-1 * target.y + origin.y);
     target_pose.theta = center_angle;
-    return target_pose;
+    cv::Point a(target_pose.x,target_pose.y);
+    cv::circle(img,a,2,cv::Scalar(0,0,255),1,8,0);
+    cv::namedWindow("new",CV_WINDOW_AUTOSIZE);
+    imshow("new!",img);
+    return target_pose;}
 }
 
 void publishTarget(const sensor_msgs::ImageConstPtr msg ) {
@@ -150,7 +246,7 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, node_name);
     ros::NodeHandle node_handle;
     pub_point = node_handle.advertise<geometry_msgs::Pose2D>("/lane_navigator/proposed_target", 50);
-    ros::Subscriber lanes_subscriber = node_handle.subscribe("/data_fuser1/map", 1, &publishTarget);
+    ros::Subscriber lanes_subscriber = node_handle.subscribe("/lane_detector1/lanes", 1, &publishTarget);
     while(ros::ok()){
     node_handle.getParam(node_name + "/debug", debug);
     ros::spinOnce();

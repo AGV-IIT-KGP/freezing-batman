@@ -9,7 +9,7 @@ LaneDetector::LaneDetector(ros::NodeHandle& node_handle) {
     kernel_size = 8;
     svm = new SVM();
     svm->init(kernel_size * kernel_size * 3);
-    std::string model_path = training_data_file + ".model";
+    std::string model_path = "/home/aranya/catkin_ws/src/freezing-batman/environment/interpretation/lane_detector/data/"+training_data_file + ".model";
     svm->loadModel(model_path.c_str());
     setupComms();
 
@@ -40,12 +40,17 @@ void LaneDetector::interpret() {
         cv::imshow(result_window, result);
         cv::waitKey(wait_time);
     }
-    
+
     cvtColor(result,result,CV_BGR2HSV);
 
    if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
+
+
+    result=shadowRemoval(result);
+    //cv::imshow("shadowRemoved",result);
+
     result = grassRemoval(result);
     if (time_functions > 0) {
         gettimeofday(&tval_after, NULL);
@@ -77,7 +82,7 @@ void LaneDetector::interpret() {
         cv::waitKey(wait_time);
     }
 
-   /* if (time_functions > 0) {
+    if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
     result = obstacleRemoval(result);
@@ -93,7 +98,7 @@ void LaneDetector::interpret() {
         cv::imshow(obstacle_removal_output_window, result);
         cv::waitKey(wait_time);
     }
-*/
+
     if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
@@ -133,12 +138,13 @@ void LaneDetector::setupComms() {
 
 void LaneDetector::detectLanes(const sensor_msgs::ImageConstPtr& msg) {
     try {
-        sensor_msgs::CvBridge bridge;
-        original_image = bridge.imgMsgToCv(msg, "bgr8");
+        cv_bridge::CvImagePtr bridge;
+        bridge = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+        original_image = bridge->image;
         ros::NodeHandle node_handle;
         node_handle.getParam("debug_mode", debug_mode);
         cv::waitKey(wait_time);
-    } catch (sensor_msgs::CvBridgeException& e) {
+    } catch (cv_bridge::Exception& e) {
         ROS_ERROR("Error in converting image");
     }
 
@@ -165,15 +171,16 @@ void LaneDetector::publishLanes(cv::Mat &image) {
 
 void LaneDetector::loadParams(ros::NodeHandle& node_handle) {
     debug_mode = 5;
-    ipt_offsets_file = std::string("../data/ipt_offsets1.txt");
+    ipt_offsets_file = std::string("ipt_offsets1.txt");
     map_size = 1000;
     published_topic_name = std::string("/lane_detector0/lanes");
-    subscribed_topic_name = std::string("/logitech_camera1/image");
+    //subscribed_topic_name = std::string("/logitech_camera1/image");
+    subscribed_topic_name = std::string("/sensors/camera/1");
     time_functions = 0;
-    training_data_file = std::string("../data/test_night4");
+    training_data_file = std::string("Test4");
     wait_time = 10;
-    warp_matrix_file = std::string("../data/warp_matrix1.dat");
-    
+    warp_matrix_file = std::string("warp_matrix1.dat");
+
    std::string node_name = std::string("/") + ros::this_node::getName();
     node_handle.getParam(node_name + "/debug_mode", debug_mode);
     node_handle.getParam(node_name + "/ipt_offsets_file", ipt_offsets_file);
@@ -184,5 +191,5 @@ void LaneDetector::loadParams(ros::NodeHandle& node_handle) {
     node_handle.getParam(node_name + "/training_data_file", training_data_file);
     node_handle.getParam(node_name + "/wait_time", wait_time);
     node_handle.getParam(node_name + "/warp_matrix_file", warp_matrix_file);
-    
+
 }
