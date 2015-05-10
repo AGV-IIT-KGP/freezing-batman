@@ -13,6 +13,9 @@
 #include <sensor_msgs/image_encodings.h>
 #include <environment/Interpreter.hpp>
 #include <libsvm/svmWrapper.hpp>
+#include <pcl_ros/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/ros/conversions.h>
 
 class LaneDetector : public environment::Interpreter {
 public:
@@ -32,6 +35,8 @@ private:
 
     image_transport::Publisher lanes_publisher;
     image_transport::Subscriber image_subscriber;
+    
+    ros::Publisher cloud_pub;
 
     cv::Mat original_image; // Raw image
 
@@ -54,6 +59,7 @@ private:
     cv::Mat seperateLanes(cv::Mat &image); // Seperate the binary image into different lanes
     cv::Mat fixBrokenLanes(cv::Mat &image); // Curve Fitting and Dilate to fix the broken lanes
     cv::Mat inversePerspectiveTransform(cv::Mat &image); // Change the view to bird's eye view
+    pcl::PointCloud<pcl::PointXYZ>::Ptr generatecloud(cv::Mat &image);
 
     // Communication Functions
     void detectLanes(const sensor_msgs::ImageConstPtr& msg); // Publish the Lane Binary Image

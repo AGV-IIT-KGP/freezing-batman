@@ -12,9 +12,14 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
 )
 find_package(OpenCV REQUIRED)
+find_package(PCL 1.3 REQUIRED COMPONENTS common io)
 
 include_directories(  ${catkin_INCLUDE_DIRS}  ${OpenCV_INCLUDE_DIRS} )
 include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
+
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
@@ -77,11 +82,11 @@ add_library(laneDetector
                      src/detector/laneDetector.cpp
                      src/detector/obstacleRemoval.cpp
                      src/detector/preprocessing.cpp
-		     src/detector/shadowRemoval.cpp)
+		     src/detector/shadowRemoval.cpp
+		     src/detector/cloudpoint.cpp)
 target_link_libraries(laneDetector svm ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
 
 add_executable(lane_detector src/laneDetectorNode.cpp)
-target_link_libraries(lane_detector laneDetector agv_framework m ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
-
+target_link_libraries(lane_detector laneDetector agv_framework  ${OpenCV_LIBRARIES} ${catkin_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
 
 
