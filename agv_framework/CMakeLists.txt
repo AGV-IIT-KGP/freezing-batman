@@ -1,5 +1,16 @@
 cmake_minimum_required(VERSION 2.4.6)
+project(agv_framework)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+)
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
+include_directories(
+${PROJECT_SOURCE_DIR}/include)
 
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
@@ -9,7 +20,6 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
 #set(ROS_BUILD_TYPE RelWithDebInfo)
 
-rosbuild_init()
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -23,7 +33,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-rosbuild_add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME}
   src/HealthMonitor.cpp
   src/LifeCycle.cpp
   src/environment/Environment.cpp
@@ -42,6 +52,12 @@ rosbuild_add_library(${PROJECT_NAME}
   src/robot/Sensor.cpp
   src/utils/Pose2D.cpp
   )
+
+catkin_package(  INCLUDE_DIRS include include
+#  LIBRARIES compute_cdist
+  CATKIN_DEPENDS roscpp 
+#  DEPENDS assimp Eigen mlpack
+)
 #rosbuild_add_library(agv src/Sensor.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()

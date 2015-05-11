@@ -1,0 +1,24 @@
+<package>
+    <name>logitech_camera</name>
+    <description>
+        logitech_camera
+    </description>
+    <maintainer email="krishna.bagadia2@gmail.com">Krishna Bagadia</maintainer>
+    <author>Tanmay</author>
+    <license>BSD</license>
+    <version>0.0.1</version>
+    <url>http://ros.org/wiki/logitech_camera</url>
+    <buildtool_depend>catkin</buildtool_depend>
+    <build_depend>roscpp</build_depend>
+    <build_depend>rospy</build_depend>
+    <build_depend>agv_framework</build_depend>
+    <build_depend>image_transport</build_depend>
+    <build_depend>cv_bridge</build_depend>
+    <run_depend>roscpp</run_depend>
+    <run_depend>rospy</run_depend>
+    <run_depend>agv_framework</run_depend>
+    <run_depend>image_transport</run_depend>
+    <run_depend>cv_bridge</run_depend>
+</package>
+
+
