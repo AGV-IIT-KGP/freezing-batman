@@ -7,18 +7,13 @@
 
 /*
 DOCUMENTATION:
-
 Logitech Camera
-
 ======================================================
-
 Description of Sensor 
 ------------------------------------------------------
 Camera Module
-
 Usage:
 `rosrun logitech_camera logitech_camera <options(optional)>`
-
 Description of Options
 ------------------------------------------------------
 If options mentioned in usage
@@ -28,7 +23,6 @@ If options mentioned in usage
    topic_name = std::string("sensors/camera");
    message_queue_size = 10;
 }
-
 Else
 {
    camera_id = std::atoi(argv[1]);
@@ -36,14 +30,11 @@ Else
    topic_name = std::string("sensors/camera/") + std::string(argv[1]);
    message_queue_size = 10;
 }
-
 Publisher Data Type
 -------------------------------------------------------
 1.
 Handle: "sensors/camera/" + (argv[1]);
 Data Type: cv_bridge::CvImage message;
-
-
 Other Relevant Information
 -------------------------------------------------------
 ros::Rate rate_enforcer(10)
@@ -99,6 +90,8 @@ void LogitechCamera::publish(int frame_id) {
     message.encoding = sensor_msgs::image_encodings::BGR8;
     message.image = frame;
     publisher.publish(message.toImageMsg());
+    imshow("window",frame);
+    cv::waitKey(10);
 }
 
 void LogitechCamera::loadParams(ros::NodeHandle& node_handle) {

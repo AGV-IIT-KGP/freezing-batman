@@ -12,18 +12,20 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr LaneDetector::generatecloud(cv::Mat& img)
 {
 	typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 	PointCloud::Ptr cloud_msg(new PointCloud);
+    cloud_msg->header.frame_id="map";
 	cloud_msg->height=1;
 	cloud_msg->width=ANGLE_SPREAD;
 	for(int i=0;i<ANGLE_SPREAD;i++)
 	{
 		int c=0;
 		double x=BOT_REFERENCE_X,y=BOT_REFERENCE_Y;
-		while(x>=0 && x<img.rows && y>0 && y<=img.cols)
+		//cloud_msg->header.stamp = ros::Time::now ();
+		while(x>=0 && x<img.cols && y>0 && y<=img.rows)
 		{
 			if(img.at<uchar>(int(img.rows-y),int(x)) >200)
 			{
 				c++;
-				cloud_msg->points.push_back(pcl::PointXYZ((int)x,(int)y,0));
+				
 				break;
 			}
 			x-=cos(i*CV_PI/180);
@@ -34,9 +36,21 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr LaneDetector::generatecloud(cv::Mat& img)
 			/*cloud.points[i].x=LARGE_VAL;
 			cloud.points[i].y=LARGE_VAL;
 			cloud.points[i].z=0;*/
+
 			cloud_msg->points.push_back(pcl::PointXYZ(LARGE_VAL,LARGE_VAL,0));
 		}
 	}
+
+	/*for(int i=0;i<img.rows;i++)
+	{
+		for(int j=0;j<img.cols;j++)
+		{
+			
+			cloud_msg->points.push_back(pcl::PointXYZ(j,(img.rows-i),0));
+		}
+	}*/
+
 	//cloud_pub.publish(cloud);
 	return cloud_msg;
 }
+

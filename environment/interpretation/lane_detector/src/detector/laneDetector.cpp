@@ -1,6 +1,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <ros/package.h>
 #include <laneDetector.hpp>
+#include <tf/transform_broadcaster.h>
 
 LaneDetector::LaneDetector(ros::NodeHandle& node_handle) {
     loadParams(node_handle);
