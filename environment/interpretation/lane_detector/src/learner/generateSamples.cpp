@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
         std::cout << "Error loading the image" << std::endl;
         return -2;
     }
-    cv::namedWindow("Original Image");
+    cv::namedWindow("Original Image",CV_WINDOW_NORMAL);
     cv::setMouseCallback("Original Image", callbackFunc, NULL);
     while (true) {
         cv::imshow("Original Image", img);

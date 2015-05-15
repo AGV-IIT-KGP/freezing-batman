@@ -44,4 +44,3 @@ private:
 };
 
 #endif	/* LOGITECHCAMERA_HPP */
-
