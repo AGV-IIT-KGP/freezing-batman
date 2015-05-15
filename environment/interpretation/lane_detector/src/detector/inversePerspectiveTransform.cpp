@@ -70,7 +70,7 @@ void callbackFunc(int event, int x, int y, int flags, void* userdata) {
 }
 
 cv::Mat LaneDetector::inversePerspectiveTransform(cv::Mat &image) {
-    my_ipt_offsets_file ="/home/aranya/catkin_ws/src/freezing-batman/environment/interpretation/lane_detector/data/" +  ipt_offsets_file;
+    my_ipt_offsets_file =ros::package::getPath("lane_detector")+"/data/"+  ipt_offsets_file;
 
     static bool done = false;
     static bool read_parameters = false;
@@ -108,7 +108,7 @@ cv::Mat LaneDetector::inversePerspectiveTransform(cv::Mat &image) {
             std::cout << "Reading Inverse Perspective Transform parameters from file" << std::endl;
 
             int status = 1;
-            FILE* ipt_data = fopen(("/home/aranya/catkin_ws/src/freezing-batman/environment/interpretation/lane_detector/data/"+warp_matrix_file).c_str(), "r");
+            FILE* ipt_data = fopen((ros::package::getPath("lane_detector")+"/data/"+warp_matrix_file).c_str(), "r");
 
             for (int i = 0; i < 4; i++) {
                 status = status && fscanf(ipt_data, "%f %f", &src_vertices[i].x, &src_vertices[i].y);

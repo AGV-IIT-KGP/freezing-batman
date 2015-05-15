@@ -7,10 +7,8 @@
         <param name="ipt_offsets_file" type="str" value="ipt_offsets1.txt"/>                
         <param name="map_size" type="int" value="1000"/>        
         <param name="published_topic_name" type="str" value="/lane_detector1/lanes"/>        
-        <!--<param name="subscribed_topic_name" type="str" value="/logitech_camera1/image"/>-->
-        <param name="subscribed_topic_name" type="str" value="/sensors/camera/1"/>
-        <param name="training_data_file" type="str" value="abc"/>
-        <param name="debug_mode" type="int" value="8"/>
+        <param name="subscribed_topic_name" type="str" value="/logitech_camera1/image"/>
+        <param name="training_data_file" type="str" value="Samples1"/>
         <param name="time_functions" type="int" value="0"/>
         <param name="wait_time" type="int" value="10"/>
         <param name="warp_matrix_file" type="str" value="../data/warp_matrix2.dat"/>

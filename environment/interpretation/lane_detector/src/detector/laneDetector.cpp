@@ -10,7 +10,7 @@ LaneDetector::LaneDetector(ros::NodeHandle& node_handle) {
     kernel_size = 8;
     svm = new SVM();
     svm->init(kernel_size * kernel_size * 3);
-    std::string model_path = "/home/aranya/catkin_ws/src/freezing-batman/environment/interpretation/lane_detector/data/"+training_data_file + ".model";
+    std::string model_path = ros::package::getPath("lane_detector")+"/data/"+training_data_file + ".model";
     svm->loadModel(model_path.c_str());
     setupComms();
 
@@ -41,8 +41,6 @@ void LaneDetector::interpret() {
         cv::imshow(result_window, result);
         cv::waitKey(wait_time);
     }
-
-    
 
    if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
@@ -84,8 +82,6 @@ void LaneDetector::interpret() {
         cv::imshow(ipt_output_window, result);
         cv::waitKey(wait_time);
     }
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud=generatecloud(result);
-    cloud_pub.publish(cloud);
     if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
@@ -115,6 +111,10 @@ void LaneDetector::interpret() {
             std::cout << "GetLaneBinary FPS : " << 1. / time_elapsed << std::endl;
         }
     }
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud=generatecloud(result);
+    cloud_pub.publish(cloud);
+
     if (debug_mode > 0) {
         cv::imshow(lane_binary_output, result);
         cv::waitKey(wait_time);
@@ -196,5 +196,4 @@ void LaneDetector::loadParams(ros::NodeHandle& node_handle) {
     node_handle.getParam(node_name + "/training_data_file", training_data_file);
     node_handle.getParam(node_name + "/wait_time", wait_time);
     node_handle.getParam(node_name + "/warp_matrix_file", warp_matrix_file);
-
 }
