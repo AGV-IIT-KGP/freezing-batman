@@ -41,7 +41,6 @@ void LaneDetector::interpret() {
         cv::imshow(result_window, result);
         cv::waitKey(wait_time);
     }
-
    if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }

@@ -12,7 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
 )
 find_package(OpenCV REQUIRED)
-
+include_directories(  ${catkin_INCLUDE_DIRS}  ${OpenCV_INCLUDE_DIRS} )
+include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
 find_package(PCL 1.3 REQUIRED COMPONENTS common io)
 include_directories(  ${catkin_INCLUDE_DIRS}  ${OpenCV_INCLUDE_DIRS} )
 include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
