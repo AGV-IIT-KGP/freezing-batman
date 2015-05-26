@@ -1,6 +1,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <ros/package.h>
 #include <laneDetector.hpp>
+#include <tf/transform_broadcaster.h>
 
 LaneDetector::LaneDetector(ros::NodeHandle& node_handle) {
     loadParams(node_handle);
@@ -40,12 +41,15 @@ void LaneDetector::interpret() {
         cv::imshow(result_window, result);
         cv::waitKey(wait_time);
     }
-
-    cvtColor(result,result,CV_BGR2HSV);
-
    if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
+
+
+    result=shadowRemoval(result);
+    cv::imshow("shadowRemoved",result);
+    cvtColor(result,result,CV_BGR2HSV);
+
     result = grassRemoval(result);
     if (time_functions > 0) {
         gettimeofday(&tval_after, NULL);
@@ -55,11 +59,12 @@ void LaneDetector::interpret() {
             std::cout << "GrassRemoval FPS : " << 1. / time_elapsed << std::endl;
         }
     }
+    cvtColor(result,result,CV_HSV2BGR);
     if (debug_mode > 0) {
         cv::imshow(grass_removal_output_window, result);
         cv::waitKey(wait_time);
     }
-    cvtColor(result,result,CV_HSV2BGR);
+    
     if (time_functions == 2) {
         gettimeofday(&tval_before, NULL);
     }
@@ -76,8 +81,7 @@ void LaneDetector::interpret() {
         cv::imshow(ipt_output_window, result);
         cv::waitKey(wait_time);
     }
-
-   /* if (time_functions > 0) {
+    if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
     result = obstacleRemoval(result);
@@ -93,7 +97,7 @@ void LaneDetector::interpret() {
         cv::imshow(obstacle_removal_output_window, result);
         cv::waitKey(wait_time);
     }
-*/
+
     if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
@@ -106,6 +110,10 @@ void LaneDetector::interpret() {
             std::cout << "GetLaneBinary FPS : " << 1. / time_elapsed << std::endl;
         }
     }
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud=generatecloud(result);
+    cloud_pub.publish(cloud);
+
     if (debug_mode > 0) {
         cv::imshow(lane_binary_output, result);
         cv::waitKey(wait_time);
@@ -125,6 +133,7 @@ void LaneDetector::setupComms() {
     ros::NodeHandle node_handle;
     image_transport::ImageTransport image_transport(node_handle);
     lanes_publisher = image_transport.advertise(published_topic_name.c_str(), 2);
+    cloud_pub = node_handle.advertise<pcl::PointCloud<pcl::PointXYZ> >("/cloud_data", 1000);
     image_subscriber = image_transport.subscribe(subscribed_topic_name, 2, &LaneDetector::detectLanes, this);
     std::cout << "Communications started with : " << std::endl
             << "\tSubscriber topic : " << subscribed_topic_name << std::endl
@@ -169,7 +178,8 @@ void LaneDetector::loadParams(ros::NodeHandle& node_handle) {
     ipt_offsets_file = std::string("ipt_offsets1.txt");
     map_size = 1000;
     published_topic_name = std::string("/lane_detector0/lanes");
-    subscribed_topic_name = std::string("/logitech_camera1/image");
+    //subscribed_topic_name = std::string("/logitech_camera1/image");
+    subscribed_topic_name = std::string("/sensors/camera/1");
     time_functions = 0;
     training_data_file = std::string("Test4");
     wait_time = 10;
@@ -185,5 +195,4 @@ void LaneDetector::loadParams(ros::NodeHandle& node_handle) {
     node_handle.getParam(node_name + "/training_data_file", training_data_file);
     node_handle.getParam(node_name + "/wait_time", wait_time);
     node_handle.getParam(node_name + "/warp_matrix_file", warp_matrix_file);
-
 }

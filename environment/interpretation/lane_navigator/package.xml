@@ -1,0 +1,40 @@
+<package>
+    <name>lane_navigator</name>
+    <description>
+
+        target_from_lane
+
+    </description>
+    <maintainer email="aranya.dan1996@gmail.com">Aranya Dan</maintainer>
+    <author>Aranya Dan</author>
+    <version>0.0.1</version>
+    <license>BSD</license>
+    <!--<review status="unreviewed" notes=""/>-->
+    <url>http://ros.org/wiki/target_from_lane</url>
+    
+    
+    
+    <buildtool_depend>catkin</buildtool_depend>
+    <build_depend>roscpp</build_depend>
+    <build_depend>rospy</build_depend>
+    <build_depend>geometry_msgs</build_depend>
+    <build_depend>image_transport</build_depend>
+    <build_depend>cv_bridge</build_depend>
+    <build_depend>roslib</build_depend>
+    <build_depend>std_msgs</build_depend>
+    <build_depend>sensor_msgs</build_depend>
+
+
+    <run_depend>sensor_msgs</run_depend>
+    <run_depend>geometry_msgs</run_depend>
+    <run_depend>roscpp</run_depend>
+    <run_depend>rospy</run_depend>
+    <run_depend>std_msgs</run_depend>
+    <run_depend>image_transport</run_depend>
+    <run_depend>cv_bridge</run_depend>
+    <run_depend>roslib</run_depend>
+
+
+</package>
+
+
