@@ -22,7 +22,7 @@ std::string my_ipt_offsets_file;
 void loadVariable() {
     int status = 1;
     FILE *readFile;
-    readFile = fopen(my_ipt_offsets_file.c_str(), "r");
+    readFile = fopen((ros::package::getPath("lane_detector")+"/data/"+my_ipt_offsets_file).c_str(), "r");
     status = status && fscanf(readFile, "bot_x = %d\n", &bot_x);
     status = status && fscanf(readFile, "bot_y = %d\n", &bot_y);
     status = status && fscanf(readFile, "d = %d\n", &d);
@@ -87,7 +87,7 @@ cv::Mat LaneDetector::inversePerspectiveTransform(cv::Mat &image) {
 
         // Write the parameters to file
         int status = 1;
-        FILE* ipt_data = fopen(warp_matrix_file.c_str(), "w");
+        FILE* ipt_data = fopen((ros::package::getPath("lane_detector")+"/data/"+warp_matrix_file).c_str(), "w");
 
         for (int i = 0; i < 4; i++) {
             status = status && fprintf(ipt_data, "%f %f\n", src_vertices[i].x, src_vertices[i].y);
