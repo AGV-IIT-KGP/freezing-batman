@@ -48,26 +48,8 @@ void LaneDetector::interpret() {
 
     result=shadowRemoval(result);
     cv::imshow("shadowRemoved",result);
-    cvtColor(result,result,CV_BGR2HSV);
 
-    result = grassRemoval(result);
-    if (time_functions > 0) {
-        gettimeofday(&tval_after, NULL);
-        time_elapsed = tval_after.tv_sec + (tval_after.tv_usec / 1000000.0) - (tval_before.tv_sec + (tval_before.tv_usec / 1000000.0));
-        total_time_elapsed += time_elapsed;
-        if (time_functions == 2) {
-            std::cout << "GrassRemoval FPS : " << 1. / time_elapsed << std::endl;
-        }
-    }
-    cvtColor(result,result,CV_HSV2BGR);
-    if (debug_mode > 0) {
-        cv::imshow(grass_removal_output_window, result);
-        cv::waitKey(wait_time);
-    }
-    
-    if (time_functions == 2) {
-        gettimeofday(&tval_before, NULL);
-    }
+
     result = inversePerspectiveTransform(result);
     if (time_functions == 2) {
         gettimeofday(&tval_after, NULL);
@@ -84,7 +66,27 @@ void LaneDetector::interpret() {
     if (time_functions > 0) {
         gettimeofday(&tval_before, NULL);
     }
-    result = obstacleRemoval(result);
+    cvtColor(result,result,CV_BGR2HSV);
+    result = grassRemoval(result);
+    if (time_functions > 0) {
+        gettimeofday(&tval_after, NULL);
+        time_elapsed = tval_after.tv_sec + (tval_after.tv_usec / 1000000.0) - (tval_before.tv_sec + (tval_before.tv_usec / 1000000.0));
+        total_time_elapsed += time_elapsed;
+        if (time_functions == 2) {
+            std::cout << "GrassRemoval FPS : " << 1. / time_elapsed << std::endl;
+        }
+    }
+    cvtColor(result,result,CV_HSV2BGR);
+    if (debug_mode > 0) {
+        cv::imshow(grass_removal_output_window, result);
+        cv::waitKey(wait_time);
+    }
+
+    if (time_functions == 2) {
+        gettimeofday(&tval_before, NULL);
+    }
+
+    //result = obstacleRemoval(result);
     if (time_functions > 0) {
         gettimeofday(&tval_after, NULL);
         time_elapsed = tval_after.tv_sec + (tval_after.tv_usec / 1000000.0) - (tval_before.tv_sec + (tval_before.tv_usec / 1000000.0));
@@ -111,8 +113,8 @@ void LaneDetector::interpret() {
         }
     }
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud=generatecloud(result);
-    cloud_pub.publish(cloud);
+    /*pcl::PointCloud<pcl::PointXYZ>::Ptr cloud=generatecloud(result);
+    cloud_pub.publish(cloud);*/
 
     if (debug_mode > 0) {
         cv::imshow(lane_binary_output, result);
@@ -133,7 +135,7 @@ void LaneDetector::setupComms() {
     ros::NodeHandle node_handle;
     image_transport::ImageTransport image_transport(node_handle);
     lanes_publisher = image_transport.advertise(published_topic_name.c_str(), 2);
-    cloud_pub = node_handle.advertise<pcl::PointCloud<pcl::PointXYZ> >("/cloud_data", 1000);
+    //cloud_pub = node_handle.advertise<pcl::PointCloud<pcl::PointXYZ> >("/cloud_data", 1000);
     image_subscriber = image_transport.subscribe(subscribed_topic_name, 2, &LaneDetector::detectLanes, this);
     std::cout << "Communications started with : " << std::endl
             << "\tSubscriber topic : " << subscribed_topic_name << std::endl

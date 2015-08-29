@@ -29,8 +29,8 @@ int main(int argc, char **argv) {
     while (ros::ok()) {
         geometry_msgs::Pose2D target_pose;
 
-        target_pose.x = radius * cos(3.14 * (count % 180) / 180) + 500;
-        target_pose.y = radius * sin(3.14 * (count % 180) / 180) + 100;
+        target_pose.x =  500;
+        target_pose.y = 800 + 100;
         target_pose.theta = (rand() % (360))*(2 * M_PI) / 360;
         target_publisher.publish(target_pose);
         cv::Point pt1, pt2, pt3, pt4;
@@ -49,17 +49,17 @@ int main(int argc, char **argv) {
         cv::line(image, pt2, pt1, cv::Scalar(255, 255, 255), 50, 8, 0);
         cv::line(image, pt4, pt3, cv::Scalar(255, 255, 255), 50, 8, 0);
 
-        //        for (unsigned int i = 0; i < numberofobs; i++) {
-        //            cv::circle(image, cvPoint(rand() % width, 100 + rand() % (height - 200)), minradius + rand() % (maxradius - minradius), cvScalar(255), -1);
-        //        }
-//        cv::namedWindow("view", 1);
-//        cv::imshow("view", image);
-//        cv::waitKey(10);
+        for (unsigned int i = 0; i < numberofobs; i++) {
+           cv::circle(image, cvPoint(rand() % width, 100 + rand() % (height - 200)), minradius + rand() % (maxradius - minradius), cvScalar(255), -1);
+        }
+        cv::namedWindow("view", 1);
+        cv::imshow("view", image);
+        cv::waitKey(1000);
         cv_bridge::CvImage message;
         message.encoding = sensor_msgs::image_encodings::MONO8;
         message.image = image;
         map_publisher.publish(message.toImageMsg());
-        
+
         ros::spinOnce();
         loop_rate.sleep();
     }

@@ -2,6 +2,9 @@
 #include <cmath>
 #include <cstdio>
 #include <ros/package.h>
+#include <ros/ros.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 int multiplier;
 const int distance_between_wheels = 72;

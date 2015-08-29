@@ -121,14 +121,14 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
 	center_angle= 1.57;
 	center_point.x= bot_x;
 	center_point.y= bot_y;
-    }  
+    }
     double m = tan(center_angle);
     if (m == HUGE_VAL) {
         m = 10000;
     }
     cv::Point leftCenter(0, 0), rightCenter(0, 0);
     double leftSlope = 0.0, rightSlope = 0.0, leftCount = 0, rightCount = 0;
-    
+
 
 
     cv::Point proj,target;
@@ -136,7 +136,7 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
 
     if((bottom.x-top.x)>90 || (top.x-bottom.x)>90)
     {
-        
+
         if(bottom.x>top.x)
         {
             bottom.x-=40;
@@ -163,7 +163,7 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
                 target.x=img.cols;
             target.y = m*(top.x-bottom.x)+bottom.y;
         }
-        
+
         center_angle = -1 * center_angle * 180 / CV_PI;
         //std::cout<<"new\n";
         target_pose.x = target.x;
@@ -173,7 +173,7 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
 
 
     else{
-        for (int i = 0; i < lines.size(); i++) 
+        for (int i = 0; i < lines.size(); i++)
         {
             cv::Vec4i p = lines[i];
             cv::Point midPoint = cv::Point((p[0] + p[2]) / 2, (p[1] + p[3]) / 2);
@@ -191,7 +191,7 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
                     leftSlope += -(lines[i][1] - lines[i][3]) / (lines[i][0] - lines[i][2]);
                 }
                 leftCount++;
-            } 
+            }
             else {
                 rightCenter.x += midPoint.x;
                 rightCenter.y += midPoint.y;
@@ -208,7 +208,7 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
 
             rightCenter.x /= rightCount;
             rightCenter.y /= rightCount;
-            
+
             rightSlope /= rightCount;
             if ((center_point.x - leftCenter.x) < 50 || (leftCenter.x - center_point.x) < 50) {
                 center_point.x += 150; //Target must not lie on the lane
@@ -227,9 +227,9 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
         cv::Point point2;
         point2.x = center_point.x - 100;
         point2.y = center_point.y - m * 100;
-        
+
         center_angle = -1 * center_angle * 180 / CV_PI;
-        
+
         target_pose.x = target.x;
         target_pose.y = (-1 * target.y + origin.y);
         target_pose.theta = center_angle;
@@ -255,13 +255,13 @@ geometry_msgs::Pose2D findTarget(cv::Mat img) {
     int valtheta=target_pose.theta;
     for(int i=0;i<counter;i++)
     {
-        valx+=(i+2)*(temp[i]).x;
-        valy+=(i+2)*(temp[i]).y;
-        valtheta+=(i+2)*(temp[i]).theta;
+        valx+=(i+1)*(temp[i]).x;
+        valy+=(i+1)*(temp[i]).y;
+        valtheta+=(i+1)*(temp[i]).theta;
     }
-    target_pose.x=int(valx/15);
-    target_pose.y=int(valy/15);
-    target_pose.theta=int(valtheta/15);
+    target_pose.x=int(valx/7);
+    target_pose.y=int(valy/7);
+    target_pose.theta=int(valtheta/7);
 
     target.x=target_pose.x;
     target.y=origin.y - target_pose.y;
@@ -288,7 +288,7 @@ void publishTarget(const sensor_msgs::ImageConstPtr msg ) {
     if (debug){ROS_INFO("Listened for the %d time\n", count++);
     cv::namedWindow("listening", CV_WINDOW_AUTOSIZE);}
     cv::Mat img;
-    
+
 
     cv_bridge::CvImagePtr cv_ptr;
     cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);

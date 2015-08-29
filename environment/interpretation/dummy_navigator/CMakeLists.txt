@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.4.6)
+project(dummy_navigator)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-include_directories( include/)
+include(${PROJECT_SOURCE_DIR}/include)
 
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
@@ -10,7 +11,21 @@ include_directories( include/)
 #  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
 #set(ROS_BUILD_TYPE RelWithDebInfo)
 
-rosbuild_init()
+find_package(catkin REQUIRED
+        COMPONENTS
+            cmake_modules
+            roscpp
+            message_generation
+	    std_msgs	
+            pluginlib
+            )
+
+catkin_package(
+  INCLUDE_DIRS include
+#  LIBRARIES compute_cdist
+  CATKIN_DEPENDS roscpp rospy
+#  DEPENDS assimp Eigen mlpack
+)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -27,8 +42,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
-rosbuild_add_executable(dummy_navigator src/dummy_navigator.cpp)
-
+add_executable(dummy_navigator src/dummy_navigator.cpp)
+target_link_libraries(dummy_navigator ${catkin_LIBRARIES})
 #rosbuild_link_boost(Navigator signals)
 #target_link_libraries(example ${PROJECT_NAME})
 #target_link_libraries(Navigator ${STATE})

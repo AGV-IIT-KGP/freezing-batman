@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.4.6)
+project(waypoint_selector)
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-include_directories( include/)
+include(${PROJECT_SOURCE_DIR}/include)
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
 #  Debug          : w/ debug symbols, w/o optimization
@@ -9,7 +10,26 @@ include_directories( include/)
 #  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
 #set(ROS_BUILD_TYPE RelWithDebInfo)
 
-rosbuild_init()
+find_package(catkin REQUIRED
+        COMPONENTS
+            cmake_modules
+            roscpp
+	    std_msgs
+	    geometry_msgs
+	    sensor_msgs
+       )
+
+find_package(OpenCV REQUIRED)
+include_directories(  ${catkin_INCLUDE_DIRS}  ${OpenCV_INCLUDE_DIRS} )
+include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
+catkin_package(
+  INCLUDE_DIRS include
+#  LIBRARIES compute_cdist
+  CATKIN_DEPENDS roscpp rospy
+#  DEPENDS assimp Eigen mlpack
+)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -28,8 +48,10 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
-rosbuild_add_executable(waypoint_selector 
+add_executable(waypoint_selector 
                         src/main.cpp
                         src/waypoint_selector.cpp)
-rosbuild_add_executable(waypoint_recorder
+target_link_libraries(waypoint_selector ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
+add_executable(waypoint_recorder
                         src/waypoint_recorder.cpp)
+target_link_libraries(waypoint_recorder ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})

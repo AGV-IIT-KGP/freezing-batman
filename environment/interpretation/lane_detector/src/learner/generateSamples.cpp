@@ -41,7 +41,7 @@ void callbackFunc(int event, int x, int y, int flags, void* userdata) {
             for (int j = 0; j < size_sample; j++) {
                 commonFile << countP++ << ":" << (int) imgRoi.at<cv::Vec3b>(i, j)[0] << " ";
                 commonFile << countP++ << ":" << (int) imgRoi.at<cv::Vec3b>(i, j)[1] << " ";
-   //             commonFile << countP++ << ":" << (int) imgRoi.at<cv::Vec3b>(i, j)[2] << " ";
+                commonFile << countP++ << ":" << (int) imgRoi.at<cv::Vec3b>(i, j)[2] << " ";
             }
         }
 

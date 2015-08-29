@@ -99,7 +99,7 @@ int main(int argc, char* argv[]) {
     ros::init(argc, argv, "eklavya3_pilot");
     ros::NodeHandle node_handle; // nodeHandle
     node_handle.getParam("eklavya3_pilot/pilot_mode", pilot_mode);
-    
+
     command_publisher = node_handle.advertise<geometry_msgs::Twist>("cmd_vel", 10); //Publisher for Control
     ros::Subscriber seed_subscriber = node_handle.subscribe("local_planner/seed", 10, publishCommand); //Subscriber for Path
 
